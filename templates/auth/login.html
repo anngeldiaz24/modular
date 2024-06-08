@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <title>Inicia sesión - SSafeZone</title>
+  <link rel="icon" type="image/png" href="assets/images/logo/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/rt-plugins.css">
+  <link href="https://unpkg.com/aos@2.3.0/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
+  <!-- START : Theme Config js-->
+  <script src="{{ url_for('static', filename='assets/js/settings.js') }}" sync></script>
+  <!-- END : Theme Config js-->
+</head>
+
+<body class=" font-inter skin-default">
+
+    <div class="loginwrapper bg-cover bg-no-repeat bg-center" style="background-image: url('{{ url_for('static', filename='assets/images/all-img/people.jpg') }}');">
+    <div class="lg-inner-column">
+      <div class="left-columns lg:w-1/2 lg:block hidden">
+        <div class="logo-box-3">
+          <a heref="index.html" class="">
+            <img src="assets/images/logo/logo-white.svg" alt="">
+          </a>
+        </div>
+      </div>
+      <div class="lg:w-1/2 w-full flex flex-col items-center justify-center">
+        <div class="auth-box-3">
+          <div class="mobile-logo text-center mb-6 lg:hidden block">
+            <a heref="index.html">
+            </a>
+          </div>
+          <div class="text-center 2xl:mb-10 mb-5">
+            <h4 class="font-medium">Iniciar sesión</h4>
+            <div class="text-slate-500 dark:text-slate-400 text-base">
+                Asegura la integridad de tu hogar con SSafeNet.
+            </div>
+          </div>
+          <!-- BEGIN: Login Form -->
+          <form class="space-y-4" action='index.html'>
+            <div class="fromGroup">
+              <label class="block capitalize form-label">Email</label>
+              <div class="relative">
+                <input type="email" name="email" class="form-control py-2" placeholder="Ingresa tu correo electrónico">
+              </div>
+            </div>
+            <div class="fromGroup">
+              <label class="block capitalize form-label">Contraseña</label>
+              <div class="relative"><input type="password" name="password" class="  form-control py-2" placeholder="Ingresa tu contraseña">
+              </div>
+            </div>
+            <div class="flex justify-end">
+                <a class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium" href="#">¿Olvidaste tu contraseña?</a>
+            </div>            
+            <button class="btn btn-dark block w-full text-center">Iniciar sesión</button>
+          </form>
+          <!-- END: Login Form -->
+          <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 2xl:mt-12 mt-6 uppercase text-sm text-center">¿Aún no tienes cuenta?
+            <a href="signup-one.html" class="text-slate-900 dark:text-white font-medium hover:underline">
+              Registrate
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- scripts -->
+  <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+</body>
+</html>
