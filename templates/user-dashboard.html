@@ -1,0 +1,565 @@
+{% extends 'layouts/layout-dashboard-user.html' %}
+
+{% block header %}
+    {% block title %}Dashboard - Usuario{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <h3>Administrador del hogar: Axl Coronado</h3>
+
+    <div class=" space-y-5">
+        <div class="card">
+          <header class=" card-header noborder">
+            <h4 class="card-title">Gestión de Usuarios
+            </h4>
+          </header>
+          <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+              <span class=" col-span-8  hidden"></span>
+              <span class="  col-span-4 hidden"></span>
+              <div class="inline-block min-w-full align-middle">
+                <div class="overflow-hidden ">
+                  <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 data-table">
+                    <thead class=" bg-slate-200 dark:bg-slate-700">
+                      <tr>
+
+                        <th scope="col" class=" table-th ">
+                          Id
+                        </th>
+
+                        <th scope="col" class=" table-th ">
+                          Order
+                        </th>
+
+                        <th scope="col" class=" table-th ">
+                          Customer
+                        </th>
+
+                        <th scope="col" class=" table-th ">
+                          Date
+                        </th>
+
+                        <th scope="col" class=" table-th ">
+                          Quantity
+                        </th>
+
+                        <th scope="col" class=" table-th ">
+                          Amount
+                        </th>
+
+                        <th scope="col" class=" table-th ">
+                          Status
+                        </th>
+
+                        <th scope="col" class=" table-th ">
+                          Action
+                        </th>
+
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+
+                      <tr>
+                        <td class="table-td">1</td>
+                        <td class="table-td ">#951</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="1" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">3/26/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            13
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $1779.53
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-success-500
+                    bg-success-500">
+                            paid
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">2</td>
+                        <td class="table-td ">#238</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="2" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">2/6/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            13
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $2215.78
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-warning-500
+                    bg-warning-500">
+                            due
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">3</td>
+                        <td class="table-td ">#339</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="3" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">9/6/2021</td>
+                        <td class="table-td ">
+                          <div>
+                            1
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $3183.60
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-warning-500
+                    bg-warning-500">
+                            due
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">4</td>
+                        <td class="table-td ">#365</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="4" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">11/7/2021</td>
+                        <td class="table-td ">
+                          <div>
+                            13
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $2587.86
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-danger-500
+                    bg-danger-500">
+                            cancled
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">5</td>
+                        <td class="table-td ">#513</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="5" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">5/6/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            12
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $3840.73
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-success-500
+                    bg-success-500">
+                            paid
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">6</td>
+                        <td class="table-td ">#534</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="6" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">2/14/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            12
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $4764.18
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-danger-500
+                    bg-danger-500">
+                            cancled
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">7</td>
+                        <td class="table-td ">#77</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="7" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">7/30/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            6
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $2875.05
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-success-500
+                    bg-success-500">
+                            paid
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">8</td>
+                        <td class="table-td ">#238</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="8" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">6/30/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            9
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $2491.02
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-warning-500
+                    bg-warning-500">
+                            due
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">9</td>
+                        <td class="table-td ">#886</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="9" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">8/9/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            8
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $3006.95
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-warning-500
+                    bg-warning-500">
+                            due
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">10</td>
+                        <td class="table-td ">#3</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="10" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">8/4/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            12
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $2160.32
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-success-500
+                    bg-success-500">
+                            paid
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="table-td">11</td>
+                        <td class="table-td ">#198</td>
+                        <td class="table-td">
+                          <span class="flex">
+                <span class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
+                  <img src="assets/images/all-img/customer_1.png" alt="11" class="object-cover w-full h-full rounded-full">
+                </span>
+                          <span class="text-sm text-slate-600 dark:text-slate-300 capitalize">Jenny Wilson</span>
+                          </span>
+                        </td>
+                        <td class="table-td ">4/5/2022</td>
+                        <td class="table-td ">
+                          <div>
+                            8
+                          </div>
+                        </td>
+                        <td class="table-td ">
+                          <div>
+                            $1272.66
+                          </div>
+                        </td>
+                        <td class="table-td ">
+
+                          <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-success-500
+                    bg-success-500">
+                            paid
+                          </div>
+
+                        </td>
+                        <td class="table-td ">
+                          <div class="flex space-x-3 rtl:space-x-reverse">
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:eye"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                            </button>
+                            <button class="action-btn" type="button">
+                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+{% endblock %}
