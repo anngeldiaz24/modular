@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <title>Crea una cuenta - SSafeZone</title>
+  <link rel="icon" type="image/png" href="assets/images/logo/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/rt-plugins.css">
+  <link href="https://unpkg.com/aos@2.3.0/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
+  <!-- START : Theme Config js-->
+  <script src="{{ url_for('static', filename='assets/js/settings.js') }}" sync></script>
+  <!-- END : Theme Config js-->
+</head>
+
+<body class="font-inter skin-default">
+  <div class="loginwrapper">
+    <div class="lg-inner-column">
+      <div class="left-column relative z-[1]">
+        <div class="pt-10 ltr:pl-20">
+          <h4>
+            Confianza y protección con 
+            <span class="text-slate-800 dark:text-slate-400 font-bold">Samsung SafeZone</span>
+          </h4>
+        </div>
+        <div class="absolute h-full w-full">
+          <img src="{{ url_for('static', filename='assets/images/all-img/family-home.jpg') }}" alt="family-home" class="h-full w-full object-contain">
+        </div>
+      </div>
+      <div class="right-column  relative">
+        <div class="inner-content h-full flex flex-col bg-white dark:bg-slate-800">
+          <div class="auth-box h-full flex flex-col justify-center">
+            <div class="text-center 2xl:mb-10 mb-4">
+              <h4 class="font-medium">Crea una cuenta</h4>
+              <div class="text-slate-500 text-base">
+                Crea tu cuenta para acceder a las funcionalidades de tu hogar
+              </div>
+            </div>
+            <!-- BEGIN: Registration Form -->
+            <form class="space-y-4" action='#'>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="formGroup">
+                  <label class="block capitalize form-label">Nombre</label>
+                  <div class="relative">
+                    <input type="text" name="nombre" class="form-control py-2" placeholder="Ingresa tu nombre">
+                  </div>
+                </div>
+                <div class="formGroup">
+                  <label class="block capitalize form-label">Apellido</label>
+                  <div class="relative">
+                    <input type="text" name="apellidos" class="form-control py-2" placeholder="Ingresa tus apellidos">
+                  </div>
+                </div>
+                <div class="formGroup col-span-2">
+                  <label class="block capitalize form-label">Teléfono</label>
+                  <div class="relative">
+                    <input type="text" name="telefono" class="form-control py-2" placeholder="Ingresa tu teléfono">
+                  </div>
+                </div>
+                <div class="formGroup col-span-2">
+                  <label class="block capitalize form-label">Correo electrónico</label>
+                  <div class="relative">
+                    <input type="email" name="correo" class="form-control py-2" placeholder="Ingresa tu correo electrónico">
+                  </div>
+                </div>
+                <div class="formGroup">
+                  <label class="block capitalize form-label">Contraseña</label>
+                  <div class="relative">
+                    <input type="password" name="contrasena" class="form-control py-2" placeholder="Ingresa tu contraseña">
+                  </div>
+                </div>
+                <div class="formGroup">
+                  <label class="block capitalize form-label">Confirmar Contraseña</label>
+                  <div class="relative">
+                    <input type="password" name="confirmar_contrasena" class="form-control py-2" placeholder="Confirma tu contraseña">
+                  </div>
+                </div>
+              </div>
+              <div class="formGroup">
+                <label class="block capitalize form-label">Código de acceso</label>
+                <div class="relative">
+                  <input type="text" name="codigo_acceso" class="form-control py-2" placeholder="Ingresa tu código de acceso">
+                </div>
+              </div>
+            
+              <div class="flex items-center">
+                <input type="checkbox" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out">
+                <span class="ml-2 text-slate-500 dark:text-slate-400 text-sm md:text-base leading-6">Aceptas nuestros Términos y Condiciones y Política de Privacidad</span>
+              </div>
+              <button class="btn btn-dark block w-full text-center">Crear cuenta</button>
+            </form>
+            <!-- END: Registration Form -->
+            <div class="md:max-w-[345px] mx-auto font-normal text-slate-500 dark:text-slate-400 mt-8 uppercase text-sm">
+              <span>¿Ya tienes cuenta?
+                            </span>
+              <a href="signin-one.html" class="text-slate-900 dark:text-white font-medium hover:underline">
+                Inicia sesión
+              </a>
+            </div>
+          </div>
+          <div class="auth-footer text-center">
+            Copyright {{ current_year }}, SSafeZone Todos los Derechos Reservados.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- scripts -->
+  <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+</body>
+</html>

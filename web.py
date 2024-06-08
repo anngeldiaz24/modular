@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import datetime
 
 app = Flask(__name__)
 
@@ -8,4 +9,5 @@ def index():
 
 @app.route('/register')
 def register():
-    return render_template('auth/login.html')
+    current_year = datetime.datetime.now().year
+    return render_template('auth/register.html', current_year=current_year)
