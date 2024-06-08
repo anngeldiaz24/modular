@@ -2147,9 +2147,13 @@
                         <h4 class="card-title">{% block header %}{% endblock %}</h4>
                         <div>...</div>
                     </div>
-                    <div class="card-footer">{% block content %}{% endblock %}</div>
                 </div>
 
+                <div class="card mt-3">
+                  <div class="card-header">
+                      <div class="card">{% block content %}{% endblock %}</div>
+                  </div>
+              </div>
               </div>
             </div>
           </div>
