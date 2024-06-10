@@ -8810,11 +8810,32 @@ ToolTip And PopOver
   margin-bottom: 0.75rem;
 }
 
+.btn-group-safezone{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.btn-group-safezone button{
+  /* 50% of the width minus the margin */
+  flex-basis: calc(33% - 1.25rem); 
+  margin-bottom: 0.75rem;
+}
+
 [dir="ltr"] .btn-group-example button{
   margin-right: 1.25rem;
 }
 
 [dir="rtl"] .btn-group-example button{
+  margin-left: 1.25rem;
+}
+
+[dir="ltr"] .btn-group-safezone button{
+  margin-right: 1.25rem;
+}
+
+[dir="rtl"] .btn-group-safezone button{
   margin-left: 1.25rem;
 }
 
