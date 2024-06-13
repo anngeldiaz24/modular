@@ -1,5 +1,4 @@
 from flask import Flask, render_template
-import datetime
 import os
 from . import db
 
@@ -16,18 +15,13 @@ def create_app():
     )
 
     db.init_app(app)
+    
+    from . import auth
+    
+    app.register_blueprint(auth.bp)
 
     @app.route('/admin-dashboard')
     def admin_dashboard():
         return render_template('admin-dashboard.html')
-
-    @app.route('/')
-    def index():
-        return render_template('auth/login.html')
-
-    @app.route('/register')
-    def register():
-        current_year = datetime.datetime.now().year
-        return render_template('auth/register.html', current_year=current_year)
 
     return app

@@ -42,64 +42,73 @@
                 Crea tu cuenta para acceder a las funcionalidades de tu hogar
               </div>
             </div>
+            {% for message in get_flashed_messages() %}
+            <div class="mb-4">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <ul>
+                      <li>{{ message }}</li>
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
             <!-- BEGIN: Registration Form -->
-            <form class="space-y-4" action='#'>
+            <form method='POST'>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="formGroup">
                   <label class="block capitalize form-label">Nombre</label>
                   <div class="relative">
-                    <input type="text" name="nombre" class="form-control py-2" placeholder="Ingresa tu nombre">
+                    <input type="text" name="nombre" class="form-control py-2" placeholder="Ingresa tu nombre" required>
                   </div>
                 </div>
                 <div class="formGroup">
-                  <label class="block capitalize form-label">Apellido</label>
+                  <label class="block capitalize form-label">Apellidos</label>
                   <div class="relative">
-                    <input type="text" name="apellidos" class="form-control py-2" placeholder="Ingresa tus apellidos">
+                    <input type="text" name="apellidos" class="form-control py-2" placeholder="Ingresa tus apellidos" required>
                   </div>
                 </div>
                 <div class="formGroup col-span-2">
                   <label class="block capitalize form-label">Teléfono</label>
                   <div class="relative">
-                    <input type="text" name="telefono" class="form-control py-2" placeholder="Ingresa tu teléfono">
+                    <input type="text" name="telefono" class="form-control py-2" placeholder="Ingresa tu teléfono" required>
                   </div>
                 </div>
                 <div class="formGroup col-span-2">
                   <label class="block capitalize form-label">Correo electrónico</label>
                   <div class="relative">
-                    <input type="email" name="correo" class="form-control py-2" placeholder="Ingresa tu correo electrónico">
+                    <input type="email" name="email" class="form-control py-2" placeholder="Ingresa tu correo electrónico" required>
                   </div>
                 </div>
                 <div class="formGroup">
                   <label class="block capitalize form-label">Contraseña</label>
                   <div class="relative">
-                    <input type="password" name="contrasena" class="form-control py-2" placeholder="Ingresa tu contraseña">
+                    <input type="password" name="password" class="form-control py-2" placeholder="Ingresa tu contraseña" required>
                   </div>
                 </div>
                 <div class="formGroup">
                   <label class="block capitalize form-label">Confirmar Contraseña</label>
                   <div class="relative">
-                    <input type="password" name="confirmar_contrasena" class="form-control py-2" placeholder="Confirma tu contraseña">
+                    <input type="password" name="confirmar_contrasena" class="form-control py-2" placeholder="Confirma tu contraseña" required>
                   </div>
                 </div>
               </div>
               <div class="formGroup">
-                <label class="block capitalize form-label">Código de acceso</label>
+                <label class="block capitalize form-label mt-3">Código de acceso</label>
                 <div class="relative">
-                  <input type="text" name="codigo_acceso" class="form-control py-2" placeholder="Ingresa tu código de acceso">
+                  <input type="text" name="codigo_acceso" class="form-control py-2" placeholder="Ingresa tu código de acceso" required>
                 </div>
               </div>
             
               <div class="flex items-center">
                 <input type="checkbox" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out">
-                <span class="ml-2 text-slate-500 dark:text-slate-400 text-sm md:text-base leading-6">Aceptas nuestros Términos y Condiciones y Política de Privacidad</span>
+                <span class="ml-2 text-slate-500 dark:text-slate-400 text-sm md:text-base leading-6 mt-3 mb-3">Aceptas nuestros Términos y Condiciones y Política de Privacidad</span>
               </div>
-              <button class="btn btn-dark block w-full text-center">Crear cuenta</button>
+              <button type="submit" class="btn btn-dark block w-full text-center">Crear cuenta</button>
             </form>
             <!-- END: Registration Form -->
             <div class="md:max-w-[345px] mx-auto font-normal text-slate-500 dark:text-slate-400 mt-8 uppercase text-sm">
               <span>¿Ya tienes cuenta?
                             </span>
-              <a href="{{ url_for('index') }}" class="text-slate-900 dark:text-white font-medium hover:underline">
+              <a href="{{ url_for('auth.login') }}" class="text-slate-900 dark:text-white font-medium hover:underline">
                 Inicia sesión
               </a>
             </div>
