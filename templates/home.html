@@ -1,0 +1,344 @@
+{% extends 'layouts/layout-dashboard-user.html' %}
+
+{% block header %}
+{% block title %}Inicio - Usuario{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div>
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4
+            class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">Inicio</h4>
+        <div
+            class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <button
+                class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
+                <span class="flex items-center">
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light"
+                        icon="heroicons-outline:calendar"></iconify-icon>
+                    <span>Calendario</span>
+                </span>
+            </button>
+            <button
+                class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
+                <span class="flex items-center">
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light"
+                        icon="heroicons-outline:document-magnifying-glass"></iconify-icon>
+                    <span>Acerca de nosotros</span>
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="grid grid-cols-12 gap-5 mb-5">
+        <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+            <div
+                class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative"
+                style="background-image: url(static/assets/images/all-img/widget-bg-2.png)">
+                <div class="max-w-[180px]">
+                    <h4 class="text-xl font-medium text-white mb-2">
+                        <span class="block font-normal">Buenas noches,</span>
+                        <span class="block">Angel Díaz</span>
+                    </h4>
+                    <p class="text-sm text-white font-normal">
+                        Bienvenido a Samsung Safe Zone
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
+            <div class="grid md:grid-cols-3 grid-cols-1 gap-4">
+
+                <!-- BEGIN: Group Chart -->
+
+                <div class="card">
+                    <div class="card-body pt-4 pb-3 px-4">
+                        <div class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none">
+                                <div
+                                    class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#E5F9FF] dark:bg-slate-900	 text-info-500">
+                                    <iconify-icon
+                                        icon=heroicons:users></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div
+                                    class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                    Miembros activos
+                                </div>
+                                <div
+                                    class="text-slate-900 dark:text-white text-lg font-medium">
+                                    3
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body pt-4 pb-3 px-4">
+                        <div class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none">
+                                <div
+                                    class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900	 text-warning-500">
+                                    <iconify-icon
+                                        icon=heroicons:credit-card></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div
+                                    class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                    Tipo de membresía
+                                </div>
+                                <div
+                                    class="text-slate-900 dark:text-white text-lg font-medium">
+                                    Básico
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body pt-4 pb-3 px-4">
+                        <div class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none">
+                                <div
+                                    class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#EAE6FF] dark:bg-slate-900	 text-[#5743BE]">
+                                    <iconify-icon
+                                        icon=heroicons:globe-alt></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div
+                                    class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                    Dirección
+                                </div>
+                                <div
+                                    class="text-slate-900 dark:text-white text-lg font-medium">
+                                    Zapopan, Jal., México
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- END: Group Chart -->
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="lg:flex flex-wrap blog-posts lg:space-x-5 space-y-5 lg:space-y-0 rtl:space-x-reverse">
+
+        <div class="flex-1">
+            <div class="grid xl:grid-cols-2 grid-cols-1 gap-5">
+                <div class="xl:col-span-2 col-span-1">
+                    <div class="card">
+                        <div class="card-body p-6">
+                            <div class=" h-[496px] w-full mb-6 ">
+                                <img src=static/assets/images/all-img/maqueta.jpeg alt
+                                    class=" w-full h-full  object-cover">
+                            </div>
+                            <div class="flex justify-between mb-4">
+                                <a href="#"
+                                    class="inline-flex leading-5 text-slate-500 dark:text-slate-400 text-sm font-normal">
+                                    <span>
+                                        <iconify-icon
+                                            icon="heroicons-outline:calendar"
+                                            class="text-slate-400 dark:text-slate-400 ltr:mr-2 rtl:ml-2 text-lg"></iconify-icon>
+                                    </span>
+                                    <span>
+                                        10/02/2021</span>
+                                </a>
+                                <div class="flex space-x-4 rtl:space-x-reverse">
+                                    <a href="#">
+                                        <span
+                                            class="inline-flex leading-5 text-slate-500 dark:text-slate-400 text-sm font-normal">
+                                            <iconify-icon
+                                                icon="heroicons-outline:chat"
+                                                class="text-slate-400 dark:text-slate-400 ltr:mr-2 rtl:ml-2 text-lg"></iconify-icon>
+                                            3
+                                        </span>
+                                    </a>
+                                    <a href="#">
+                                        <span
+                                            class="inline-flex leading-5 text-slate-500 dark:text-slate-400 text-sm font-normal">
+                                            <iconify-icon
+                                                icon="heroicons-outline:share"
+                                                class="text-slate-400 dark:text-slate-400 ltr:mr-2 rtl:ml-2 text-lg"></iconify-icon>
+                                            4
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                            <h5 class="card-title text-slate-900">
+                                <a href="blog-details.html">
+                                    ¿Qué es Samsung Safe Zone?
+                                </a>
+                            </h5>
+                            <div
+                                class="card-text dark:text-slate-300 mt-4 space-y-4">
+                                <p>
+                                    Samsung Safe Zone es un sistema de seguridad creado con un propósito: mantenernos seguros, combinando tecnología con dispositivos inteligentes para crear una solución de seguridad efectiva y sin interrupciones tanto para hogares como para negocios.
+
+                                    Samsung Safe Zone proporciona un sistema simple y avanzado de sensores, cámaras y dispositivos inteligentes que trabajan juntos para detectar y detener peligros potenciales. Este proyecto está dedicado a soluciones de seguridad completas, haciendo de Samsung Safe Zone una opción principal para la tranquilidad y la fiabilidad inigualable.
+
+                                    Hemos desarrollado dos módulos para nuestro sistema de seguridad: una aplicación fácil de usar accesible a través de una tableta o laptop para gestionar la seguridad de tu hogar, y un bot versátil que te permite controlar las características de tu hogar de forma remota mientras estás fuera.
+
+                                    Primero, se requiere la aplicación de escritorio para registrarse y acceder al panel de control. Una característica única que vale la pena mencionar es que el sistema no solo recopila tu nombre de usuario y contraseña, sino que también captura una foto, permitiendo el reconocimiento facial para futuros inicios de sesión.
+
+                                    Una vez que inicies sesión, notarás nuestro énfasis en la marca Samsung, asegurando una experiencia de usuario premium. Desde aquí, tienes control total sobre tu hogar: ya sea cerrando puertas, activando alarmas o reconociendo actividades sospechosas. Además, la aplicación de escritorio tiene la gestión de usuarios, donde tienes la capacidad de agregar o eliminar usuarios.
+
+                                    Finalmente, hemos desarrollado un bot llamado Samsung Safe Zone Bot. Imagina tener el control total de tu hogar en la palma de tu mano, simplemente usando tu teléfono móvil y una aplicación de mensajería tan familiar como Telegram. Eso es precisamente lo que ofrece este proyecto, con el control gestionado por un bot llamado Samsung Safe Zone.
+
+                                    Nuestro bot de Telegram actúa como intermediario entre tú (clientes) y los dispositivos inteligentes que conforman nuestro modelo de hogar inteligente.
+
+                                    El bot te permite controlar los mismos aspectos que la aplicación de escritorio, pero con la funcionalidad adicional de enviar mensajes a los usuarios sobre cualquier actividad sospechosa y no sospechosa del hogar inteligente.
+                                </p>
+                                <button class="btn btn-outline-dark">Read
+                                    more</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class=" h-[248px] w-full mb-6 ">
+                        <img src=static/assets/images/all-img/post-1.png alt
+                            class=" w-full h-full  object-cover">
+                    </div>
+                    <div class="px-6 pb-6">
+                        <div class="flex justify-between mb-4">
+                            <div>
+                                <h5 class="card-title text-slate-900">
+                                    <a href="#">Alarma</a>
+                                </h5>
+                            </div>
+                            <a href="#"
+                                class="inline-flex leading-5 text-slate-500 dark:text-slate-400 text-sm font-normal">
+                                <span>
+                                    <iconify-icon
+                                        icon="heroicons-outline:calendar"
+                                        class="text-slate-400 dark:text-slate-400 ltr:mr-2 rtl:ml-2 text-lg"></iconify-icon>
+                                </span>
+                                <span>
+                                    10/02/2021</span>
+                            </a>
+                        </div>
+                        <div class="card-text dark:text-slate-300 mt-4">
+                            <p>Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit.</p>
+                            <div class="mt-4 space-x-4 rtl:space-x-reverse">
+                                <a href="#" class="btn-a">
+                                    Learn more
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class=" h-[248px] w-full  ">
+                        <img src=static/assets/images/all-img/post-1.png alt
+                            class=" w-full h-full  object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between mb-4">
+                            <div>
+                                <h5 class="card-title text-slate-900">
+                                    <a href="#">Luces</a>
+                                </h5>
+                            </div>
+                            <a href="#"
+                                class="inline-flex leading-5 text-slate-500 dark:text-slate-400 text-sm font-normal">
+                                <span>
+                                    <iconify-icon
+                                        icon="heroicons-outline:calendar"
+                                        class="text-slate-400 dark:text-slate-400 ltr:mr-2 rtl:ml-2 text-lg"></iconify-icon>
+                                </span>
+                                <span>
+                                    10/02/2021</span>
+                            </a>
+                        </div>
+                        <div class="card-text dark:text-slate-300 mt-4">
+                            <p>Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit.</p>
+                            <div class="mt-4 space-x-4 rtl:space-x-reverse">
+                                <a href="#" class="btn-a">
+                                    Learn more
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class=" h-[248px] w-full mb-6 ">
+                        <img src=static/assets/images/all-img/post-1.png alt
+                            class=" w-full h-full  object-cover">
+                    </div>
+                    <div class="px-6 pb-6">
+                        <div class="flex justify-between mb-4">
+                            <div>
+                                <h5 class="card-title text-slate-900">
+                                    <a href="#">Detector de movimiento</a>
+                                </h5>
+                            </div>
+                            <a href="#"
+                                class="inline-flex leading-5 text-slate-500 dark:text-slate-400 text-sm font-normal">
+                                <span>
+                                    <iconify-icon
+                                        icon="heroicons-outline:calendar"
+                                        class="text-slate-400 dark:text-slate-400 ltr:mr-2 rtl:ml-2 text-lg"></iconify-icon>
+                                </span>
+                                <span>
+                                    10/02/2021</span>
+                            </a>
+                        </div>
+                        <div class="card-text dark:text-slate-300 mt-4">
+                            <p>Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit.</p>
+                            <div class="mt-4 space-x-4 rtl:space-x-reverse">
+                                <a href="#" class="btn-a">
+                                    Learn more
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class=" h-[248px] w-full  ">
+                        <img src=static/assets/images/all-img/post-1.png alt
+                            class=" w-full h-full  object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between mb-4">
+                            <div>
+                                <h5 class="card-title text-slate-900">
+                                    <a href="#">Enlace a la policia</a>
+                                </h5>
+                            </div>
+                            <a href="#"
+                                class="inline-flex leading-5 text-slate-500 dark:text-slate-400 text-sm font-normal">
+                                <span>
+                                    <iconify-icon
+                                        icon="heroicons-outline:calendar"
+                                        class="text-slate-400 dark:text-slate-400 ltr:mr-2 rtl:ml-2 text-lg"></iconify-icon>
+                                </span>
+                                <span>
+                                    10/02/2021</span>
+                            </a>
+                        </div>
+                        <div class="card-text dark:text-slate-300 mt-4">
+                            <p>Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit.</p>
+                            <div class="mt-4 space-x-4 rtl:space-x-reverse">
+                                <a href="#" class="btn-a">
+                                    Learn more
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

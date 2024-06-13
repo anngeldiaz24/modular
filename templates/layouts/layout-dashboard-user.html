@@ -65,7 +65,7 @@
             <li class="sidebar-menu-title">MENU</li>
             <!-- Main Area -->
             <li>
-              <a href="chat.html" class="navItem">
+              <a href="{{ url_for('home') }}" class="navItem">
                 <span class="flex items-center">
                   <iconify-icon class="nav-icon"
                     icon="heroicons-outline:home"></iconify-icon>
@@ -75,7 +75,7 @@
             </li>
             
             <li class>
-              <a href="kanban.html" class="navItem">
+              <a href="{{ url_for('user_dashboard') }}" class="navItem">
                 <span class="flex items-center">
                   <iconify-icon class=" nav-icon"
                     icon="heroicons-outline:home-modern"></iconify-icon>
