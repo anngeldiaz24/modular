@@ -21,6 +21,27 @@
     <!-- End : Theme CSS-->
     <script src="{{ url_for('static', filename='assets/js/settings.js') }}"
       sync></script>
+      <style>
+        .list-item-safezone {
+            position: relative;
+            padding-left: 1.5em;
+        }
+        .list-item-safezone::before {
+            content: '🔵';
+            color: #1f2937; /* Slate color */
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .list-item-safezone.second-level {
+            padding-left: 2.5em;
+        }
+        .list-item-safezone.second-level::before {
+            content: '➤'; 
+            color: #6b7280;
+            left: 1em; 
+        }
+    </style>
   </head>
 
   <body class=" font-inter dashcode-app" id="body_class">
@@ -73,7 +94,7 @@
                 </span>
               </a>
             </li>
-            
+
             <li class>
               <a href="{{ url_for('user_dashboard') }}" class="navItem">
                 <span class="flex items-center">
@@ -1542,7 +1563,8 @@
                                 <span
                                   class="bg-secondary-500 w-[10px] h-[10px] rounded-full border border-white dark:border-slate-700 inline-block absolute
                 right-0 top-0"></span>
-                                <img src="/static/assets/images/all-img/user.png"
+                                <img
+                                  src="/static/assets/images/all-img/user.png"
                                   alt="user"
                                   class="block w-full h-full object-cover rounded-full border hover:border-white border-transparent">
                               </div>
@@ -1576,7 +1598,8 @@
                                 <span
                                   class="bg-green-500 w-[10px] h-[10px] rounded-full border border-white dark:border-slate-700 inline-block absolute
                 right-0 top-0"></span>
-                                <img src="/static/assets/images/all-img/user2.png"
+                                <img
+                                  src="/static/assets/images/all-img/user2.png"
                                   alt="user"
                                   class="block w-full h-full object-cover rounded-full border hover:border-white border-transparent">
                               </div>
@@ -1588,9 +1611,11 @@
                                 Soporte Técnico de Samsung</a>
                               <div
                                 class="text-xs hover:text-[#68768A] text-slate-600 dark:text-slate-300 mb-1">¡Hola!
-                                Suscripción de pago realizada correctamente</div>
+                                Suscripción de pago realizada
+                                correctamente</div>
                               <div
-                                class="text-slate-400 dark:text-slate-400 text-xs">hace 3 minutos
+                                class="text-slate-400 dark:text-slate-400 text-xs">hace
+                                3 minutos
                               </div>
                             </div>
                           </div>
@@ -1605,7 +1630,8 @@
                                 <span
                                   class="bg-green-500 w-[10px] h-[10px] rounded-full border border-white dark:border-slate-700 inline-block absolute
                 right-0 top-0"></span>
-                                <img src="/static/assets/images/all-img/user3.png"
+                                <img
+                                  src="/static/assets/images/all-img/user3.png"
                                   alt="user"
                                   class="block w-full h-full object-cover rounded-full border hover:border-white border-transparent">
                               </div>
@@ -1668,7 +1694,8 @@
                           <div class="flex ltr:text-left rtl:text-right">
                             <div class="flex-none ltr:mr-3 rtl:ml-3">
                               <div class="h-8 w-8 bg-white rounded-full">
-                                <img src="/static/assets/images/all-img/user.png"
+                                <img
+                                  src="/static/assets/images/all-img/user.png"
                                   alt="user"
                                   class="border-white block w-full h-full object-cover rounded-full border">
                               </div>
@@ -1706,7 +1733,9 @@
                                   before:top-0 before:left-0">
                                 Felicidades Axl 🎉</a>
                               <div
-                                class="text-slate-600 dark:text-slate-300 text-xs leading-4">Has ganado un mes gratis de suscripción premium</div>
+                                class="text-slate-600 dark:text-slate-300 text-xs leading-4">Has
+                                ganado un mes gratis de suscripción
+                                premium</div>
                               hace 3 minutos
                             </div>
                           </div>
@@ -1921,5 +1950,25 @@
     <script
       src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const shortText = document.getElementById('short-text');
+          const fullText = document.getElementById('full-text');
+          const toggleButton = document.getElementById('toggle-button');
+  
+          toggleButton.addEventListener('click', function () {
+              if (fullText.classList.contains('hidden')) {
+                  fullText.classList.remove('hidden');
+                  shortText.classList.add('hidden');
+                  toggleButton.textContent = 'Leer menos';
+              } else {
+                  fullText.classList.add('hidden');
+                  shortText.classList.remove('hidden');
+                  toggleButton.textContent = 'Leer más';
+              }
+          });
+      });
+  </script>
+
   </body>
 </html>

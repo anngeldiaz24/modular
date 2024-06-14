@@ -172,32 +172,62 @@
                                 </div>
                             </div>
                             <h5 class="card-title text-slate-900">
-                                <a href="blog-details.html">
-                                    ¿Qué es Samsung Safe Zone?
+                                <a href="{{ url_for('home') }}">
+                                    Samsung Safe Zone
                                 </a>
                             </h5>
-                            <div
-                                class="card-text dark:text-slate-300 mt-4 space-y-4">
-                                <p>
-                                    Samsung Safe Zone es un sistema de seguridad creado con un propósito: mantenernos seguros, combinando tecnología con dispositivos inteligentes para crear una solución de seguridad efectiva y sin interrupciones tanto para hogares como para negocios.
+                            <h5 class="card-subtitle">La seguridad de tu hogar en la palma de tu mano</h5>
+                            <div class="card-text dark:text-slate-300 mt-4 space-y-4">
+                                <div id="short-text">
+                                    <strong>Samsung Safe Zone</strong> es un avanzado sistema de seguridad diseñado para protegerte a ti y a los tuyos. Combinando tecnología de punta con dispositivos inteligentes, ofrecemos una solución de seguridad perfecta para tu hogar o negocio.
+                                </div>
+                                <div id="full-text" class="hidden">
+                                    <strong>Samsung Safe Zone</strong> es un avanzado sistema de seguridad diseñado para protegerte a ti y a los tuyos. Combinando tecnología de punta con dispositivos inteligentes, ofrecemos una solución de seguridad perfecta para tu hogar o negocio.
+                                    
+                                    <strong class="mt-4 mb-2 block">¿Qué te ofrecemos?</strong>
+                                    
+                                    <div class="list-item-safezone">
+                                        <strong>Sistema de sensores y cámaras:</strong>
+                                    </div>
+                                    <div class="list-item-safezone second-level">
+                                        Detecta y detén peligros potenciales con tecnología de última generación.
+                                    </div>
 
-                                    Samsung Safe Zone proporciona un sistema simple y avanzado de sensores, cámaras y dispositivos inteligentes que trabajan juntos para detectar y detener peligros potenciales. Este proyecto está dedicado a soluciones de seguridad completas, haciendo de Samsung Safe Zone una opción principal para la tranquilidad y la fiabilidad inigualable.
+                                    <div class="mb-1"></div>
 
-                                    Hemos desarrollado dos módulos para nuestro sistema de seguridad: una aplicación fácil de usar accesible a través de una tableta o laptop para gestionar la seguridad de tu hogar, y un bot versátil que te permite controlar las características de tu hogar de forma remota mientras estás fuera.
+                                    <div class="list-item-safezone">
+                                        <strong>Dispositivos inteligentes:</strong> 
+                                    </div>
+                                    <div class="list-item-safezone second-level">
+                                        Controla tu hogar de manera simple y efectiva.
+                                    </div>
 
-                                    Primero, se requiere la aplicación de escritorio para registrarse y acceder al panel de control. Una característica única que vale la pena mencionar es que el sistema no solo recopila tu nombre de usuario y contraseña, sino que también captura una foto, permitiendo el reconocimiento facial para futuros inicios de sesión.
+                                    <strong class="mt-4 mb-2 block">Dos maneras de protegerte:</strong>
 
-                                    Una vez que inicies sesión, notarás nuestro énfasis en la marca Samsung, asegurando una experiencia de usuario premium. Desde aquí, tienes control total sobre tu hogar: ya sea cerrando puertas, activando alarmas o reconociendo actividades sospechosas. Además, la aplicación de escritorio tiene la gestión de usuarios, donde tienes la capacidad de agregar o eliminar usuarios.
+                                    <div class="list-item-safezone">
+                                        <strong>Aplicación de escritorio fácil de usar:</strong>
+                                    </div>
+                                    <div class="list-item-safezone second-level">
+                                        <strong>Registro y acceso seguro:</strong> Incluye reconocimiento facial para mayor seguridad.
+                                    </div>
+                                    <div class="list-item-safezone second-level">
+                                        <strong>Control total:</strong> Cierra puertas, activa alarmas, monitorea tu hogar y gestiona usuarios desde un solo lugar.
+                                    </div>
 
-                                    Finalmente, hemos desarrollado un bot llamado Samsung Safe Zone Bot. Imagina tener el control total de tu hogar en la palma de tu mano, simplemente usando tu teléfono móvil y una aplicación de mensajería tan familiar como Telegram. Eso es precisamente lo que ofrece este proyecto, con el control gestionado por un bot llamado Samsung Safe Zone.
+                                    <div class="mb-1"></div>
 
-                                    Nuestro bot de Telegram actúa como intermediario entre tú (clientes) y los dispositivos inteligentes que conforman nuestro modelo de hogar inteligente.
-
-                                    El bot te permite controlar los mismos aspectos que la aplicación de escritorio, pero con la funcionalidad adicional de enviar mensajes a los usuarios sobre cualquier actividad sospechosa y no sospechosa del hogar inteligente.
-                                </p>
-                                <button class="btn btn-outline-dark">Read
-                                    more</button>
-                            </div>
+                                    <div class="list-item-safezone">
+                                        <strong>Bot Samsung Safe Zone en Telegram:</strong>
+                                    </div>
+                                    <div class="list-item-safezone second-level">
+                                        <strong>Control remoto:</strong> Maneja las funciones de tu hogar desde tu teléfono móvil.
+                                    </div>
+                                    <div class="list-item-safezone second-level">
+                                        <strong>Alertas en tiempo real:</strong> Recibe notificaciones instantáneas sobre actividades sospechosas y no sospechosas.
+                                    </div>
+                                </div>
+                                <button id="toggle-button" class="btn btn-outline-dark">Leer más</button>
+                            </div>                            
                         </div>
                     </div>
                 </div>
