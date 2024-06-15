@@ -1,0 +1,68 @@
+{% extends 'layouts/layout-dashboard-user.html' %}
+
+{% block header %}
+    {% block title %}Hogar - Usuario{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">Hogar</h4>
+        </div>
+        <div class="grid grid-cols-12 gap-5 mb-5">
+            <div class="2xl:col-span-12 lg:col-span-12 col-span-12">
+                <div class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative" style="background-image: url(static/assets/images/all-img/widget-bg-6.png)">
+                    <div class="max-w-[180px]">
+                        <h4 class="text-xl font-medium text-white mb-2">
+                        <span class="block font-normal">Buenos días,</span>
+                        <span class="block">Axl Coronado</span>
+                        </h4>
+                        <p class="text-sm text-white font-normal">
+                        Bienvenido a Samsung Safe Zone
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body flex flex-col p-6">
+              <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                <div class="flex-1">
+                  <div class="card-title text-slate-900 dark:text-white">Cámara principal de la casa</div>
+                </div>
+              </header>
+              <div class="card-text h-full space-y-10">
+                <video class="w-full" id="player" playsinline="playsinline" controls="controls" data-poster="https://vjs.zencdn.net/v/oceans.png">
+                  <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+        </div>
+
+        <div class="card mt-5">
+            <div class="card-body flex flex-col p-6">
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                        <div class="card-title text-slate-900 dark:text-white">Acciones del hogar</div>
+                    </div>
+                </header>
+                <div class="card-text h-full ">
+                    <div class="btn-group-safezone btn-group">
+                        <!-- First Row -->
+                        <button class="btn inline-flex justify-center btn-dark">Activar alarma</button>
+                        <button class="btn inline-flex justify-center btn-dark">Bloquear puertas</button>
+                        <button class="btn inline-flex justify-center btn-dark">Llamar a la policía</button>
+                        <!-- Second Row -->
+                        <button class="btn inline-flex justify-center btn-dark">Desactivar alarma</button>
+                        <button class="btn inline-flex justify-center btn-dark">Desbloquear puertas</button>
+                        <button class="btn inline-flex justify-center btn-dark">Grabar contenido</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+{% endblock %}
