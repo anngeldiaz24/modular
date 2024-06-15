@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 import os
 from . import db
 
@@ -31,5 +31,9 @@ def create_app():
     @app.route('/home')
     def home():
         return render_template('home.html')
+    
+    @app.route('/')
+    def index():
+        return redirect(url_for('auth.login'))
 
     return app
