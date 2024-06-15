@@ -86,7 +86,7 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('admin_dashboard')) 
+            return redirect(url_for('user_dashboard')) 
     
         flash(error)
     
