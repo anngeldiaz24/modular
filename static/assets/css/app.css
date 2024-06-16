@@ -8819,7 +8819,7 @@ ToolTip And PopOver
 
 .btn-group-safezone button{
   /* 50% of the width minus the margin */
-  flex-basis: calc(33% - 1.25rem); 
+  flex-basis: calc(25% - 1.25rem); 
   margin-bottom: 0.75rem;
 }
 
