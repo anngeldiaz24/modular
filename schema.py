@@ -9,7 +9,7 @@ instructions = [
             codigo VARCHAR(10) NOT NULL,
             disponible BOOLEAN
         );
-
+        
         -- Creación de la tabla hogares
         CREATE TABLE hogares (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
@@ -26,7 +26,9 @@ instructions = [
             password VARCHAR(255) NOT NULL,
             telefono VARCHAR(13) NOT NULL,
             rol VARCHAR(255) NOT NULL,
-            codigo_acceso INT(10)
+            codigo_acceso INT(10),
+            acepto_terminos BOOLEAN NOT NULL DEFAULT 0,
+            FOREIGN KEY (codigo_acceso) REFERENCES codigos_acceso(id)
         );
     """
 ]

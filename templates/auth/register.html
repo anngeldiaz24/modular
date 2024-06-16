@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <title>Crea una cuenta - SSafeZone</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/logo/logo.png') }}">
   <link rel="icon" type="image/png" href="assets/images/logo/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,56 +55,58 @@
             <!-- BEGIN: Registration Form -->
             <form method='POST'>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="formGroup">
+                      <label class="block capitalize form-label">Nombre</label>
+                      <div class="relative">
+                          <input type="text" name="nombre" class="form-control py-2" placeholder="Ingresa tu nombre" required value="{{ request.form['nombre'] | default('') }}">
+                      </div>
+                  </div>
+                  <div class="formGroup">
+                      <label class="block capitalize form-label">Apellidos</label>
+                      <div class="relative">
+                          <input type="text" name="apellidos" class="form-control py-2" placeholder="Ingresa tus apellidos" required value="{{ request.form['apellidos'] | default('') }}">
+                      </div>
+                  </div>
+                  <div class="formGroup col-span-2">
+                      <label class="block capitalize form-label">Teléfono</label>
+                      <div class="relative">
+                          <input type="text" name="telefono" class="form-control py-2" placeholder="Ingresa tu teléfono" required value="{{ request.form['telefono'] | default('') }}">
+                      </div>
+                  </div>
+                  <div class="formGroup col-span-2">
+                      <label class="block capitalize form-label">Correo electrónico</label>
+                      <div class="relative">
+                          <input type="email" name="email" class="form-control py-2" placeholder="Ingresa tu correo electrónico" required value="{{ request.form['email'] | default('') }}">
+                      </div>
+                  </div>
+                  <div class="formGroup">
+                      <label class="block capitalize form-label">Contraseña</label>
+                      <div class="relative">
+                          <input type="password" name="password" class="form-control py-2" placeholder="Ingresa tu contraseña" required>
+                      </div>
+                  </div>
+                  <div class="formGroup">
+                      <label class="block capitalize form-label">Confirmar Contraseña</label>
+                      <div class="relative">
+                          <input type="password" name="confirmar_contrasena" class="form-control py-2" placeholder="Confirma tu contraseña" required>
+                      </div>
+                    </div>
+                </div>
                 <div class="formGroup">
-                  <label class="block capitalize form-label">Nombre</label>
-                  <div class="relative">
-                    <input type="text" name="nombre" class="form-control py-2" placeholder="Ingresa tu nombre" required>
-                  </div>
+                    <label class="block capitalize form-label mt-3">Código de acceso</label>
+                    <div class="relative">
+                        <input type="text" name="codigo_acceso" class="form-control py-2" placeholder="Ingresa tu código de acceso" required value="{{ request.form['codigo_acceso'] | default('') }}">
+                    </div>
                 </div>
-                <div class="formGroup">
-                  <label class="block capitalize form-label">Apellidos</label>
-                  <div class="relative">
-                    <input type="text" name="apellidos" class="form-control py-2" placeholder="Ingresa tus apellidos" required>
-                  </div>
+                <div class="flex items-center">
+                    <input type="checkbox" name="acepto_terminos" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" {{ 'checked' if request.form.get('acepto_terminos') else '' }}>
+                    <span class="ml-2 text-slate-500 dark:text-slate-400 text-sm md:text-base leading-6 mt-3 mb-3">
+                        Aceptas nuestros Términos y Condiciones y Política de Privacidad
+                    </span>
                 </div>
-                <div class="formGroup col-span-2">
-                  <label class="block capitalize form-label">Teléfono</label>
-                  <div class="relative">
-                    <input type="text" name="telefono" class="form-control py-2" placeholder="Ingresa tu teléfono" required>
-                  </div>
-                </div>
-                <div class="formGroup col-span-2">
-                  <label class="block capitalize form-label">Correo electrónico</label>
-                  <div class="relative">
-                    <input type="email" name="email" class="form-control py-2" placeholder="Ingresa tu correo electrónico" required>
-                  </div>
-                </div>
-                <div class="formGroup">
-                  <label class="block capitalize form-label">Contraseña</label>
-                  <div class="relative">
-                    <input type="password" name="password" class="form-control py-2" placeholder="Ingresa tu contraseña" required>
-                  </div>
-                </div>
-                <div class="formGroup">
-                  <label class="block capitalize form-label">Confirmar Contraseña</label>
-                  <div class="relative">
-                    <input type="password" name="confirmar_contrasena" class="form-control py-2" placeholder="Confirma tu contraseña" required>
-                  </div>
-                </div>
-              </div>
-              <div class="formGroup">
-                <label class="block capitalize form-label mt-3">Código de acceso</label>
-                <div class="relative">
-                  <input type="text" name="codigo_acceso" class="form-control py-2" placeholder="Ingresa tu código de acceso" required>
-                </div>
-              </div>
-            
-              <div class="flex items-center">
-                <input type="checkbox" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out">
-                <span class="ml-2 text-slate-500 dark:text-slate-400 text-sm md:text-base leading-6 mt-3 mb-3">Aceptas nuestros Términos y Condiciones y Política de Privacidad</span>
-              </div>
-              <button type="submit" class="btn btn-dark block w-full text-center">Crear cuenta</button>
+                <button type="submit" class="btn btn-dark block w-full text-center">Crear cuenta</button>
             </form>
+          
             <!-- END: Registration Form -->
             <div class="md:max-w-[345px] mx-auto font-normal text-slate-500 dark:text-slate-400 mt-8 uppercase text-sm">
               <span>¿Ya tienes cuenta?
