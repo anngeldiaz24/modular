@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="min-h-screen flex flex-col justify-center items-center text-center py-20">
-    <img src="static/assets/images/all-img/404.svg" alt>
+    <img src="{{ url_for('static', filename='assets/images/all-img/404.svg') }}" alt>
     <div class="max-w-[546px] mx-auto w-full mt-12">
         <h4 class="text-slate-900 mb-4">Página no encontrada</h4>
         <div

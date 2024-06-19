@@ -26,7 +26,9 @@
             rel="stylesheet" 
             href="{{ url_for('static', filename='assets/css/app.css') }}">
         <!-- START : Theme Config js-->
-        <script src="static/assets/js/settings.js" sync></script>
+        <script 
+            src="{{ url_for('static', filename='assets/js/settings.js') }}" sync>
+        </script>
         <!-- END : Theme Config js-->
     </head>
 
