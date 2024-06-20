@@ -7881,7 +7881,7 @@ body{
   font-size: 1.125rem;
   line-height: 1.75rem;
   font-weight: 500;
-  text-transform: capitalize;
+  text-transform: none;
   line-height: 24px;
 }
 .dark .card-title{
@@ -11285,7 +11285,7 @@ ul.custom-list ul li{
   font-size: 1.125rem;
   line-height: 1.75rem;
   font-weight: 500;
-  text-transform: capitalize;
+  text-transform: none;
   line-height: 24px;
   --tw-text-opacity: 1;
   color: rgb(15 23 42 / var(--tw-text-opacity));
