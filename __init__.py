@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, jsonify
 import os
 from . import db
 
@@ -17,12 +17,16 @@ def create_app():
     db.init_app(app)
     
     from . import auth
+    from . import admin
     
     app.register_blueprint(auth.bp)
+    app.register_blueprint(admin.bp)
 
-    @app.route('/admin-dashboard')
-    def admin_dashboard():
-        return render_template('admin-dashboard.html')
+    @app.errorhandler(401)
+    def unauthorized(error):
+        response = jsonify({'error': 'Unauthorized', 'message': 'No estás autorizado para acceder a esta página.'})
+        response.status_code = 401
+        return response
     
     @app.route('/user-dashboard')
     def user_dashboard():

@@ -1,8 +1,8 @@
-import functools
+from functools import wraps
 import datetime
 import re 
 from flask import (
-    Blueprint, flash, g, render_template, request, url_for, session, redirect
+    Blueprint, flash, g, render_template, request, url_for, session, redirect, abort
 )
 
 from mysql.connector import Error as MySQLError
@@ -101,10 +101,32 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             if user['rol'] == 'Admin':
-                return redirect(url_for('admin_dashboard'))
+                return redirect(url_for('admin.admin_index'))
             else:
                 return redirect(url_for('user_dashboard'))
     
-        flash(error)
+        flash(error, 'error')
     
     return render_template('auth/login.html')
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+    print(user_id)
+    
+    if user_id is None:
+        g.user = None
+    else:
+        db, c = get_db()
+        c.execute(
+            'SELECT * FROM users WHERE id = %s', (user_id,)
+        )
+        g.user = c.fetchone()
+
+def login_required(view):
+    @wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            abort(401)  # 401 Unauthorized
+        return view(**kwargs)
+    return wrapped_view

@@ -44,17 +44,21 @@
                 Asegura la integridad de tu hogar con SSafeNet.
             </div>
           </div>
-          {% for message in get_flashed_messages() %}
-            {% if category == 'error' %}
-              <div class="mb-4">
-                  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                      <ul>
-                        <li>{{ message }}</li>
-                      </ul>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                {% if category == 'error' %}
+                  <div class="mb-4">
+                      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                          <ul>
+                            <li>{{ message }}</li>
+                          </ul>
+                      </div>
                   </div>
-              </div>
+                {% endif %}
+              {% endfor %}
             {% endif %}
-          {% endfor %}
+          {% endwith %}
           <!-- BEGIN: Login Form -->
           <form method='POST'>
             <div class="fromGroup">
