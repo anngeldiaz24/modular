@@ -8740,7 +8740,7 @@ ToolTip And PopOver
   font-family: Inter, sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
-  text-transform: capitalize;
+  text-transform: none;
   line-height: 1.5rem;
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
