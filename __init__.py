@@ -26,14 +26,6 @@ def create_app():
     app.register_blueprint(auth.bp)
     app.register_blueprint(admin.bp)
     app.register_blueprint(user.bp)
-
-    @app.errorhandler(401)
-    def unauthorized(error):
-        response = jsonify({'error': 'Unauthorized', 'message': 'No estás autorizado para acceder a esta página.'})
-        response.status_code = 401
-        return response
-    
-    """ RUTAS: /user-dashboard """
     
     @app.route('/user-dashboard')
     def user_dashboard():
