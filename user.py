@@ -5,9 +5,9 @@ from werkzeug.exceptions import abort
 from .auth import login_required
 from .db import get_db
 
-bp = Blueprint('admin', __name__)
+bp = Blueprint('user', __name__)
 
-@bp.route('/admin-dashboard')
+@bp.route('/user-dashboard')
 @login_required
-def admin_index():
-    return render_template('admin-dashboard.html', user=g.user)
+def user_index():
+    return render_template('user-dashboard.html', user=g.user)

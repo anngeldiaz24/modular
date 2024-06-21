@@ -18,9 +18,11 @@ def create_app():
     
     from . import auth
     from . import admin
+    from . import user
     
     app.register_blueprint(auth.bp)
     app.register_blueprint(admin.bp)
+    app.register_blueprint(user.bp)
 
     @app.errorhandler(401)
     def unauthorized(error):
@@ -28,9 +30,6 @@ def create_app():
         response.status_code = 401
         return response
     
-    @app.route('/user-dashboard')
-    def user_dashboard():
-        return render_template('user-dashboard.html')
 
     @app.route('/home')
     def home():

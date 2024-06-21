@@ -103,7 +103,7 @@ def login():
             if user['rol'] == 'Admin':
                 return redirect(url_for('admin.admin_index'))
             else:
-                return redirect(url_for('user_dashboard'))
+                return redirect(url_for('user.user_index'))
     
         flash(error, 'error')
     
@@ -127,6 +127,12 @@ def login_required(view):
     @wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            abort(401)  # 401 Unauthorized
+            return redirect(url_for('auth.login'))
         return view(**kwargs)
     return wrapped_view
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('auth.login'))
+
