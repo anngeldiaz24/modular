@@ -11,3 +11,4 @@ bp = Blueprint('admin', __name__)
 @login_required
 def admin_index():
     return render_template('admin-dashboard.html', user=g.user)
+
