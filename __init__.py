@@ -1,7 +1,8 @@
 from flask import Flask, render_template, redirect, url_for
 import os
 from . import db
-from . import funciones
+from .raspberry import funciones
+from .raspberry import llamada_policia
 
 def create_app():
     app = Flask(__name__)
@@ -76,6 +77,7 @@ def create_app():
     @app.route('/user-dashboard/llamar-policia')
     def llamar_policia():
         app.logger.info('Entrando a Llamar policia llamado')
+        # llamada_policia.llamarPoliciaCel()
         funciones.llamarPolicia()
         app.logger.info('Saliendo de Llamar policia llamado')
         return redirect(url_for('user_dashboard'))
