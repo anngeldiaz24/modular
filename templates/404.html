@@ -1,0 +1,27 @@
+{% extends 'layouts/layout-errores.html' %}
+
+{% block header %}
+    {% block title %}Página no encontrada{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col justify-center items-center text-center py-20">
+    <img src="{{ url_for('static', filename='assets/images/all-img/404.svg') }}" alt>
+    <div class="max-w-[546px] mx-auto w-full mt-12">
+        <h4 class="text-slate-900 mb-4">Página no encontrada</h4>
+        <div
+            class="text-slate-600 dark:text-slate-300 text-base font-normal mb-10">
+            Es posible que la página que está buscando se haya
+            eliminado, se haya cambiado de nombre o no esté disponible
+            por el momento.
+        </div>
+    </div>
+    <div class="max-w-[300px] mx-auto w-full">
+        <a href="{{ url_for('home') }}"
+            class="btn btn-dark dark:bg-slate-800 block text-center">
+            Ir a la página de inicio
+        </a>
+    </div>
+</div>
+
+{% endblock %}

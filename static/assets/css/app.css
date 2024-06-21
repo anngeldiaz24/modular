@@ -7881,7 +7881,7 @@ body{
   font-size: 1.125rem;
   line-height: 1.75rem;
   font-weight: 500;
-  text-transform: capitalize;
+  text-transform: none;
   line-height: 24px;
 }
 .dark .card-title{
@@ -8740,7 +8740,7 @@ ToolTip And PopOver
   font-family: Inter, sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
-  text-transform: capitalize;
+  text-transform: none;
   line-height: 1.5rem;
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -8819,7 +8819,7 @@ ToolTip And PopOver
 
 .btn-group-safezone button{
   /* 50% of the width minus the margin */
-  flex-basis: calc(33% - 1.25rem); 
+  flex-basis: calc(25% - 1.25rem); 
   margin-bottom: 0.75rem;
 }
 
@@ -11285,7 +11285,7 @@ ul.custom-list ul li{
   font-size: 1.125rem;
   line-height: 1.75rem;
   font-weight: 500;
-  text-transform: capitalize;
+  text-transform: none;
   line-height: 24px;
   --tw-text-opacity: 1;
   color: rgb(15 23 42 / var(--tw-text-opacity));
