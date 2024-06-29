@@ -1,19 +1,17 @@
 {% extends 'layouts/layout-errores.html' %}
 
 {% block header %}
-    {% block title %}Página no encontrada{% endblock %}
+    {% block title %}Acción no autorizada{% endblock %}
 {% endblock %}
 
 {% block content %}
 <div class="min-h-screen flex flex-col justify-center items-center text-center py-20">
     <img src="{{ url_for('static', filename='assets/images/all-img/404.svg') }}" alt>
     <div class="max-w-[546px] mx-auto w-full mt-12">
-        <h4 class="text-slate-900 mb-4">Página no encontrada</h4>
+        <h4 class="text-slate-900 mb-4">Acción no autorizada</h4>
         <div
             class="text-slate-600 dark:text-slate-300 text-base font-normal mb-10">
-            Es posible que la página que está buscando se haya
-            eliminado, se haya cambiado de nombre o no esté disponible
-            por el momento.
+            No tienes los permisos necesarios para acceder a la pagina
         </div>
     </div>
 </div>

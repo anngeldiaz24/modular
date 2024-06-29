@@ -131,6 +131,27 @@ def login_required(view):
         return view(**kwargs)
     return wrapped_view
 
+def user_role_required(view):
+    @wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        if g.user['rol'] not in ['User', 'Owner']:
+            abort(403)
+        return view(**kwargs)
+    return wrapped_view
+
+def admin_role_required(view):
+    @wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        if g.user['rol'] != 'Admin':
+            abort(403)
+        return view(**kwargs)
+    return wrapped_view
+
+
 @bp.route('/logout')
 def logout():
     session.clear()

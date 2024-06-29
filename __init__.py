@@ -39,5 +39,11 @@ def create_app():
     @app.errorhandler(404)
     def pagina_no_encontrada(error):
         return render_template('404.html', user=g.user), 404
+    
+    # Manejador de error 403 [Accion no autorizada]
+    @app.errorhandler(403)
+    def accion_no_autorizada(error):
+        return render_template('403.html', user=g.user), 403
+
 
     return app

@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, url_for, 
 )
 from werkzeug.exceptions import abort
-from .auth import login_required
+from .auth import login_required, user_role_required
 from .db import get_db
 from .raspberry import funciones
 import logging
@@ -15,6 +15,7 @@ bp = Blueprint('user', __name__, url_prefix='/user-dashboard')
 
 @bp.route('')
 @login_required
+@user_role_required
 def user_index():
     return render_template('user-dashboard.html', user=g.user)
 
