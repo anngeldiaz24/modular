@@ -561,12 +561,12 @@
     lengthChange: true,
     lengthMenu: [10, 25, 50, 100],
     language: {
-      lengthMenu: "Show _MENU_ entries",
+      lengthMenu: "Mostrar _MENU_ registros",
       paginate: {
         previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
         next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
       },
-      search: "Search:"
+      search: "Buscar:"
     }
   });
 

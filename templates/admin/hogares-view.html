@@ -1,0 +1,199 @@
+{% extends 'layouts/layout-dashboard-admin.html' %}
+
+{% block header %}
+    {% block title %}Hogares{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-5">
+    <div class="card">
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="data-table">
+                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                                <tr>
+                                    <th scope="col" class="table-th">ID</th>
+                                    <th scope="col" class="table-th">Dirección</th>
+                                    <th scope="col" class="table-th">Paquete</th>
+                                    <th scope="col" class="table-th">Estatus</th>
+                                    <th scope="col" class="table-th">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                <tr class="table-row cursor-pointer" data-dropdown-id="dropdown-1">
+                                    <td class="table-td">1</td>
+                                    <td class="table-td"><iconify-icon icon="carbon:location" width="1.2rem" height="1.2rem" style="color: #f22121"></iconify-icon> Nte 95 – piso 23, Italia Providencia, 44648 Guadalajara Jalisco, México.</td>
+                                    <td class="table-td">Básico</td>
+                                    <td class="table-td">
+                                        <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-25 text-success-500 bg-success-500">Pagado</div>
+                                    </td>
+                                    <td class="table-td">
+                                        <div class="relative">
+                                            <div class="dropdown relative">
+                                                <button class="text-xl text-center block w-full" type="button" id="tableDropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                                </button>
+                                                <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-10 float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">View</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">Delete</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Dropdown Content -->
+                                <div class="hidden table-td" id="dropdown-1">
+                                    <div class="p-4 bg-gray-100 dark:bg-gray-700">
+                                        <p>Usuarios en este hogar:</p>
+                                        <ul class="list-disc list-inside">
+                                            <li>Usuario 1</li>
+                                            <li>Usuario 2</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+
+                                <tr class="table-row cursor-pointer" data-dropdown-id="dropdown-2">
+                                    <td class="table-td">2</td>
+                                    <td class="table-td"><iconify-icon icon="carbon:location" width="1.2rem" height="1.2rem" style="color: #f22121"></iconify-icon> Av. López Mateos Sur 5000, Colonia El Mante, 45050 Zapopan, Jalisco, México.</td>
+                                    <td class="table-td">Premium</td>
+                                    <td class="table-td">
+                                        <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-25 text-warning-500 bg-warning-500">Pendiente</div>
+                                    </td>
+                                    <td class="table-td">
+                                        <div class="relative">
+                                            <div class="dropdown relative">
+                                                <button class="text-xl text-center block w-full" type="button" id="tableDropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                                </button>
+                                                <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-10 float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">View</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">Delete</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Dropdown Content -->
+                                <div class="hidden table-td" id="dropdown-2">
+                                    <div class="p-4 bg-gray-100 dark:bg-gray-700">
+                                        <p>Usuarios en este hogar:</p>
+                                        <ul class="list-disc list-inside">
+                                            <li>Usuario 3</li>
+                                            <li>Usuario 4</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <tr class="table-row cursor-pointer" data-dropdown-id="dropdown-3">
+                                    <td class="table-td">3</td>
+                                    <td class="table-td"><iconify-icon icon="carbon:location" width="1.2rem" height="1.2rem" style="color: #f22121"></iconify-icon> Calle Morelos 123, Colonia Americana, 44100 Guadalajara, Jalisco, México.</td>
+                                    <td class="table-td">Estándar</td>
+                                    <td class="table-td">
+                                        <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-25 text-danger-500 bg-danger-500">Cancelado</div>
+                                    </td>
+                                    <td class="table-td">
+                                        <div class="relative">
+                                            <div class="dropdown relative">
+                                                <button class="text-xl text-center block w-full" type="button" id="tableDropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                                </button>
+                                                <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-10 float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">View</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">Delete</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Dropdown Content -->
+                                <div class="hidden table-td" id="dropdown-3">
+                                    <div class="p-4 bg-gray-100 dark:bg-gray-700">
+                                        <p>Usuarios en este hogar:</p>
+                                        <ul class="list-disc list-inside">
+                                            <li>Usuario 5</li>
+                                            <li>Usuario 6</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <tr class="table-row cursor-pointer" data-dropdown-id="dropdown-4">
+                                    <td class="table-td">4</td>
+                                    <td class="table-td"><iconify-icon icon="carbon:location" width="1.2rem" height="1.2rem" style="color: #f22121"></iconify-icon> Av. Vallarta 4095, Colonia Vallarta San Jorge, 45040 Zapopan, Jalisco, México.</td>
+                                    <td class="table-td">Básico</td>
+                                    <td class="table-td">
+                                        <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-25 text-success-500 bg-success-500">Pagado</div>
+                                    </td>
+                                    <td class="table-td">
+                                        <div class="relative">
+                                            <div class="dropdown relative">
+                                                <button class="text-xl text-center block w-full" type="button" id="tableDropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                                </button>
+                                                <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-10 float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">View</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">Edit</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">Delete</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Dropdown Content -->
+                                <div class="hidden table-td" id="dropdown-4">
+                                    <div class="p-4 bg-gray-100 dark:bg-gray-700">
+                                        <p>Usuarios en este hogar:</p>
+                                        <ul class="list-disc list-inside">
+                                            <li>Usuario 7</li>
+                                            <li>Usuario 8</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.table-row').forEach(row => {
+            row.addEventListener('click', function() {
+                const dropdownId = this.getAttribute('data-dropdown-id');
+                const dropdown = document.getElementById(dropdownId);
+                dropdown.classList.toggle('hidden');
+            });
+        });
+    });
+</script>
+{% endblock %}

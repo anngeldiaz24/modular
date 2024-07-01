@@ -13,3 +13,8 @@ bp = Blueprint('admin', __name__)
 def admin_index():
     return render_template('admin-dashboard.html', user=g.user)
 
+@bp.route('/hogares')
+@login_required
+@admin_role_required
+def admin_hogares():
+    return render_template('admin/hogares-view.html', user=g.user)

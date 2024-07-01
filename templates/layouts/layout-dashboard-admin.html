@@ -52,10 +52,10 @@
             <span>Dashboard</span>
               </span>
             </a>
-            <a href="chat.html" class="navItem">
+            <a href="{{ url_for('admin.admin_hogares') }}" class="navItem">
               <span class="flex items-center">
             <iconify-icon class="nav-icon" icon="heroicons-outline:chat"></iconify-icon>
-            <span>Chat</span>
+            <span>Usuarios</span>
               </span>
             </a>
           
@@ -252,9 +252,7 @@
               <div class="main-menu">
                 <ul>
 
-                  <li class="
-             menu-item-has-children 
-              ">
+                  <li class="menu-item-has-children ">
                     <!--  Single menu -->
 
                     <!-- has dropdown -->
@@ -351,9 +349,7 @@
 
                   </li>
 
-                  <li class="
-             menu-item-has-children 
-              ">
+                  <li class="menu-item-has-children">
                     <!--  Single menu -->
 
                     <!-- has dropdown -->
@@ -1707,9 +1703,7 @@
                   <button class="text-slate-800 dark:text-white focus:ring-0 focus:outline-none font-medium rounded-lg text-sm text-center
       inline-flex items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 ltr:mr-[10px] rtl:ml-[10px]">
-                    
-                        <img src="{{ url_for('static', filename='assets/images/all-img/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
-
+                        <img src="{{ url_for('static', filename='assets/images/all-img/User_Icon.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
                     </div>
                     <span class="flex-none text-slate-600 dark:text-white text-sm font-normal items-center lg:flex hidden overflow-hidden text-ellipsis whitespace-nowrap">{{ user['nombre'] }} {{ user['apellidos'] }}</span>
                     <svg class="w-[16px] h-[16px] dark:text-white hidden lg:inline-block text-base inline-block ml-[10px] rtl:mr-[10px]" aria-hidden="true" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1786,10 +1780,8 @@
                 </div>
 
                 <div class="card mt-3">
-                  <div class="card-header">
-                      <div class="card">{% block content %}{% endblock %}</div>
-                  </div>
-              </div>
+                    <div class="card">{% block content %}{% endblock %}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -1859,6 +1851,7 @@
   </main>
   <!-- scripts -->
   <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/jquery.dataTables.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
 </body>
