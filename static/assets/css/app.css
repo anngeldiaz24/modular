@@ -10804,7 +10804,7 @@ ul.custom-list ul li{
 }
 
 [dir="ltr"] .table-th{
-  text-align: left;
+  text-align: center;
 }
 
 [dir="rtl"] .table-th{
