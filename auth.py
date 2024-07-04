@@ -57,8 +57,8 @@ def register():
                     try:
                         hashed_password = generate_password_hash(password)
                         c.execute(
-                            'INSERT INTO users (nombre, apellidos, email, password, telefono, rol, codigo_acceso, acepto_terminos) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
-                            (nombre, apellidos, email, hashed_password, telefono, rol, codigo['id'], acepto_terminos)
+                            'INSERT INTO users (nombre, apellidos, email, password, telefono, rol, codigo_acceso, acepto_terminos, hogar_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                            (nombre, apellidos, email, hashed_password, telefono, rol, codigo['id'], acepto_terminos, None)
                         )
                         c.execute('UPDATE codigos_acceso SET disponible = FALSE WHERE id = %s', (codigo['id'],))
                         db.commit()

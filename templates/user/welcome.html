@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <title>Bienvenido - SafeZone</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/logo/logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/rt-plugins.css') }}">
+    <link href="https://unpkg.com/aos@2.3.0/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
+    <!-- START : Theme Config js-->
+    <script src="{{ url_for('static', filename='assets/js/settings.js') }}" sync></script>
+    <!-- END : Theme Config js-->
+</head>
+
+<body class=" font-inter skin-default">
+
+    <div class="loginwrapper">
+        <div class="lg-inner-column">
+        <div class="right-column relative">
+            <div class="inner-content h-full flex flex-col bg-white dark:bg-slate-800">
+            <div class="auth-box h-full flex flex-col justify-center">
+                <div class="mobile-logo text-center mb-6 lg:hidden block">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='assets/images/logo/logo.svg') }}" alt="" class="mb-10 dark_logo">
+                    <img src="{{ url_for('static', filename='assets/images/logo/logo-white.svg') }}" alt="" class="mb-10 white_logo">
+                </a>
+                </div>
+                <div class="text-center 2xl:mb-10 mb-4">
+                <h4 class="font-medium">PRIMEROS PASOS</h4>
+                <div class="text-slate-500 dark:text-slate-400 text-base">
+                    Agrega la dirección de tu hogar
+                </div>
+                </div>
+                <!-- BEGIN: Login Form -->
+                <form class="space-y-4" action="{{ url_for('index') }}">
+                    <div class="fromGroup">
+                        <label class="block capitalize form-label">Dirección</label>
+                        <div class="relative ">
+                        <input type="email" name="email" class="form-control py-2" placeholder="Add placeholder">
+                        </div>
+                    </div>
+                    <button class="btn btn-dark block w-full text-center">Guardar</button>
+                </form>
+            </div>
+            <div class="auth-footer text-center">
+                Copyright {{ current_year }}, SSafeZone Todos los Derechos Reservados.
+            </div>
+            </div>
+        </div>
+        <div class="left-column bg-cover bg-no-repeat bg-center" style="background-image: url({{ url_for('static', filename='assets/images/all-img/familia-welcome.jpg') }});">
+            <div class="flex flex-col h-full justify-center">
+            <div class="flex-1 flex flex-col justify-center items-center">
+                <img src="{{ url_for('static', filename='assets/images/all-img/logo-white.svg') }}" alt="" class="mb-10">
+                </a>
+            </div>
+            <div>
+                <div class="black-500-title max-w-[525px] mx-auto pb-20 text-center">
+                    <span class="text-white font-bold">BIENVENIDO</span>
+                    A SSAFEZONE
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- scripts -->
+    <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+</body>
+</html>

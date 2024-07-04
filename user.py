@@ -6,6 +6,7 @@ from .auth import login_required, user_role_required
 from .db import get_db
 from .raspberry import funciones
 import logging
+import datetime
 
 # Configurar el logging para este módulo
 logging.basicConfig(level=logging.DEBUG)
@@ -18,6 +19,10 @@ bp = Blueprint('user', __name__, url_prefix='/user-dashboard')
 @user_role_required
 def user_index():
     return render_template('user-dashboard.html', user=g.user)
+
+@bp.route('/welcome')
+def user_welcome():
+    return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user)
 
 @bp.route('/encender-luces-domesticas')
 @login_required

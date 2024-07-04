@@ -7,6 +7,7 @@ instructions = [
         CREATE TABLE codigos_acceso (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
             codigo VARCHAR(10) NOT NULL,
+            paquete ENUM('basico', 'premium', 'deluxe') NOT NULL,
             disponible BOOLEAN
         );
         
@@ -14,7 +15,7 @@ instructions = [
         CREATE TABLE hogares (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
             direccion VARCHAR(255) NOT NULL,
-            paquete ENUM('basico', 'premium', 'deluxe') NOT NULL
+            estatus ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo'
         );
 
         -- Creación de la tabla users
@@ -28,7 +29,9 @@ instructions = [
             rol VARCHAR(255) NOT NULL,
             codigo_acceso INT(10),
             acepto_terminos BOOLEAN NOT NULL DEFAULT 0,
-            FOREIGN KEY (codigo_acceso) REFERENCES codigos_acceso(id)
+            hogar_id INT(10),
+            FOREIGN KEY (codigo_acceso) REFERENCES codigos_acceso(id),
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id)
         );
     """
 ]
