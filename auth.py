@@ -103,7 +103,10 @@ def login():
             if user['rol'] == 'Admin':
                 return redirect(url_for('admin.admin_index'))
             else:
-                return redirect(url_for('user.user_index'))
+                if user['hogar_id'] ==  None:
+                    return redirect(url_for('user.user_welcome'))
+                else:
+                    return redirect(url_for('user.user_index'))
     
         flash(error, 'error')
     

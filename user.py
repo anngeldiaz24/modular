@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, url_for, request,
+    Blueprint, flash, g, redirect, render_template, url_for, request, session
 )
 from werkzeug.exceptions import abort
 from .auth import login_required, user_role_required
@@ -21,11 +21,14 @@ bp = Blueprint('user', __name__, url_prefix='/user-dashboard')
 def user_index():
     return render_template('user-dashboard.html', user=g.user)
 
+@login_required
+@user_role_required
 @bp.route('/welcome', methods=['GET', 'POST'])
 def user_welcome():
+    db, c = get_db()
+    
     if request.method == 'POST':
         codigo_postal = request.form['codigo_postal']
-        print(codigo_postal)
         calle = request.form['calle']
         numero_exterior = request.form['numero_exterior']
         numero_interior = request.form.get('numero_interior')
@@ -34,21 +37,54 @@ def user_welcome():
         estado = request.form['estado']
         informacion_adicional = request.form.get('informacion_adicional')
 
-        db, c = get_db() 
+        # Validaciones
         error = None
 
-        try:
-            c.execute('INSERT INTO hogares (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, estatus) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
-                (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, 'activo'))
-            db.commit()
-            flash('Dirección guardada exitosamente', 'success')
-            return redirect(url_for('user.user_index'))  
-        except Exception as e:
-            db.rollback()
-            error = f"Ocurrió un error al guardar la dirección: {e}"
+        if not codigo_postal.isdigit() or len(codigo_postal) != 5:
+            error = 'El código postal debe ser un número de 5 dígitos.'
+        elif not calle:
+            error = 'La calle es obligatoria.'
+        elif not numero_exterior:
+            error = 'El número exterior es obligatorio.'
+        elif numero_interior and not numero_interior.isalnum():
+            error = 'El número interior debe ser alfanumérico.'
+        elif not colonia:
+            error = 'La colonia es obligatoria.'
+        elif not municipio:
+            error = 'El municipio es obligatorio.'
+        elif not estado:
+            error = 'El estado es obligatorio.'
+
+        if error is None:
+            try:
+                # Insertar en la tabla hogares
+                c.execute('INSERT INTO hogares (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, estatus) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                    (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, 'activo'))
+                hogar_id = c.lastrowid
+
+                # Actualizar la tabla users con el hogar_id
+                c.execute('UPDATE users SET hogar_id = %s WHERE id = %s', (hogar_id, g.user['id']))
+                db.commit()
+
+                flash('Dirección guardada exitosamente', 'success')
+                return redirect(url_for('user.user_index'))
+            except Exception as e:
+                db.rollback()
+                error = f"Ocurrió un error al guardar la dirección: {e}"
+                flash(error, 'danger')
+        else:
             flash(error, 'danger')
 
-    return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user)
+    elif request.method == 'GET':
+        try:
+            # Obtener el paquete del código de acceso utilizado por el owner
+            c.execute('SELECT ca.paquete FROM codigos_acceso ca JOIN users u ON u.codigo_acceso = ca.id WHERE u.id = %s', (g.user['id'],))
+            paquete = c.fetchone()
+        except Exception as e:
+            paquete = None
+            flash(f"Ocurrió un error al obtener el paquete del código de acceso: {e}", 'danger')
+
+    return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user, paquete=paquete)
 
 
 @bp.route('/encender-luces-domesticas')

@@ -38,55 +38,69 @@
                                 Agrega la dirección de tu hogar
                             </div>
                         </div>
+                        {% for message in get_flashed_messages() %}
+                        <div class="mb-4">
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <ul>
+                                <li>{{ message }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="fromGroup">
+                            <div class="relative mb-4">
+                                <input type="text" class="capitalize form-control py-2 text-center" value="Paquete {{ paquete['paquete'] }}" readonly>
+                            </div>
+                        </div>
                         <!-- BEGIN: Login Form -->
                         <form method='POST'>
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Código Postal <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="text" name="codigo_postal" class="form-control py-2" placeholder="Ingrese el código postal" required>
+                                        <input type="text" name="codigo_postal" class="form-control py-2" placeholder="Ingrese el código postal" required value="{{ request.form['codigo_postal'] | default('') }}">
                                     </div>
                                 </div>
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Calle <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="text" name="calle" class="form-control py-2" placeholder="Ingrese la calle" required>
+                                        <input type="text" name="calle" class="form-control py-2" placeholder="Ingrese la calle" required value="{{ request.form['calle'] | default('') }}">
                                     </div>
                                 </div>
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Número Exterior <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="text" name="numero_exterior" class="form-control py-2" placeholder="Ingrese el número exterior" required>
+                                        <input type="text" name="numero_exterior" class="form-control py-2" placeholder="Ingrese el número exterior" required value="{{ request.form['numero_exterior'] | default('') }}">
                                     </div>
                                 </div>
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Número Interior</label>
                                     <div class="relative">
-                                        <input type="text" name="numero_interior" class="form-control py-2" placeholder="Ingrese el número interior (opcional)">
+                                        <input type="text" name="numero_interior" class="form-control py-2" placeholder="Ingrese el número interior (opcional)"  value="{{ request.form['numero_interior'] | default('') }}">
                                     </div>
                                 </div>
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Colonia <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="text" name="colonia" class="form-control py-2" placeholder="Ingrese la colonia" required>
+                                        <input type="text" name="colonia" class="form-control py-2" placeholder="Ingrese la colonia" required value="{{ request.form['colonia'] | default('') }}">
                                     </div>
                                 </div>
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Municipio <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="text" name="municipio" class="form-control py-2" placeholder="Ingrese el municipio" required>
+                                        <input type="text" name="municipio" class="form-control py-2" placeholder="Ingrese el municipio" required value="{{ request.form['municipio'] | default('') }}">
                                     </div>
                                 </div>
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Estado <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="text" name="estado" class="form-control py-2" placeholder="Ingrese el estado" required>
+                                        <input type="text" name="estado" class="form-control py-2" placeholder="Ingrese el estado" required value="{{ request.form['estado'] | default('') }}">
                                     </div>
                                 </div>
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Información Adicional</label>
                                     <div class="relative">
-                                        <input type="text" name="informacion_adicional" class="form-control py-2" placeholder="Ingrese información adicional (opcional)">
+                                        <input type="text" name="informacion_adicional" class="form-control py-2" placeholder="Ingrese información adicional (opcional)" value="{{ request.form['informacion_adicional'] | default('') }}">
                                     </div>
                                 </div>
                             </div>
@@ -118,5 +132,6 @@
     <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+    
 </body>
 </html>
