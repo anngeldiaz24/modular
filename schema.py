@@ -14,7 +14,14 @@ instructions = [
         -- Creación de la tabla hogares
         CREATE TABLE hogares (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
-            direccion VARCHAR(255) NOT NULL,
+            codigo_postal VARCHAR(10) NOT NULL,
+            calle VARCHAR(255) NOT NULL,
+            numero_exterior VARCHAR(10) NOT NULL,
+            numero_interior VARCHAR(10) NULL,
+            colonia VARCHAR(255) NOT NULL,
+            municipio VARCHAR(255) NOT NULL,
+            estado VARCHAR(255) NOT NULL,
+            informacion_adicional VARCHAR(255) NULL,
             estatus ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo'
         );
 
