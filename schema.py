@@ -48,11 +48,13 @@ instructions = [
             FOREIGN KEY (codigo_acceso) REFERENCES codigos_acceso(id),
             FOREIGN KEY (hogar_id) REFERENCES hogares(id)
         );
-        
+    """,
+    """
         -- Creación de la tabla estados
         CREATE TABLE estados (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
-            nombre VARCHAR(255) NOT NULL      
+            nombre VARCHAR(255) NOT NULL
+        );      
     """,
     """
         -- Creación de la tabla eventos
