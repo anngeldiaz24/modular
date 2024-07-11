@@ -2809,7 +2809,7 @@
 
   const chartJsOptions = [
     {
-      id: "chart1",
+      id: "chartaxl",
       type: "bar",
       data: {
         labels: [
@@ -2835,15 +2835,8 @@
             barThickness: 25,
           },
           {
-            label: " data two",
-            data: [24, 42, 40, 19, 86, 27, 90],
-            fill: false,
-            backgroundColor: hexToRGB(colors.success, 0.8),
-            borderColor: colors.success,
-            borderWidth: 2,
-            borderRadius: "15",
-            borderSkipped: "bottom",
-            barThickness: 25,
+           
+            
           },
         ],
       },
@@ -2881,11 +2874,11 @@
       },
     },
     {
-      id: "chart2",
+      id: "chartangel",
       type: "bar",
       data: {
         labels: [
-          "January",
+          "Enero",
           "February",
           "March",
           "April",

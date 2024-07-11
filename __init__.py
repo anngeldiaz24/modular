@@ -4,6 +4,7 @@ import json
 from . import db
 from .raspberry import funciones
 from .raspberry import llamada_policia
+from .db import get_db
 
 
 def create_app():
@@ -27,6 +28,25 @@ def create_app():
     app.register_blueprint(auth.bp)
     app.register_blueprint(admin.bp)
     app.register_blueprint(user.bp)
+    
+    @app.route('/graph')
+    def graph():
+        data = [
+            ("01-01-2020", 1597),
+            ("02-01-2020", 1456),
+            ("03-01-2020", 1908),
+            ("04-01-2020", 896),
+            ("05-01-2020", 755),
+            ("06-01-2020", 453),
+            ("07-01-2020", 1100),
+            ("08-01-2020", 1235),
+            ("09-01-2020", 1478),
+        ]
+        
+        labels = [row[0] for row in data]
+        values = [row[1] for row in data]
+        
+        return render_template("user-domotica.html", labels=labels, values=values, user=g.user)
 
     @app.route('/')
     def index():
@@ -38,8 +58,27 @@ def create_app():
     
     @app.route('/user-domotica')
     def user_domotica():
-        # Pasar los datos a la plantilla
-        return render_template('user-domotica.html', user=g.user)
+        db, c = get_db()
+        
+        print(g.user)
+        
+        hogar_id = g.user['hogar_id']
+        
+        query = """
+        SELECT e.nombre, COUNT(r.id) as total
+        FROM registros_eventos r
+        JOIN eventos e ON r.evento_id = e.id
+        WHERE r.hogar_id = %s
+        GROUP BY e.nombre
+        """
+        
+        # Ejecutar la consulta y obtener los resultados
+        c.execute(query, (hogar_id,))
+        data = c.fetchall()
+        
+        labels = [row['nombre'] for row in data]
+        values = [row['total'] for row in data]
+        return render_template('user-domotica.html', user=g.user, labels=labels, values=values)
     
     
     # Manejador de error 404 [Rutas no definidas]
