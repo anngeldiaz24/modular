@@ -1,6 +1,12 @@
 instructions = [
     'SET FOREIGN_KEY_CHECKS=0;',
-    'DROP TABLE IF EXISTS user;',
+    'DROP TABLE IF EXISTS users;',
+    'DROP TABLE IF EXISTS hogares;',
+    'DROP TABLE IF EXISTS codigos_acceso;',
+    'DROP TABLE IF EXISTS eventos;',
+    'DROP TABLE IF EXISTS registros_eventos;',
+    'DROP TABLE IF EXISTS alertas;',
+    'DROP TABLE IF EXISTS estadisticas;',
     'SET FOREIGN_KEY_CHECKS=1;',
     """
         -- Creación de la tabla codigos_acceso
@@ -10,7 +16,8 @@ instructions = [
             paquete ENUM('basico', 'premium', 'deluxe') NOT NULL,
             disponible BOOLEAN
         );
-        
+    """,
+    """
         -- Creación de la tabla hogares
         CREATE TABLE hogares (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
@@ -24,7 +31,8 @@ instructions = [
             informacion_adicional VARCHAR(255) NULL,
             estatus ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo'
         );
-
+    """,
+    """
         -- Creación de la tabla users
         CREATE TABLE users (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
@@ -45,6 +53,60 @@ instructions = [
         CREATE TABLE estados (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
             nombre VARCHAR(255) NOT NULL      
+    """,
+    """
+        -- Creación de la tabla eventos
+        CREATE TABLE eventos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL
+        );
+    """,
+    """
+        -- Insertar eventos predefinidos
+        INSERT INTO eventos (nombre) VALUES
+        ('activacion_alarma'),
+        ('desactivacion_alarma'),
+        ('encendido_luces'),
+        ('apagado_luces'),
+        ('bloqueo_puerta'),
+        ('desbloqueo_puerta'),
+        ('monitoreo_camara'),
+        ('alerta'),
+        ('otro');
+    """,
+    """
+        -- Creación de la tabla registros_eventos
+        CREATE TABLE registros_eventos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            hogar_id INT NOT NULL,
+            evento_id INT NOT NULL,
+            timestamp DATETIME NOT NULL,
+            detalles TEXT,
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id),
+            FOREIGN KEY (evento_id) REFERENCES eventos(id)
+        );
+    """,
+    """
+        -- Creación de la tabla alertas
+        CREATE TABLE alertas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            hogar_id INT NOT NULL,
+            tipo_alerta ENUM('sospechosa', 'no_sospechosa') NOT NULL,
+            timestamp DATETIME NOT NULL,
+            respuesta_tiempo INT,
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id)
+        );
+    """,
+    """
+        -- Creación de la tabla estadisticas
+        CREATE TABLE estadisticas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            hogar_id INT NOT NULL,
+            evento_id INT NOT NULL,
+            valor INT NOT NULL,
+            periodo DATE NOT NULL,
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id),
+            FOREIGN KEY (evento_id) REFERENCES eventos(id)
         );
     """
 ]
