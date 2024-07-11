@@ -27,16 +27,16 @@
 
         <div class="card">
             <div class="card-body flex flex-col p-6">
-              <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
-                <div class="flex-1">
-                  <div class="card-title text-slate-900 dark:text-white">Cámara principal de la casa</div>
+                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
+                    <div class="flex-1">
+                    <div class="card-title text-slate-900 dark:text-white">Cámara principal de la casa</div>
+                    </div>
+                </header>
+                <div class="card-text h-full space-y-10">
+                    <video class="w-full" id="player" playsinline="playsinline" controls="controls" data-poster="https://vjs.zencdn.net/v/oceans.png">
+                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+                    </video>
                 </div>
-              </header>
-              <div class="card-text h-full space-y-10">
-                <video class="w-full" id="player" playsinline="playsinline" controls="controls" data-poster="https://vjs.zencdn.net/v/oceans.png">
-                  <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-                </video>
-              </div>
             </div>
         </div>
 
@@ -80,17 +80,4 @@
             </div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    {% if category == 'success' %}
-                    toastr.success("{{ message }}");
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </script>
-    
 {% endblock %}

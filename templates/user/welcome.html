@@ -94,7 +94,14 @@
                                 <div class="fromGroup">
                                     <label class="block capitalize form-label">Estado <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="text" name="estado" class="form-control py-2" placeholder="Ingrese el estado" required value="{{ request.form['estado'] | default('') }}">
+                                        <select name="estado" class="form-control py-2" required>
+                                            <option value="" hidden>Seleccione un estado</option>
+                                            {% for estado in estados %}
+                                                <option value="{{ estado['nombre'] }}" {% if request.form['estado'] == estado['nombre'] %}selected{% endif %}>
+                                                    {{ estado['nombre'] }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="fromGroup">

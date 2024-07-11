@@ -106,6 +106,7 @@ def login():
                 if user['hogar_id'] ==  None:
                     return redirect(url_for('user.user_welcome'))
                 else:
+                    flash(f'¡Bienvenido, {user["nombre"]}!', 'success')
                     return redirect(url_for('user.user_index'))
     
         flash(error, 'error')

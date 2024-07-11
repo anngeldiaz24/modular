@@ -27,6 +27,23 @@ def user_index():
 def user_welcome():
     db, c = get_db()
     
+    paquete = None
+    estados = []
+
+    try:
+        # Obtener el paquete del código de acceso utilizado por el owner
+        c.execute('SELECT ca.paquete FROM codigos_acceso ca JOIN users u ON u.codigo_acceso = ca.id WHERE u.id = %s', (g.user['id'],))
+        paquete = c.fetchone()
+    except Exception as e:
+        flash(f"Ocurrió un error al obtener el paquete del código de acceso: {e}", 'danger')
+    
+    try:
+        # Obtener los estados de la base de datos
+        c.execute('SELECT nombre FROM estados')
+        estados = c.fetchall()
+    except Exception as e:
+        flash(f"Ocurrió un error al obtener los estados: {e}", 'danger')
+
     if request.method == 'POST':
         codigo_postal = request.form['codigo_postal']
         calle = request.form['calle']
@@ -66,7 +83,7 @@ def user_welcome():
                 c.execute('UPDATE users SET hogar_id = %s WHERE id = %s', (hogar_id, g.user['id']))
                 db.commit()
 
-                flash('Dirección guardada exitosamente', 'success')
+                flash('¡Bienvenido a SSafeZone!', 'success')
                 return redirect(url_for('user.user_index'))
             except Exception as e:
                 db.rollback()
@@ -75,17 +92,7 @@ def user_welcome():
         else:
             flash(error, 'danger')
 
-    elif request.method == 'GET':
-        try:
-            # Obtener el paquete del código de acceso utilizado por el owner
-            c.execute('SELECT ca.paquete FROM codigos_acceso ca JOIN users u ON u.codigo_acceso = ca.id WHERE u.id = %s', (g.user['id'],))
-            paquete = c.fetchone()
-        except Exception as e:
-            paquete = None
-            flash(f"Ocurrió un error al obtener el paquete del código de acceso: {e}", 'danger')
-
-    return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user, paquete=paquete)
-
+    return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user, paquete=paquete, estados=estados)
 
 @bp.route('/encender-luces-domesticas')
 @login_required
