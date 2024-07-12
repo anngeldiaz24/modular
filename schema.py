@@ -1,12 +1,15 @@
 instructions = [
     'SET FOREIGN_KEY_CHECKS=0;',
-    'DROP TABLE IF EXISTS users;',
-    'DROP TABLE IF EXISTS hogares;',
     'DROP TABLE IF EXISTS codigos_acceso;',
+    'DROP TABLE IF EXISTS hogares;',
+    'DROP TABLE IF EXISTS users;',
+    'DROP TABLE IF EXISTS estados;',
     'DROP TABLE IF EXISTS eventos;',
+    'DROP TABLE IF EXISTS periodos;',
     'DROP TABLE IF EXISTS registros_eventos;',
-    'DROP TABLE IF EXISTS alertas;',
-    'DROP TABLE IF EXISTS estadisticas;',
+    'DROP TABLE IF EXISTS consumo_energia;',
+    'DROP TABLE IF EXISTS consumo_agua;',
+    'DROP TABLE IF EXISTS dispositivos;',
     'SET FOREIGN_KEY_CHECKS=1;',
     """
         -- Creación de la tabla codigos_acceso
@@ -64,51 +67,60 @@ instructions = [
         );
     """,
     """
-        -- Insertar eventos predefinidos
-        INSERT INTO eventos (nombre) VALUES
-        ('activacion_alarma'),
-        ('desactivacion_alarma'),
-        ('encendido_luces'),
-        ('apagado_luces'),
-        ('bloqueo_puerta'),
-        ('desbloqueo_puerta'),
-        ('monitoreo_camara'),
-        ('alerta'),
-        ('otro');
+        -- Creación de la tabla periodos
+        CREATE TABLE periodos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL,
+            inicio DATE NOT NULL,
+            fin DATE NOT NULL
+        );
     """,
     """
         -- Creación de la tabla registros_eventos
         CREATE TABLE registros_eventos (
             id INT AUTO_INCREMENT PRIMARY KEY,
             hogar_id INT NOT NULL,
+            usuario_id INT NOT NULL,
             evento_id INT NOT NULL,
-            timestamp DATETIME NOT NULL,
-            detalles TEXT,
+            periodo_id INT NOT NULL,
             FOREIGN KEY (hogar_id) REFERENCES hogares(id),
-            FOREIGN KEY (evento_id) REFERENCES eventos(id)
+            FOREIGN KEY (usuario_id) REFERENCES users(id),
+            FOREIGN KEY (evento_id) REFERENCES eventos(id),
+            FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
     """,
     """
-        -- Creación de la tabla alertas
-        CREATE TABLE alertas (
+        -- Creación de la tabla consumo_energia
+        CREATE TABLE consumo_energia (
             id INT AUTO_INCREMENT PRIMARY KEY,
             hogar_id INT NOT NULL,
-            tipo_alerta ENUM('sospechosa', 'no_sospechosa') NOT NULL,
-            timestamp DATETIME NOT NULL,
-            respuesta_tiempo INT,
-            FOREIGN KEY (hogar_id) REFERENCES hogares(id)
+            periodo_id INT NOT NULL,
+            cantidad DECIMAL(10, 2) NOT NULL,
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id),
+            FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
     """,
     """
-        -- Creación de la tabla estadisticas
-        CREATE TABLE estadisticas (
+        -- Creación de la tabla consumo_agua
+        CREATE TABLE consumo_agua (
             id INT AUTO_INCREMENT PRIMARY KEY,
             hogar_id INT NOT NULL,
-            evento_id INT NOT NULL,
-            valor INT NOT NULL,
-            periodo DATE NOT NULL,
+            periodo_id INT NOT NULL,
+            cantidad DECIMAL(10, 2) NOT NULL,
             FOREIGN KEY (hogar_id) REFERENCES hogares(id),
-            FOREIGN KEY (evento_id) REFERENCES eventos(id)
+            FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
+    """,
     """
+        -- Creación de la tabla dispositivos
+        CREATE TABLE dispositivos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            hogar_id INT NOT NULL,
+            user_id INT NOT NULL,
+            tipo VARCHAR(255) NOT NULL,
+            estado ENUM('conectado', 'desconectado') NOT NULL,
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id),
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+    """,
 ]
