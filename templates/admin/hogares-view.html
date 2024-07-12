@@ -23,28 +23,28 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                {% for hogar_id, hogar in hogares.items() %}
                                 <tr class="table-row">
-                                    <td class="table-td">1</td>
+                                    <td class="table-td">{{ hogar_id }}</td>
                                     <td class="table-td">
                                         <div>
-                                            <iconify-icon icon="carbon:location" width="1.2rem" height="1.2rem" style="color: #f22121"></iconify-icon> Nte 95 – piso 23, Italia Providencia, 44648 Guadalajara Jalisco, México.
+                                            <iconify-icon icon="carbon:location" width="1.2rem" height="1.2rem" style="color: #f22121"></iconify-icon> 
+                                            {{ hogar.direccion }}
                                         </div>
                                     </td>
-                                    <td class="table-td">Básico</td>
+                                    <td class="table-td">{{ hogar.paquete }}</td>
                                     <td class="table-td">
                                         <div class="p-4">
+                                            {% for usuario in hogar.usuarios %}
                                             <div class="flex items-center">
                                                 <span class="mr-3"><iconify-icon icon="ph:user" width="1.2rem" height="1.2rem"></iconify-icon></span>
-                                                <span>Jose Eduardo Lòpez Hernandez</span>
+                                                <span>{{ usuario.nombre }} {{ usuario.apellidos }}</span>
                                             </div>
-                                            <div class="flex items-center mt-2">
-                                                <span class="mr-3"><iconify-icon icon="ph:user" width="1.2rem" height="1.2rem"></iconify-icon></span>
-                                                <span>Emilia Lòpez Hernandez</span>
-                                            </div>
+                                            {% endfor %}
                                         </div>
                                     </td>
                                     <td class="table-td">
-                                        <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-25 text-success-500 bg-success-500">Pagado</div>
+                                        <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-25 text-success-500 bg-success-500">{{ hogar.estatus }}</div>
                                     </td>
                                     <td class="table-td">
                                         <div class="relative">
@@ -67,8 +67,7 @@
                                         </div>
                                     </td>
                                 </tr>
-
-                                <!-- Repite la estructura para otras filas -->
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
