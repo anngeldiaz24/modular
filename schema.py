@@ -16,7 +16,7 @@ instructions = [
         CREATE TABLE codigos_acceso (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
             codigo VARCHAR(10) NOT NULL,
-            paquete ENUM('basico', 'premium', 'deluxe') NOT NULL,
+            paquete VARCHAR(100) NOT NULL,
             disponible BOOLEAN
         );
     """,
@@ -49,7 +49,7 @@ instructions = [
             acepto_terminos BOOLEAN NOT NULL DEFAULT 0,
             hogar_id INT(10),
             FOREIGN KEY (codigo_acceso) REFERENCES codigos_acceso(id),
-            FOREIGN KEY (hogar_id) REFERENCES hogares(id)
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id) ON DELETE CASCADE
         );
     """,
     """

@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, url_for, 
+    Blueprint, flash, g, redirect, render_template, url_for, request,
 )
 from werkzeug.exceptions import abort
 from .auth import login_required, admin_role_required
@@ -13,14 +13,10 @@ bp = Blueprint('admin', __name__)
 def admin_index():
     return render_template('admin-dashboard.html', user=g.user)
 
-@bp.route('/hogares')
-@login_required
-@admin_role_required
-def admin_hogares():
+def get_hogares():
     db, c = get_db()
     
     try:
-        # Obtener todos los hogares, los usuarios que pertenecen a estos, y el paquete del código de acceso
         c.execute('''
             SELECT 
                 h.id AS hogar_id, h.codigo_postal, h.calle, h.numero_exterior, h.numero_interior, 
@@ -36,7 +32,6 @@ def admin_hogares():
         ''')
         data = c.fetchall()
 
-        # Organizar los datos en una estructura adecuada para la plantilla
         hogares = {}
         for row in data:
             hogar_id = row['hogar_id']
@@ -53,7 +48,89 @@ def admin_hogares():
                     'apellidos': row['apellidos']
                 })
     except Exception as e:
-        # Manejar la excepción y posiblemente renderizar una plantilla de error
         flash(f"Ocurrió un error: {e}", 'danger')
+        hogares = {}
 
+    return hogares
+
+@bp.route('/hogares')
+@login_required
+@admin_role_required
+def admin_hogares():
+    hogares = get_hogares()
     return render_template('admin/hogares-view.html', user=g.user, hogares=hogares)
+
+@bp.route('/hogar/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_role_required
+def editar_hogar(id):
+    if request.method == 'POST':
+        paquete = request.form['paquete']
+        estatus = request.form['estatus']
+                
+        error = None
+
+        if not paquete:
+            error = 'El paquete es requerido.'
+        elif not estatus:
+            error = 'El estatus es requerido.'
+
+        if error is None:
+            try:
+                db, c = get_db()
+                
+                # Obtener información del hogar y el código de acceso
+                c.execute('''
+                    SELECT 
+                        ca.id AS codigo_acceso_id, ca.paquete, h.id AS hogar_id
+                    FROM 
+                        hogares h
+                    LEFT JOIN 
+                        users u ON h.id = u.hogar_id
+                    LEFT JOIN
+                        codigos_acceso ca ON u.codigo_acceso = ca.id
+                    WHERE
+                        h.id = %s
+                ''', (id,))
+                hogar = c.fetchone()
+            
+                if hogar is None:
+                    abort(404, f"Hogar id {id} no encontrado.")
+
+                c.reset()
+                # Actualizar el paquete en la tabla de códigos de acceso
+                c.execute('UPDATE codigos_acceso SET paquete = %s WHERE id = %s', (paquete, hogar['codigo_acceso_id']))
+                # Actualizar el estatus en la tabla de hogares
+                c.execute('UPDATE hogares SET estatus = %s WHERE id = %s', (estatus, id))
+
+                db.commit()
+
+                flash('¡Hogar actualizado correctamente!', 'success')
+
+                return redirect(url_for('admin.admin_hogares'))
+
+            except Exception as e:
+                db.rollback()
+
+        else:
+            flash('¡Oops, algo salió mal!. Verifica la información', 'error')
+
+    return redirect(url_for('admin.admin_hogares'))
+
+@bp.route('/hogar/<int:id>/delete', methods=['POST'])
+@login_required
+@admin_role_required
+def eliminar_hogar(id):
+    db, c = get_db()
+    print(id)
+    c.execute('SELECT * FROM hogares WHERE id = %s', (id,))
+    hogar = c.fetchone()
+
+    if hogar is None:
+        abort(404, f"Hogar id {id} no encontrado.")
+    
+    c.reset()
+    c.execute('DELETE FROM hogares WHERE id = %s', (id,))
+    db.commit()
+    flash('Hogar y sus miembros han sido eliminados correctamente.', 'success')
+    return redirect(url_for('admin.admin_hogares'))

@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <!-- BEGIN: Theme CSS-->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/rt-plugins.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
@@ -220,13 +221,6 @@
                 <button class="smallDeviceMenuController hidden md:inline-block xl:hidden">
                   <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>
                 </button>
-                <button class="flex items-center xl:text-sm text-lg xl:text-slate-400 text-slate-800 dark:text-slate-300 px-1
-        rtl:space-x-reverse search-modal" data-bs-toggle="modal" data-bs-target="#searchModal">
-                  <iconify-icon icon="heroicons-outline:search"></iconify-icon>
-                  <span class="xl:inline-block hidden ml-3">Search...
-    </span>
-                </button>
-
               </div>
               <!-- end vertcial -->
               <div class="items-center space-x-4 rtl:space-x-reverse horizental-box">
@@ -1854,5 +1848,26 @@
   <script src="{{ url_for('static', filename='assets/js/jquery.dataTables.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+              {% if category == 'success' %}
+              toastr.success("{{ message }}");
+              {% endif %}
+          {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+              {% if category == 'error' %}
+              toastr.error("{{ message }}");
+              {% endif %}
+          {% endfor %}
+        {% endif %}
+    {% endwith %}
+  </script>
 </body>
 </html>
