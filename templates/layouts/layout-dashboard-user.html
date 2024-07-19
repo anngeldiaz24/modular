@@ -1956,59 +1956,88 @@
           return "rgb(" + r + ", " + g + ", " + b + ")";
         }
       };
-      var ctx = document.getElementById("lineChart");
-      var lineChart = new Chart(ctx, {
-          type: "bar",
+      
+      const consumo_energia_2023 = {{ consumo_energia_2023 | tojson | safe }};
+      const consumo_energia_2024 = {{ consumo_energia_2024 | tojson | safe }};
+      const ctxConsumoEnergia = document.getElementById("consumo_energia");
+      const lineChartConsumoEnergia = new Chart(ctxConsumoEnergia, {
+          type: "line",
           data: {
-              labels: {{ labels | safe }},
-              datasets: [
-                  {
-                      label: "Cantidad de veces que se ha usado",
-                      data: {{ values | safe }},
-                      fill: false,
-                      backgroundColor: hexToRGB(colors.primary, 0.6),
-                      borderColor: colors.primary,
-                      lineTension: 0.1,
-                      borderWidth: 2,
-                      borderRadius: "15",
-                      borderSkipped: "bottom",
-                      barThickness: 25,
-                  },
-              ]
+            labels: [
+              'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+            ],
+            datasets: [
+              {
+                label: "Consumo 2023",
+                data: consumo_energia_2023,
+                fill: false,
+                backgroundColor: hexToRGB(colors.primary, 1),
+                borderColor: colors.primary,
+                borderSkipped: "bottom",
+                barThickness: 40,
+                pointRadius: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderWidth: 5,
+                pointBorderColor: "transparent",
+                lineTension: 0.5,
+                pointStyle: "circle",
+                pointShadowOffsetX: 1,
+                pointShadowOffsetY: 1,
+                pointShadowBlur: 5,
+              },
+              {
+                label: "Consumo 2024",
+                data: consumo_energia_2024,
+                fill: false,
+                backgroundColor: hexToRGB(colors.success, 1),
+                borderColor: colors.success,
+                borderSkipped: "bottom",
+                barThickness: 40,
+                pointRadius: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderWidth: 5,
+                pointBorderColor: "transparent",
+                lineTension: 0.5,
+                pointStyle: "circle",
+                pointShadowOffsetX: 1,
+                pointShadowOffsetY: 1,
+                pointShadowBlur: 5,
+              },
+            ],
           },
           options: {
-              responsive: true,
-              plugins: {
-                legend: {
-                  labels: {
-                    color: isDark ? "#cbd5e1" : "#475569",
-                  }, 
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: {
+                  color: isDark ? "#cbd5e1" : "#475569",
                 },
               },
-
-              scales: {
-                y: {
-                  grid: {
-                    color: isDark ? "#334155" : "#e2e8f0",
-                  },
-                  ticks: {
-                    color: isDark ? "#cbd5e1" : "#475569",
-                  },
+            },
+            scales: {
+              y: {
+                stacked: true,
+                grid: {
+                  color: isDark ? "#334155" : "#e2e8f0",
                 },
-                x: {
-                  grid: {
-                    color: isDark ? "#334155" : "#e2e8f0",
-                  },
-      
-                  ticks: {
-                    color: isDark ? "#cbd5e1" : "#475569",
-                  },
+                ticks: {
+                  color: isDark ? "#cbd5e1" : "#475569",
                 },
               },
-
-              maintainAspectRatio: false,
+              x: {
+                grid: {
+                  color: isDark ? "#334155" : "#e2e8f0",
+                },
+    
+                ticks: {
+                  color: isDark ? "#cbd5e1" : "#475569",
+                },
+              },
+            },
           },
-      });
+        });
     </script>
 
 
