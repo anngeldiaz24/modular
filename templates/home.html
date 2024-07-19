@@ -399,3 +399,25 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const shortText = document.getElementById('short-text');
+        const fullText = document.getElementById('full-text');
+        const toggleButton = document.getElementById('toggle-button');
+
+        toggleButton.addEventListener('click', function () {
+            if (fullText.classList.contains('hidden')) {
+                fullText.classList.remove('hidden');
+                shortText.classList.add('hidden');
+                toggleButton.textContent = 'Leer menos';
+            } else {
+                fullText.classList.add('hidden');
+                shortText.classList.remove('hidden');
+                toggleButton.textContent = 'Leer más';
+            }
+        });
+    });
+</script>
+{% endblock %}
