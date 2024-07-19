@@ -739,6 +739,18 @@
           </div>
           <!-- END: Line Chart -->
 
+          <!-- BEGIN: Line Chart -->
+          <div class="card">
+            <header class=" card-header">
+              <h4 class="card-title">Consumo de agua (litros)
+              </h4>
+            </header>
+            <div class="card-body px-6 pb-6">
+              <canvas id="consumo_agua" class="h-[350px]"></canvas>
+            </div>
+          </div>
+          <!-- END: Line Chart -->
+
           <!-- BEGIN: Radar Chart -->
           <div class="card">
             <header class=" card-header">
@@ -801,6 +813,7 @@
       }
     };
     
+    /* GRAFICA - CONSUMO DE ENERGIA (kwh) */
     const consumo_energia_2023 = {{ consumo_energia_2023 | tojson | safe }};
     const consumo_energia_2024 = {{ consumo_energia_2024 | tojson | safe }};
     const ctxConsumoEnergia = document.getElementById("consumo_energia");
@@ -881,6 +894,89 @@
             },
           },
         },
-      });
+    });
+
+    /* GRAFICA - CONSUMO DE AGUA (litros) */
+    const consumo_agua_2023 = {{ consumo_agua_2023 | tojson | safe }};
+    const consumo_agua_2024 = {{ consumo_agua_2024 | tojson | safe }};
+    const ctxConsumoAgua = document.getElementById("consumo_agua");
+    const lineChartConsumoAgua = new Chart(ctxConsumoAgua, {
+        type: "line",
+        data: {
+          labels: [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+          ],
+          datasets: [
+            {
+              label: "Consumo 2023",
+              data: consumo_agua_2023,
+              fill: false,
+              backgroundColor: hexToRGB(colors.primary, 1),
+              borderColor: colors.primary,
+              borderSkipped: "bottom",
+              barThickness: 40,
+              pointRadius: 1,
+              pointHoverRadius: 5,
+              pointHoverBorderWidth: 5,
+              pointBorderColor: "transparent",
+              lineTension: 0.5,
+              pointStyle: "circle",
+              pointShadowOffsetX: 1,
+              pointShadowOffsetY: 1,
+              pointShadowBlur: 5,
+            },
+            {
+              label: "Consumo 2024",
+              data: consumo_agua_2024,
+              fill: false,
+              backgroundColor: hexToRGB(colors.success, 1),
+              borderColor: colors.success,
+              borderSkipped: "bottom",
+              barThickness: 40,
+              pointRadius: 1,
+              pointHoverRadius: 5,
+              pointHoverBorderWidth: 5,
+              pointBorderColor: "transparent",
+              lineTension: 0.5,
+              pointStyle: "circle",
+              pointShadowOffsetX: 1,
+              pointShadowOffsetY: 1,
+              pointShadowBlur: 5,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: isDark ? "#cbd5e1" : "#475569",
+              },
+            },
+          },
+          scales: {
+            y: {
+              stacked: true,
+              grid: {
+                color: isDark ? "#334155" : "#e2e8f0",
+              },
+              ticks: {
+                color: isDark ? "#cbd5e1" : "#475569",
+              },
+            },
+            x: {
+              grid: {
+                color: isDark ? "#334155" : "#e2e8f0",
+              },
+  
+              ticks: {
+                color: isDark ? "#cbd5e1" : "#475569",
+              },
+            },
+          },
+        },
+    });
   </script>
 {% endblock %}
