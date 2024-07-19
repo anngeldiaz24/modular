@@ -93,7 +93,7 @@ def user_domotica():
     print(consumo_agua_2024)
             
     return render_template(
-        'user-domotica.html', 
+        'user/user-domotica.html', 
         user=g.user, 
         consumo_energia_2023=consumo_energia_2023, 
         consumo_energia_2024=consumo_energia_2024,

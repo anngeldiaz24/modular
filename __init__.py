@@ -37,7 +37,7 @@ def create_app():
     
     @app.route('/home')
     def home():
-        return render_template('home.html', user=g.user)
+        return render_template('user/home.html', user=g.user)
     
     # Manejador de error 404 [Rutas no definidas]
     @app.errorhandler(404)
