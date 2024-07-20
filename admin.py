@@ -1,6 +1,7 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, url_for, request,
 )
+import datetime
 from werkzeug.exceptions import abort
 from .auth import login_required, admin_role_required
 from .db import get_db
@@ -11,7 +12,14 @@ bp = Blueprint('admin', __name__)
 @login_required
 @admin_role_required
 def admin_index():
-    return render_template('admin-dashboard.html', user=g.user)
+    return render_template('admin/admin-dashboard.html', user=g.user)
+
+@bp.route('/admin-estadisticas')
+@login_required
+@admin_role_required
+def admin_estadisticas():
+    return render_template('admin/admin-estadisticas.html', user=g.user)
+
 
 def get_hogares():
     db, c = get_db()

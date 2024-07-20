@@ -1,0 +1,154 @@
+{% extends 'layouts/layout-dashboard-admin.html' %}
+
+{% block header %}
+    {% block title %}Estadísticas{% endblock %}
+{% endblock %}
+
+{% block content %}
+
+<div class="transition-all duration-150 container-fluid mt-3" id="page_layout">
+    <div id="content_layout">
+        <div class="space-y-5">
+            <div class="grid grid-cols-12 gap-5">
+                <div class="lg:col-span-8 col-span-12 space-y-5">
+                    <div class="card p-6">
+                        <div class="grid xl:grid-cols-4 lg:grid-cols-2 col-span-1 gap-3">
+
+                            <!-- BEGIN: Group Chart4 -->
+                            <div class="bg-warning-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1] w-full">
+                                <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
+                                    <img src="{{ url_for('static', filename='assets/images/all-img/shade-1.png') }}" draggable="false" class="w-full h-full object-contain">
+                                </div>
+                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Ventas</span>
+                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">354</span>
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-none text-xl text-primary-500">
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    </div>
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-[2px] text-primary-500">25.67%</span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">From last week</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1]">
+                                <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
+                                    <img src="{{ url_for('static', filename='assets/images/all-img/shade-2.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
+                                </div>
+                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Ingresos</span>
+                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">$86,954</span>
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-none text-xl text-primary-500">
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    </div>
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-[2px] text-primary-500">8.67%</span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">From last week</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-primary-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1]">
+                                <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
+                                    <img src="{{ url_for('static', filename='assets/images/all-img/shade-3.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
+                                </div>
+                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Cancelaciones</span>
+                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">15%</span>
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-none text-xl text-danger-500">
+                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                    </div>
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-[2px] text-danger-500">1.67%</span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">From last week</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-success-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1]">
+                                <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
+                                    <img src="{{ url_for('static', filename='assets/images/all-img/shade-4.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
+                                </div>
+                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Nuevos usuarios</span>
+                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">654</span>
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-none text-xl text-primary-500">
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    </div>
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-[2px] text-primary-500">11.67%</span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">From last week</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END: Group Chart4 -->
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <header class="md:flex md:space-y-0 space-y-4">
+                            <h6 class="flex-1 text-slate-900 dark:text-white capitalize">Ventas por mes (Básico, Premium y Deluxe)</h6>
+                        </header>
+                        <div class="legend-ring">
+                            <div id="stack-bar-chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-4 col-span-12 space-y-5">
+                    <div class="card">
+                        <header class="card-header">
+                            <h4 class="card-title">Administración</h4>
+                        </header>
+                        <div class="card-body p-6">
+                            <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+                                <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                                    <div class="flex justify-between">
+                                        <span></span>
+                                        <span>Cantidad</span>
+                                    </div>
+                                </li>
+                                <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                                    <div class="flex justify-between">
+                                        <span>Hogares</span>
+                                        <span>2,503</span>
+                                    </div>
+                                </li>
+                                <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                                    <div class="flex justify-between">
+                                        <span>Usuarios</span>
+                                        <span>12,421</span>
+                                    </div>
+                                </li>
+                                <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                                    <div class="flex justify-between">
+                                        <span>Dispositvos activos</span>
+                                        <span>9,324</span>
+                                    </div>
+                                </li>
+                                <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
+                                    <div class="flex justify-between">
+                                        <span>Paquetes vendidos</span>
+                                        <span>1,784</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <header class="card-header">
+                            <h4 class="card-title">Hogares (Activo o Inactivo)</h4>
+                        </header>
+                        <div class="card-body p-6">
+                            <div class="legend-ring3">
+                                <div id="pie-chart-cal"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
