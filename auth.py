@@ -1,6 +1,10 @@
 from functools import wraps
+from flask import Flask, current_app
+import smtplib 
+from email.mime.text import MIMEText
 import datetime
 import re 
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask import (
     Blueprint, flash, g, render_template, request, url_for, session, redirect, abort
 )
@@ -155,6 +159,109 @@ def admin_role_required(view):
         return view(**kwargs)
     return wrapped_view
 
+@bp.route('/recuperar-contrasena', methods=['GET', 'POST'])
+def recuperar_contrasena():
+    db, c = get_db()
+    
+    if request.method == 'POST':
+        correo = request.form['correo_electronico']
+        
+        error = None
+
+        # Validar el formato del correo electrónico
+        if not isinstance(correo, str) or not correo or not re.match(r"[^@]+@[^@]+\.[^@]+", correo):
+            error = 'El correo es requerido y debe ser válido.'
+        
+        # Verificar si el correo electrónico está registrado en la base de datos
+        if error is None:
+            c.execute('SELECT id FROM users WHERE email = %s', (correo,))
+            user = c.fetchone()
+            if user is None:
+                error = 'El correo no está registrado.'
+            else:
+                user_id = user['id']
+                # Enviar correo electrónico
+                try:
+                    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+                    token = serializer.dumps(user_id, salt='password-reset-salt')
+                    
+                    # Crear la URL de restablecimiento de contraseña
+                    reset_url = url_for('auth.reestablecer_contrasena', token=token, _external=True)
+                    
+                    # Renderizar el contenido del correo electrónico usando la plantilla
+                    html_content = render_template('email/email-recuperar-password.html', reset_url=reset_url)
+                    
+                    msg = MIMEText(html_content, "html")
+                    msg["From"] = "safezonesamsung@gmail.com"
+                    msg["To"] = correo
+                    msg["Subject"] = "Reestablecer contraseña"
+                    
+                    servidor = smtplib.SMTP("smtp.gmail.com", 587)
+                    servidor.starttls()
+                    servidor.login("safezonesamsung@gmail.com", "mobn gykt qtwp vnob")
+                    servidor.sendmail("safezonesamsung@gmail.com", correo, msg.as_string())
+                    servidor.quit()
+                    
+                    flash('Se ha enviado un correo electrónico con instrucciones para reestablecer tu contraseña.', 'success')
+                except Exception as e:
+                    error = f'Error enviando el correo: {str(e)}'
+
+        if error:
+            flash(error, 'error')
+        else:
+            return redirect(url_for('auth.recuperar_contrasena'))
+
+    return render_template('auth/recuperar-contrasena.html', current_year=datetime.datetime.now().year)
+
+@bp.route('/reestablecer-contrasena', methods=['GET', 'POST'])
+def reestablecer_contrasena():
+    token = request.args.get('token')
+    if not token:
+        flash('El token es requerido.', 'error')
+        return redirect(url_for('auth.recuperar_contrasena'))
+
+    try:
+        serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+        user_id = serializer.loads(token, salt='password-reset-salt', max_age=300)  # Token válido por 5 minutos
+    except (SignatureExpired, BadSignature):
+        flash('El enlace de restablecimiento de contraseña es inválido o ha expirado.', 'error')
+        return redirect(url_for('auth.recuperar_contrasena'))
+
+    if request.method == 'POST':
+        password = request.form['password']
+        confirmar_contrasena = request.form['confirm_password']
+        
+        db, c = get_db()
+        error = None
+        
+        # Validar la contraseña
+        if not isinstance(password, str) or not password or len(password) < 8 or \
+            not any(char.isdigit() for char in password) or \
+            not any(char.isalpha() for char in password) or \
+            not any(char in "!@#$%^&*()-_=+{}[]|;:<>,.?/" for char in password):
+                error = 'La contraseña es requerida y debe tener al menos 8 caracteres, incluir números y caracteres especiales.'
+        elif not isinstance(confirmar_contrasena, str) or not confirmar_contrasena or len(confirmar_contrasena) < 8:
+            error = 'La confirmación de contraseña es requerida.'
+        elif password != confirmar_contrasena:
+            error = 'Las contraseñas no coinciden.'
+        
+        if error is None:
+            try:
+                hashed_password = generate_password_hash(password)
+                
+                # Actualizar la contraseña en la base de datos
+                c.execute('UPDATE users SET password = %s WHERE id = %s', (hashed_password, user_id))
+                db.commit()
+                
+                flash('Tu contraseña ha sido reestablecida con éxito.', 'success')
+                return redirect(url_for('auth.login')) 
+            except Exception as e:
+                error = f'Error actualizando la contraseña: {str(e)}'
+        
+        if error:
+            flash(error, 'error')
+    
+    return render_template('auth/reestablecer-contrasena.html', current_year=datetime.datetime.now().year)
 
 @bp.route('/logout')
 def logout():
