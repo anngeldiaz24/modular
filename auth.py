@@ -249,7 +249,6 @@ def reestablecer_contrasena():
             try:
                 hashed_password = generate_password_hash(password)
                 
-                # Actualizar la contraseña en la base de datos
                 c.execute('UPDATE users SET password = %s WHERE id = %s', (hashed_password, user_id))
                 db.commit()
                 
