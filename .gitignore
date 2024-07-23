@@ -3,5 +3,4 @@
 /__pycache__/
 raspberry/__pycache__
 # Ignora archivos relacionados con credenciales
-db.py
 .env
