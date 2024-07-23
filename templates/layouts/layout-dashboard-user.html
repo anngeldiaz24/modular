@@ -24,55 +24,52 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> -->
     <script src="{{ url_for('static', filename='assets/js/chart-active.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-      <style>
-        .list-item-safezone {
-            position: relative;
-            padding-left: 1.5em;
-        }
-        .list-item-safezone::before {
-            content: '🔵';
-            color: #1f2937; /* Slate color */
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-        .list-item-safezone.second-level {
-            padding-left: 2.5em;
-        }
-        .list-item-safezone.second-level::before {
-            content: '➤'; 
-            color: #6b7280;
-            left: 1em; 
-        }
-        .switch-button {
+    <style>
+      .list-item-safezone {
+          position: relative;
+          padding-left: 1.5em;
+      }
+      .list-item-safezone::before {
+          content: '🔵';
+          color: #1f2937; /* Slate color */
           position: absolute;
-          top: 10px;
-          right: 10px;
-          width: 15px;
-          height: 15px;
+          left: 0;
+          top: 0;
+      }
+      .list-item-safezone.second-level {
+          padding-left: 2.5em;
+      }
+      .list-item-safezone.second-level::before {
+          content: '➤'; 
+          color: #6b7280;
+          left: 1em; 
+      }
+      .switch-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 15px;
+        height: 15px;
+        background-color: #ccc;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.3s;
+      }
+      .switch-button:hover {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        background-color: #888;
+        border-color: #888;
+      }
+      .switch-button.active {
           background-color: #ccc;
-          border-radius: 50%;
-          cursor: pointer;
-          border: 2px solid transparent;
-          transition: all 0.3s;
-        }
-        .switch-button:hover {
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-          background-color: #888;
-          border-color: #888;
-        }
-        .switch-button.active {
-            background-color: #ccc;
-            border: 2px solid #ccc;
-        }
-        .switch-button.outline {
-            background-color: transparent;
-            border: 2px solid #ccc;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+          border: 2px solid #ccc;
+      }
+      .switch-button.outline {
+          background-color: transparent;
+          border: 2px solid #ccc;
+      }
+  </style>
   </head>
 
   <body class=" font-inter dashcode-app" id="body_class">
