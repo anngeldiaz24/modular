@@ -361,7 +361,7 @@
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 5,
                     pointBorderColor: "transparent",
-                    lineTension: 0.5,
+                    lineTension: 0.2,
                     pointStyle: "circle",
                     pointShadowOffsetX: 1,
                     pointShadowOffsetY: 1,
@@ -379,7 +379,7 @@
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 5,
                     pointBorderColor: "transparent",
-                    lineTension: 0.5,
+                    lineTension: 0.2,
                     pointStyle: "circle",
                     pointShadowOffsetX: 1,
                     pointShadowOffsetY: 1,
@@ -458,7 +458,7 @@
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 5,
                     pointBorderColor: "transparent",
-                    lineTension: 0.5,
+                    lineTension: 0.2,
                     pointStyle: "circle",
                     pointShadowOffsetX: 1,
                     pointShadowOffsetY: 1,
@@ -476,7 +476,7 @@
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 5,
                     pointBorderColor: "transparent",
-                    lineTension: 0.5,
+                    lineTension: 0.2,
                     pointStyle: "circle",
                     pointShadowOffsetX: 1,
                     pointShadowOffsetY: 1,
@@ -551,7 +551,7 @@
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 5,
                     pointBorderColor: "transparent",
-                    lineTension: 0.5,
+                    lineTension: 0.2,
                     pointStyle: "circle",
                     pointShadowOffsetX: 1,
                     pointShadowOffsetY: 1,
@@ -569,7 +569,7 @@
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 5,
                     pointBorderColor: "transparent",
-                    lineTension: 0.5,
+                    lineTension: 0.2,
                     pointStyle: "circle",
                     pointShadowOffsetX: 1,
                     pointShadowOffsetY: 1,
@@ -635,41 +635,41 @@
             },
         },
         labels: {{ dispositivos_tipos | tojson | safe }},
-    dataLabels: {
-        enabled: true,
+        dataLabels: {
+            enabled: true,
         },
-    colors: [colors.success, colors.warning, "#A3A1FB"],
-    series: {{ dispositivos_cantidades | tojson | safe }},
-    legend: {
-        position: "bottom",
+        colors: [colors.success, colors.warning, "#A3A1FB"],
+        series: {{ dispositivos_cantidades | tojson | safe }},
+        legend: {
+            position: "bottom",
             fontSize: "12px",
-                fontFamily: "Inter",
-                    fontWeight: 400,
-                        labels: {
-            colors: isDark ? "#CBD5E1" : "#475569",
+            fontFamily: "Inter",
+            fontWeight: 400,
+            labels: {
+                colors: isDark ? "#CBD5E1" : "#475569",
             },
-        markers: {
-            width: 6,
+            markers: {
+                width: 6,
                 height: 6,
-                    offsetY: -1,
-                        offsetX: -5,
-                            radius: 12,
+                offsetY: -1,
+                offsetX: -5,
+                radius: 12,
             },
-        itemMargin: {
-            horizontal: 10,
+            itemMargin: {
+                horizontal: 10,
                 vertical: 0,
             },
-    },
-    responsive: [
-        {
-            breakpoint: 480,
-            options: {
-                legend: {
-                    position: "bottom",
+        },
+        responsive: [
+            {
+                breakpoint: 480,
+                options: {
+                    legend: {
+                        position: "bottom",
+                    },
                 },
             },
-        },
-    ],
+        ],
     };
 
     const ctxDispositivo = new ApexCharts(document.querySelector("#pie-chart-dispositivos"), apexChartDispositivoOptions);
