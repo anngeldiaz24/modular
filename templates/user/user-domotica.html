@@ -396,6 +396,17 @@
                         color: isDark ? "#cbd5e1" : "#475569",
                     },
                 },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            if (label) {
+                                return `${label}: ${context.parsed.y} kwh`;
+                            }
+                            return `${context.parsed.y} kwh`;
+                        },
+                    },
+                },
             },
             scales: {
                 y: {
@@ -405,6 +416,9 @@
                     },
                     ticks: {
                         color: isDark ? "#cbd5e1" : "#475569",
+                        callback: function(value, index, values) {
+                            return value + ' kwh';
+                        },
                     },
                 },
                 x: {
@@ -479,6 +493,17 @@
                         color: isDark ? "#cbd5e1" : "#475569",
                     },
                 },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            if (label) {
+                                return `${label}: ${context.parsed.y} L`;
+                            }
+                            return `${context.parsed.y} L`;
+                        },
+                    },
+                },
             },
             scales: {
                 y: {
@@ -488,6 +513,9 @@
                     },
                     ticks: {
                         color: isDark ? "#cbd5e1" : "#475569",
+                        callback: function(value, index, values) {
+                            return value + ' L';
+                        },
                     },
                 },
                 x: {
