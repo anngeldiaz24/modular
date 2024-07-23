@@ -69,11 +69,11 @@
                                 <div class="tab-content" id="tabs-tabContent">
                                     <div class="tab-pane fade show active" id="tabs-energia-kwh" role="tabpanel"
                                         aria-labelledby="tabs-energia-kwh-tab">
-                                        <canvas id="consumo_energia" class="h-[350px]"></canvas>
+                                        <canvas id="consumo_energia_kwh" class="h-[350px]"></canvas>
                                     </div>
                                     <div class="tab-pane fade" id="tabs-energia-mxn" role="tabpanel"
                                         aria-labelledby="tabs-energia-mxn-tab">
-                                        <canvas id="consumo_energia" class="h-[350px]"></canvas>
+                                        <canvas id="consumo_energia_mxn" class="h-[350px]"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -338,10 +338,10 @@
     };
 
     /* GRAFICA - CONSUMO DE ENERGIA (kwh) */
-    const consumo_energia_2023 = {{ consumo_energia_2023 | tojson | safe }};
-    const consumo_energia_2024 = {{ consumo_energia_2024 | tojson | safe }};
-    const ctxConsumoEnergia = document.getElementById("consumo_energia");
-    const lineChartConsumoEnergia = new Chart(ctxConsumoEnergia, {
+    const consumo_energia_kwh_2023 = {{ consumo_energia_kwh_2023 | tojson | safe }};
+    const consumo_energia_kwh_2024 = {{ consumo_energia_kwh_2024 | tojson | safe }};
+    const ctxConsumoEnergiaKwh = document.getElementById("consumo_energia_kwh");
+    const lineChartConsumoEnergiaKwh = new Chart(ctxConsumoEnergiaKwh, {
         type: "line",
         data: {
             labels: [
@@ -351,7 +351,7 @@
             datasets: [
                 {
                     label: "Consumo 2023",
-                    data: consumo_energia_2023,
+                    data: consumo_energia_kwh_2023,
                     fill: false,
                     backgroundColor: hexToRGB(colors.primary, 1),
                     borderColor: colors.primary,
@@ -369,7 +369,7 @@
                 },
                 {
                     label: "Consumo 2024",
-                    data: consumo_energia_2024,
+                    data: consumo_energia_kwh_2024,
                     fill: false,
                     backgroundColor: hexToRGB(colors.success, 1),
                     borderColor: colors.success,
@@ -418,6 +418,99 @@
                         color: isDark ? "#cbd5e1" : "#475569",
                         callback: function(value, index, values) {
                             return value + ' kwh';
+                        },
+                    },
+                },
+                x: {
+                    grid: {
+                        color: isDark ? "#334155" : "#e2e8f0",
+                    },
+
+                    ticks: {
+                        color: isDark ? "#cbd5e1" : "#475569",
+                    },
+                },
+            },
+        },
+    });
+
+    /* GRAFICA - CONSUMO DE ENERGIA (MXN) */
+    const consumo_energia_mxn_2023 = {{ consumo_energia_mxn_2023 | tojson | safe }};
+    const consumo_energia_mxn_2024 = {{ consumo_energia_mxn_2024 | tojson | safe }};
+    const ctxConsumoEnergiaMxn = document.getElementById("consumo_energia_mxn");
+    const lineChartConsumoEnergiaMxn = new Chart(ctxConsumoEnergiaMxn, {
+        type: "line",
+        data: {
+            labels: [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+            ],
+            datasets: [
+                {
+                    label: "Consumo 2023",
+                    data: consumo_energia_mxn_2023,
+                    fill: false,
+                    backgroundColor: hexToRGB(colors.primary, 1),
+                    borderColor: colors.primary,
+                    borderSkipped: "bottom",
+                    barThickness: 40,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBorderWidth: 5,
+                    pointBorderColor: "transparent",
+                    lineTension: 0.5,
+                    pointStyle: "circle",
+                    pointShadowOffsetX: 1,
+                    pointShadowOffsetY: 1,
+                    pointShadowBlur: 5,
+                },
+                {
+                    label: "Consumo 2024",
+                    data: consumo_energia_mxn_2024,
+                    fill: false,
+                    backgroundColor: hexToRGB(colors.success, 1),
+                    borderColor: colors.success,
+                    borderSkipped: "bottom",
+                    barThickness: 40,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBorderWidth: 5,
+                    pointBorderColor: "transparent",
+                    lineTension: 0.5,
+                    pointStyle: "circle",
+                    pointShadowOffsetX: 1,
+                    pointShadowOffsetY: 1,
+                    pointShadowBlur: 5,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: isDark ? "#cbd5e1" : "#475569",
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return '$' + context.raw.toFixed(2);
+                        },
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    stacked: false,
+                    grid: {
+                        color: isDark ? "#334155" : "#e2e8f0",
+                    },
+                    ticks: {
+                        color: isDark ? "#cbd5e1" : "#475569",
+                        callback: function(value, index, values) {
+                            return '$' + value;
                         },
                     },
                 },
