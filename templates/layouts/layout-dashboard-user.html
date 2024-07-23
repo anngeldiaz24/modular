@@ -23,6 +23,7 @@
     <script src="{{ url_for('static', filename='assets/js/settings.js') }}" sync></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> -->
     <script src="{{ url_for('static', filename='assets/js/chart-active.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
       <style>
         .list-item-safezone {
             position: relative;
@@ -42,6 +43,34 @@
             content: '➤'; 
             color: #6b7280;
             left: 1em; 
+        }
+        .switch-button {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          width: 15px;
+          height: 15px;
+          background-color: #ccc;
+          border-radius: 50%;
+          cursor: pointer;
+          border: 2px solid transparent;
+          transition: all 0.3s;
+        }
+        .switch-button:hover {
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+          background-color: #888;
+          border-color: #888;
+        }
+        .switch-button.active {
+            background-color: #ccc;
+            border: 2px solid #ccc;
+        }
+        .switch-button.outline {
+            background-color: transparent;
+            border: 2px solid #ccc;
+        }
+        .hidden {
+            display: none;
         }
     </style>
   </head>
