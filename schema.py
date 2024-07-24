@@ -95,7 +95,10 @@ instructions = [
             id INT AUTO_INCREMENT PRIMARY KEY,
             hogar_id INT NOT NULL,
             periodo_id INT NOT NULL,
-            cantidad DECIMAL(10, 2) NOT NULL,
+            consumo_kwh DECIMAL(10, 2) NOT NULL,
+            tarifa ENUM('básico', 'intermedio-bajo', 'intermedio-alto', 'excedente') NULL,
+            precio_energia DECIMAL(5, 3) NULL,
+            precio_total DECIMAL(10, 2) NULL,
             FOREIGN KEY (hogar_id) REFERENCES hogares(id),
             FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
@@ -106,7 +109,7 @@ instructions = [
             id INT AUTO_INCREMENT PRIMARY KEY,
             hogar_id INT NOT NULL,
             periodo_id INT NOT NULL,
-            cantidad DECIMAL(10, 2) NOT NULL,
+            consumo_litros DECIMAL(10, 2) NOT NULL,
             FOREIGN KEY (hogar_id) REFERENCES hogares(id),
             FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );

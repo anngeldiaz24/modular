@@ -19,7 +19,7 @@ bp = Blueprint('user', __name__, url_prefix='/user-dashboard')
 @login_required
 @user_role_required
 def user_index():
-    return render_template('user-dashboard.html', user=g.user)
+    return render_template('user/user-dashboard.html', user=g.user)
 
 @login_required
 @user_role_required
