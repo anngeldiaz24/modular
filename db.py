@@ -33,6 +33,21 @@ def generate_periodos():
 
     return periodos
 
+# Calcula el precio total del consumo de agua basado en las tarifas y el consumo
+def calcular_precio_agua(consumo_litros):
+    if consumo_litros <= 10000:
+        tarifa = 'básico'
+        precio_agua = 15.25
+    elif 10001 <= consumo_litros <= 20000:
+        tarifa = 'intermedio'
+        precio_agua = 23.22
+    else:
+        tarifa = 'excedente'
+        precio_agua = 26.67
+    
+    precio_total = (consumo_litros / 1000) * precio_agua
+    return tarifa, precio_agua, precio_total
+
 def init_app(app):
     # Carga las variables de entorno desde el archivo .env
     load_dotenv()
@@ -364,9 +379,17 @@ def seed_database():
     consumo_agua_hogares = []
     
     for hogar_id, miembros in miembros_por_hogar.items():
-            for periodo_id in range(1, 20):  # Considerando periodos del 1 al 19
-                consumo_litros = round(random.uniform(50, 150) * miembros * 30, 2)
-                consumo_agua_hogares.append({'hogar_id': hogar_id, 'periodo_id': periodo_id, 'consumo_litros': consumo_litros})
+        for periodo_id in range(1, 20):  # Considerando periodos del 1 al 19
+            consumo_litros = round(random.uniform(50, 150) * miembros * 30, 2)
+            tarifa, precio_agua, precio_total = calcular_precio_agua(consumo_litros)
+            consumo_agua_hogares.append({
+                'hogar_id': hogar_id, 
+                'periodo_id': periodo_id, 
+                'consumo_litros': consumo_litros,
+                'tarifa': tarifa,
+                'precio_agua': precio_agua,
+                'precio_total': precio_total
+            })
                 
     dispositivos = []
     
@@ -436,9 +459,10 @@ def seed_database():
             
         for consumo_agua in consumo_agua_hogares:
             c.execute(
-                '''INSERT INTO consumo_agua (hogar_id, periodo_id, consumo_litros)
-                VALUES (%s, %s, %s)''',
-                (consumo_agua['hogar_id'], consumo_agua['periodo_id'], consumo_agua['consumo_litros'])
+                '''INSERT INTO consumo_agua (hogar_id, periodo_id, consumo_litros, tarifa, precio_agua, precio_total)
+                VALUES (%s, %s, %s, %s, %s, %s)''',
+                (consumo_agua['hogar_id'], consumo_agua['periodo_id'], consumo_agua['consumo_litros'],
+                 consumo_agua['tarifa'], consumo_agua['precio_agua'], consumo_agua['precio_total'])
             )
             
         for dispositivo in dispositivos:

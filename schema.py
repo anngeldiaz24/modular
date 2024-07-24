@@ -110,6 +110,9 @@ instructions = [
             hogar_id INT NOT NULL,
             periodo_id INT NOT NULL,
             consumo_litros DECIMAL(10, 2) NOT NULL,
+            tarifa ENUM('básico', 'intermedio', 'excedente') NULL,
+            precio_agua DECIMAL(5, 3) NULL,
+            precio_total DECIMAL(10, 2) NULL,
             FOREIGN KEY (hogar_id) REFERENCES hogares(id),
             FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
