@@ -43,7 +43,6 @@ def init_app(app):
     app.cli.add_command(init_db_command)
     app.cli.add_command(drop_tables_command)
     app.cli.add_command(seed_database_command)
-    app.cli.add_command(seed_registros_eventos_command)
     
     # Configuración de la base de datos
     app.config['DATABASE_HOST'] = os.getenv('DATABASE_HOST')
@@ -87,6 +86,7 @@ def init_db():
             c.fetchall()  # Consumir los resultados de la consulta
         # Se ejecutan   
         db.commit()
+        db.close()
     except Exception as e:
         click.echo(f'Error al inicializar la base de datos: {str(e)}')
         return
@@ -118,6 +118,7 @@ def drop_tables():
         c.execute("SET FOREIGN_KEY_CHECKS = 1;")
         
         db.commit()
+        db.close()
     except Exception as e:
         click.echo(f'Error al dropear las tablas: {str(e)}')
         return
@@ -448,6 +449,7 @@ def seed_database():
             )
 
         db.commit()
+        db.close()
     except Exception as e:
         db.rollback()
         click.echo(f'Error al poblar la base de datos: {str(e)}')
@@ -458,31 +460,3 @@ def seed_database():
 def seed_database_command():
     seed_database()
     click.echo('Seeders ejecutados')
-    
-def seed_registros_eventos():
-    db, c = get_db()
-
-    registros_eventos = [
-        {'hogar_id': 1, 'evento_id': 1, 'timestamp': '2024-06-28 12:00:00'},
-        {'hogar_id': 1, 'evento_id': 3, 'timestamp': '2024-06-28 12:10:00'},
-        {'hogar_id': 2, 'evento_id': 2, 'timestamp': '2024-06-28 12:20:00'},
-        {'hogar_id': 3, 'evento_id': 4, 'timestamp': '2024-06-28 12:30:00'}
-    ]
-
-    try:
-        for registro_evento in registros_eventos:
-            c.execute(
-                '''INSERT INTO registros_eventos (hogar_id, evento_id, timestamp)
-                VALUES (%s, %s, %s)''',
-                (registro_evento['hogar_id'], registro_evento['evento_id'], registro_evento['timestamp'])
-            )
-        db.commit()
-    except Exception as e:
-        click.echo(f'Error al poblar la base de datos: {str(e)}')
-        return
-
-@click.command('seed-registros-eventos')
-@with_appcontext
-def seed_registros_eventos_command():
-    seed_registros_eventos()
-    click.echo('Tabla registros eventos poblada')
