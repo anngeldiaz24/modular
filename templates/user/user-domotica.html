@@ -117,11 +117,11 @@
                                 <div class="tab-content" id="tabs-tabContent">
                                     <div class="tab-pane fade show active" id="tabs-agua-litros" role="tabpanel"
                                         aria-labelledby="tabs-agua-litros-tab">
-                                        <canvas id="consumo_agua" class="h-[350px]"></canvas>
+                                        <canvas id="consumo_agua_litros" class="h-[350px]"></canvas>
                                     </div>
                                     <div class="tab-pane fade" id="tabs-agua-mxn" role="tabpanel"
                                         aria-labelledby="tabs-agua-mxn-tab">
-                                        <canvas id="consumo_agua" class="h-[350px]"></canvas>
+                                        <canvas id="consumo_agua_mxn" class="h-[350px]"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -528,10 +528,10 @@
     });
 
     /* GRAFICA - CONSUMO DE AGUA (litros) */
-    const consumo_agua_2023 = {{ consumo_agua_2023 | tojson | safe }};
-    const consumo_agua_2024 = {{ consumo_agua_2024 | tojson | safe }};
-    const ctxConsumoAgua = document.getElementById("consumo_agua");
-    const lineChartConsumoAgua = new Chart(ctxConsumoAgua, {
+    const consumo_agua_litros_2023 = {{ consumo_agua_litros_2023 | tojson | safe }};
+    const consumo_agua_litros_2024 = {{ consumo_agua_litros_2024 | tojson | safe }};
+    const ctxConsumoAguaLitros = document.getElementById("consumo_agua_litros");
+    const lineChartConsumoAguaLitros = new Chart(ctxConsumoAguaLitros, {
         type: "line",
         data: {
             labels: [
@@ -541,7 +541,7 @@
             datasets: [
                 {
                     label: "Consumo 2023",
-                    data: consumo_agua_2023,
+                    data: consumo_agua_litros_2023,
                     fill: false,
                     backgroundColor: hexToRGB(colors.primary, 1),
                     borderColor: colors.primary,
@@ -559,7 +559,7 @@
                 },
                 {
                     label: "Consumo 2024",
-                    data: consumo_agua_2024,
+                    data: consumo_agua_litros_2024,
                     fill: false,
                     backgroundColor: hexToRGB(colors.success, 1),
                     borderColor: colors.success,
@@ -608,6 +608,99 @@
                         color: isDark ? "#cbd5e1" : "#475569",
                         callback: function(value, index, values) {
                             return value + ' L';
+                        },
+                    },
+                },
+                x: {
+                    grid: {
+                        color: isDark ? "#334155" : "#e2e8f0",
+                    },
+
+                    ticks: {
+                        color: isDark ? "#cbd5e1" : "#475569",
+                    },
+                },
+            },
+        },
+    });
+
+    /* GRAFICA - CONSUMO DE AGUA (MXN) */
+    const consumo_agua_mxn_2023 = {{ consumo_agua_mxn_2023 | tojson | safe }};
+    const consumo_agua_mxn_2024 = {{ consumo_agua_mxn_2024 | tojson | safe }};
+    const ctxConsumoAguaMxn = document.getElementById("consumo_agua_mxn");
+    const lineChartConsumoAguaMxn = new Chart(ctxConsumoAguaMxn, {
+        type: "line",
+        data: {
+            labels: [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+            ],
+            datasets: [
+                {
+                    label: "Consumo 2023",
+                    data: consumo_agua_mxn_2023,
+                    fill: false,
+                    backgroundColor: hexToRGB(colors.primary, 1),
+                    borderColor: colors.primary,
+                    borderSkipped: "bottom",
+                    barThickness: 40,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBorderWidth: 5,
+                    pointBorderColor: "transparent",
+                    lineTension: 0.2,
+                    pointStyle: "circle",
+                    pointShadowOffsetX: 1,
+                    pointShadowOffsetY: 1,
+                    pointShadowBlur: 5,
+                },
+                {
+                    label: "Consumo 2024",
+                    data: consumo_agua_mxn_2024,
+                    fill: false,
+                    backgroundColor: hexToRGB(colors.success, 1),
+                    borderColor: colors.success,
+                    borderSkipped: "bottom",
+                    barThickness: 40,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBorderWidth: 5,
+                    pointBorderColor: "transparent",
+                    lineTension: 0.2,
+                    pointStyle: "circle",
+                    pointShadowOffsetX: 1,
+                    pointShadowOffsetY: 1,
+                    pointShadowBlur: 5,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: isDark ? "#cbd5e1" : "#475569",
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return '$' + context.raw.toFixed(2);
+                        },
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    stacked: false,
+                    grid: {
+                        color: isDark ? "#334155" : "#e2e8f0",
+                    },
+                    ticks: {
+                        color: isDark ? "#cbd5e1" : "#475569",
+                        callback: function(value, index, values) {
+                            return '$' + value;
                         },
                     },
                 },

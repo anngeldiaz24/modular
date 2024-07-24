@@ -31,7 +31,7 @@ def get_consumo_energia(columna='consumo_kwh'):
     
     return datos_grafica
 
-def get_consumo_agua():
+def get_consumo_agua(columna='consumo_litros'):
     # Establece conexión a la base de datos
     db, c = get_db()
     
@@ -39,8 +39,8 @@ def get_consumo_agua():
     hogar_id = g.user['hogar_id']
     
     # Consulta para obtener el consumo_litros del hogar por periodo
-    query = """
-    SELECT periodo_id, consumo_litros
+    query = f"""
+    SELECT periodo_id, {columna}
     FROM consumo_agua
     WHERE hogar_id = %s
     ORDER BY periodo_id
@@ -51,7 +51,7 @@ def get_consumo_agua():
     datos = c.fetchall()
     
     # Convierte los resultados a un formato de lista de diccionarios
-    datos_grafica = [{'periodo_id': dato['periodo_id'], 'consumo_litros': float(dato['consumo_litros'])} for dato in datos]
+    datos_grafica = [{'periodo_id': dato['periodo_id'], columna: float(dato[columna])} for dato in datos]
     
     return datos_grafica
 
@@ -204,19 +204,34 @@ def user_domotica():
             consumo_energia_mxn_2024[periodo_id - 13] = consumo_mxn
             
     # GRAFICA LINE - CONSUMO DE AGUA (litros)
-    datos_grafica_agua = get_consumo_agua()
+    datos_grafica_agua_litros = get_consumo_agua('consumo_litros')
     
-    consumo_agua_2023 = [0] * 12
-    consumo_agua_2024 = [0] * 12
+    consumo_agua_litros_2023 = [0] * 12
+    consumo_agua_litros_2024 = [0] * 12
     
-    for dato_agua in datos_grafica_agua:
+    for dato_agua in datos_grafica_agua_litros:
         periodo_id = int(dato_agua['periodo_id'])
         consumo_litros = float(dato_agua['consumo_litros'])
         
         if 1 <= periodo_id <= 12:
-            consumo_agua_2023[periodo_id - 1] = consumo_litros
+            consumo_agua_litros_2023[periodo_id - 1] = consumo_litros
         elif 13 <= periodo_id <= 24:
-            consumo_agua_2024[periodo_id - 13] = consumo_litros
+            consumo_agua_litros_2024[periodo_id - 13] = consumo_litros
+            
+    # GRAFICA LINE - CONSUMO DE AGUA (MXN)
+    datos_grafica_agua_mxn = get_consumo_agua('precio_total')
+    
+    consumo_agua_mxn_2023 = [0] * 12
+    consumo_agua_mxn_2024 = [0] * 12
+    
+    for dato_agua in datos_grafica_agua_mxn:
+        periodo_id = int(dato_agua['periodo_id'])
+        consumo_mxn = float(dato_agua['precio_total'])
+        
+        if 1 <= periodo_id <= 12:
+            consumo_agua_mxn_2023[periodo_id - 1] = consumo_mxn
+        elif 13 <= periodo_id <= 24:
+            consumo_agua_mxn_2024[periodo_id - 13] = consumo_mxn
     
     # GRAFICA PIE - TIPOS DE DISPOSITIVOS
     dispositivos_tipos, dispositivos_cantidades = get_dispositivos_por_tipo()
@@ -232,8 +247,10 @@ def user_domotica():
         consumo_energia_kwh_2024=consumo_energia_kwh_2024,
         consumo_energia_mxn_2023=consumo_energia_mxn_2023,
         consumo_energia_mxn_2024=consumo_energia_mxn_2024,
-        consumo_agua_2023=consumo_agua_2023,
-        consumo_agua_2024=consumo_agua_2024,
+        consumo_agua_litros_2023=consumo_agua_litros_2023,
+        consumo_agua_litros_2024=consumo_agua_litros_2024,
+        consumo_agua_mxn_2023=consumo_agua_mxn_2023,
+        consumo_agua_mxn_2024=consumo_agua_mxn_2024,
         dispositivos_tipos=dispositivos_tipos,
         dispositivos_cantidades=dispositivos_cantidades
         )
