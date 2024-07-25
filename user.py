@@ -94,6 +94,12 @@ def user_welcome():
 
     return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user, paquete=paquete, estados=estados)
 
+@bp.route('/miembros-hogar')
+@login_required
+def miembros_hogar():
+    return render_template('user/miembros-hogar.html', current_year=datetime.datetime.now().year, user=g.user)
+
+
 @bp.route('/encender-luces-domesticas')
 @login_required
 def encender_luces_domesticas():
