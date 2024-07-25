@@ -177,27 +177,53 @@
                             onclick="switchCardContent('card1', 'card1Content1', 'card1Content2', this)"></div>
                         <div id="card1Content1">
                             <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">
-                                Consumo de luz
+                                Consumo de luz - kwh (más reciente)
                             </span>
                             <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
-                                354
+                                {{ consumo_actual_kwh }} kwh
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl  text-primary-500">
-                                    <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                <div class="flex-none text-xl text-primary-500">
+                                    {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    {% else %}
+                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                    {% endif %}
                                 </div>
                                 <div class="flex-1 text-sm">
                                     <span class="block mb-[2px] text-primary-500">
-                                        25.67%
+                                        {{ cambio_porcentual_kwh }}%
                                     </span>
                                     <span class="block mb-1 text-slate-600 dark:text-slate-300">
-                                        Desde el último mes
+                                        Desde el último mes ({{ inicio_anterior_kwh_formateado | capitalize }})
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div id="card1Content2" class="hidden">
-                            HOLA
+                            <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">
+                                Consumo de luz - MXN (más reciente)
+                            </span>
+                            <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                ${{ consumo_actual_energia_mxn }}
+                            </span>
+                            <div class="flex space-x-2 rtl:space-x-reverse">
+                                <div class="flex-none text-xl  text-primary-500">
+                                    {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    {% else %}
+                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-1 text-sm">
+                                    <span class="block mb-[2px] text-primary-500">
+                                        {{ cambio_porcentual_energia_mxn }}%
+                                    </span>
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                        Desde el último mes ({{ inicio_anterior_kwh_formateado | capitalize }})
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
