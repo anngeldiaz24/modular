@@ -154,16 +154,16 @@ def seed_database():
     db, c = get_db()
 
     codigos = [
-        {'codigo': 'CODE-1AB', 'paquete': 'basico', 'disponible': False},
-        {'codigo': 'CODE-2BC', 'paquete': 'basico', 'disponible': False},
-        {'codigo': 'CODE-3CD', 'paquete': 'premium', 'disponible': False},
-        {'codigo': 'CODE-4DE', 'paquete': 'premium', 'disponible': False},
-        {'codigo': 'CODE-5EF', 'paquete': 'deluxe', 'disponible': False},
-        {'codigo': 'CODE-6FG', 'paquete': 'deluxe', 'disponible': True},
-        {'codigo': 'CODE-7GH', 'paquete': 'basico', 'disponible': True},
-        {'codigo': 'CODE-8HI', 'paquete': 'premium', 'disponible': True},
-        {'codigo': 'CODE-9IJ', 'paquete': 'deluxe', 'disponible': True},
-        {'codigo': 'CODE-0JK', 'paquete': 'basico', 'disponible': True}
+        {'codigo': 'CODE-1AB', 'paquete': 'Básico', 'disponible': False},
+        {'codigo': 'CODE-2BC', 'paquete': 'Básico', 'disponible': False},
+        {'codigo': 'CODE-3CD', 'paquete': 'Premium', 'disponible': False},
+        {'codigo': 'CODE-4DE', 'paquete': 'Premium', 'disponible': False},
+        {'codigo': 'CODE-5EF', 'paquete': 'Deluxe', 'disponible': False},
+        {'codigo': 'CODE-6FG', 'paquete': 'Deluxe', 'disponible': True},
+        {'codigo': 'CODE-7GH', 'paquete': 'Básico', 'disponible': True},
+        {'codigo': 'CODE-8HI', 'paquete': 'Premium', 'disponible': True},
+        {'codigo': 'CODE-9IJ', 'paquete': 'Deluxe', 'disponible': True},
+        {'codigo': 'CODE-0JK', 'paquete': 'Básico', 'disponible': True}
     ]
 
     estados = [
@@ -199,10 +199,6 @@ def seed_database():
         {'codigo_postal': '04000', 'calle': 'Camino Real', 'numero_exterior': '789', 'numero_interior': '', 'colonia': 'San Juan', 'municipio': 'Puebla', 'estado': 'Puebla', 'informacion_adicional': '', 'estatus': 'activo'},
         {'codigo_postal': '05000', 'calle': 'Av. Revolución', 'numero_exterior': '101', 'numero_interior': 'C', 'colonia': 'Las Flores', 'municipio': 'Querétaro', 'estado': 'Querétaro', 'informacion_adicional': 'Frente a la plaza', 'estatus': 'activo'},
         {'codigo_postal': '06000', 'calle': 'Boulevard de los Sueños Rotos', 'numero_exterior': '202', 'numero_interior': '', 'colonia': 'Esperanza', 'municipio': 'León', 'estado': 'Guanajuato', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '07000', 'calle': 'Calle del Sol', 'numero_exterior': '303', 'numero_interior': 'D', 'colonia': 'Luz', 'municipio': 'Mérida', 'estado': 'Yucatán', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '08000', 'calle': 'Paseo de la Reforma', 'numero_exterior': '404', 'numero_interior': '', 'colonia': 'Bella Vista', 'municipio': 'Morelia', 'estado': 'Michoacán', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '09000', 'calle': 'Calle del Mar', 'numero_exterior': '505', 'numero_interior': 'E', 'colonia': 'Océano', 'municipio': 'Cancún', 'estado': 'Quintana Roo', 'informacion_adicional': 'Cerca de la playa', 'estatus': 'activo'},
-        {'codigo_postal': '10000', 'calle': 'Calle de los Milagros', 'numero_exterior': '606', 'numero_interior': '', 'colonia': 'Esperanza', 'municipio': 'Tuxtla Gutiérrez', 'estado': 'Chiapas', 'informacion_adicional': '', 'estatus': 'activo'}
     ]
     
     eventos = [
