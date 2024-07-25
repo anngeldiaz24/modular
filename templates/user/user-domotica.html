@@ -183,7 +183,7 @@
                                 {{ consumo_actual_kwh }} kwh
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl text-primary-500">
+                                <div class="flex-none text-xl {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}text-red-500{% else %}text-green-500{% endif %}">
                                     {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}
                                         <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
                                     {% else %}
@@ -191,7 +191,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="flex-1 text-sm">
-                                    <span class="block mb-[2px] text-primary-500">
+                                    <span class="block mb-[2px] {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}text-red-500{% else %}text-green-700{% endif %}">
                                         {{ cambio_porcentual_kwh }}%
                                     </span>
                                     <span class="block mb-1 text-slate-600 dark:text-slate-300">
@@ -208,7 +208,7 @@
                                 ${{ consumo_actual_energia_mxn }}
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl  text-primary-500">
+                                <div class="flex-none text-xl {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}text-red-500{% else %}text-green-500{% endif %}">
                                     {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}
                                         <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
                                     {% else %}
@@ -216,7 +216,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="flex-1 text-sm">
-                                    <span class="block mb-[2px] text-primary-500">
+                                    <span class="block mb-[2px] {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}text-red-500{% else %}text-green-500{% endif %}">
                                         {{ cambio_porcentual_energia_mxn }}%
                                     </span>
                                     <span class="block mb-1 text-slate-600 dark:text-slate-300">
@@ -227,7 +227,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1]"
+                    <div class="bg-primary-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1]"
                         id="card2">
                         <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
                             <img src="{{  url_for('static', filename='assets/images/all-img/shade-2.png') }}" alt
@@ -240,22 +240,22 @@
                                 Consumo de agua - L (más reciente)
                             </span>
                             <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
-                                {{ consumo_actual_kwh }} L
+                                {{ consumo_actual_litros }} L
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl text-primary-500">
-                                    {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}
+                                <div class="flex-none text-xl {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}text-red-500{% else %}text-green-600{% endif %}">
+                                    {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}
                                         <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
                                     {% else %}
                                         <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
                                     {% endif %}
                                 </div>
                                 <div class="flex-1 text-sm">
-                                    <span class="block mb-[2px] text-primary-500">
-                                        {{ cambio_porcentual_kwh }}%
+                                    <span class="block mb-[2px] {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}text-red-500{% else %}text-green-600{% endif %}">
+                                        {{ cambio_porcentual_litros }}%
                                     </span>
                                     <span class="block mb-1 text-slate-600 dark:text-slate-300">
-                                        Desde el último mes ({{ inicio_anterior_kwh_formateado | capitalize }})
+                                        Desde el último mes ({{ inicio_anterior_litros_formateado | capitalize }})
                                     </span>
                                 </div>
                             </div>
@@ -265,22 +265,22 @@
                                 Consumo de agua - MXN (más reciente)
                             </span>
                             <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
-                                ${{ consumo_actual_energia_mxn }}
+                                ${{ consumo_actual_agua_mxn }}
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl  text-primary-500">
-                                    {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}
+                                <div class="flex-none text-xl {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}text-red-500{% else %}text-green-600{% endif %}">
+                                    {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}
                                         <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
                                     {% else %}
                                         <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
                                     {% endif %}
                                 </div>
                                 <div class="flex-1 text-sm">
-                                    <span class="block mb-[2px] text-primary-500">
-                                        {{ cambio_porcentual_energia_mxn }}%
+                                    <span class="block mb-[2px] {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}text-red-500{% else %}text-green-600{% endif %}">
+                                        {{ cambio_porcentual_agua_mxn }}%
                                     </span>
                                     <span class="block mb-1 text-slate-600 dark:text-slate-300">
-                                        Desde el último mes ({{ inicio_anterior_kwh_formateado | capitalize }})
+                                        Desde el último mes ({{ inicio_anterior_agua_mxn_formateado | capitalize }})
                                     </span>
                                 </div>
                             </div>
@@ -289,6 +289,7 @@
 
                     <!-- END: Group Chart3 -->
                 </div>
+
                 <div class="card">
                     <header class="card-header">
                         <h4 class="card-title">Administración del hogar</h4>
