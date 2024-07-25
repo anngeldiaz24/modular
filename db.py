@@ -65,7 +65,6 @@ def get_db():
         )
         g.c = g.db.cursor(dictionary=True)
     #retornamos la bd y el cursor 
-    print(current_app.config['DATABASE'])
     return g.db, g.c
 
 def close_db(e = None):

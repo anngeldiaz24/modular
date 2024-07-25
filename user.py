@@ -8,18 +8,21 @@ from .raspberry import funciones
 import logging
 import datetime
 from .db import get_db
+import re 
+from werkzeug.security import generate_password_hash
+from mysql.connector import Error as MySQLError
 
 # Configurar el logging para este módulo
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-bp = Blueprint('user', __name__, url_prefix='/user-dashboard')
+bp = Blueprint('user', __name__)
 
-@bp.route('')
+@bp.route('/hogar')
 @login_required
 @user_role_required
 def user_index():
-    return render_template('user/user-dashboard.html', user=g.user)
+    return render_template('user/user-dashboard.html', user=g.user, role=g.user['rol'])
 
 @login_required
 @user_role_required
@@ -35,14 +38,14 @@ def user_welcome():
         c.execute('SELECT ca.paquete FROM codigos_acceso ca JOIN users u ON u.codigo_acceso = ca.id WHERE u.id = %s', (g.user['id'],))
         paquete = c.fetchone()
     except Exception as e:
-        flash(f"Ocurrió un error al obtener el paquete del código de acceso: {e}", 'danger')
+        flash(f"Ocurrió un error al obtener el paquete del código de acceso: {e}", 'error')
     
     try:
         # Obtener los estados de la base de datos
         c.execute('SELECT nombre FROM estados')
         estados = c.fetchall()
     except Exception as e:
-        flash(f"Ocurrió un error al obtener los estados: {e}", 'danger')
+        flash(f"Ocurrió un error al obtener los estados: {e}", 'error')
 
     if request.method == 'POST':
         codigo_postal = request.form['codigo_postal']
@@ -74,7 +77,6 @@ def user_welcome():
 
         if error is None:
             try:
-                # Insertar en la tabla hogares
                 c.execute('INSERT INTO hogares (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, estatus) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
                     (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, 'activo'))
                 hogar_id = c.lastrowid
@@ -88,17 +90,163 @@ def user_welcome():
             except Exception as e:
                 db.rollback()
                 error = f"Ocurrió un error al guardar la dirección: {e}"
-                flash(error, 'danger')
+                flash(error, 'error')
         else:
-            flash(error, 'danger')
+            flash(error, 'error')
 
     return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user, paquete=paquete, estados=estados)
 
 @bp.route('/miembros-hogar')
 @login_required
 def miembros_hogar():
-    return render_template('user/miembros-hogar.html', current_year=datetime.datetime.now().year, user=g.user)
+    db, c = get_db()
+    hogar_id = g.user['hogar_id']
 
+    c.execute("""
+        SELECT u.id, u.nombre, u.apellidos, u.email, u.telefono, u.rol
+        FROM users u
+        WHERE u.hogar_id = %s
+    """, (hogar_id,))
+
+    miembros = c.fetchall()
+
+    return render_template('user/miembros-hogar.html', miembros=miembros, current_year=datetime.datetime.now().year, user=g.user)
+
+@bp.route('/crear-miembro-hogar', methods=['POST'])
+@login_required
+def crear_miembro():
+    hogar_id = g.user['hogar_id']
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        apellidos = request.form['apellidos']
+        email = request.form['email']
+        password = request.form['password']
+        telefono = request.form['telefono']
+        rol = request.form['rol']
+        acepto_terminos = 1 
+
+        db, c = get_db()
+        error = None
+
+        # Validaciones
+        if not isinstance(nombre, str) or not nombre or len(nombre) < 3:
+            error = 'El nombre es requerido y debe ser una cadena de al menos 3 caracteres.'
+        elif not isinstance(apellidos, str) or not apellidos or len(apellidos) < 3:
+            error = 'Los apellidos son requeridos y deben ser una cadena de al menos 3 caracteres.'
+        elif not isinstance(email, str) or not email or not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            error = 'El email es requerido y debe ser una dirección de correo electrónico válida.'
+        elif not isinstance(password, str) or not password or len(password) < 8 or not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password) or not any(char in "!@#$%^&*()-_=+{}[]|;:<>,.?/" for char in password):
+            error = 'La contraseña es requerida y debe tener al menos 8 caracteres, incluir números y caracteres especiales.'
+        elif not isinstance(telefono, str) or not telefono or len(telefono) > 13:
+            error = 'El teléfono es requerido y no puede tener más de 13 dígitos.'
+
+        # Verificar duplicación de correo dentro del mismo hogar
+        c.execute(
+            "SELECT id FROM users WHERE email = %s AND hogar_id = %s",
+            (email, hogar_id)
+        )
+        user = c.fetchone()
+        if user is not None:
+            error = 'Ya existe un usuario con ese correo electrónico en el hogar.'
+
+        # Verificar duplicación de correo en toda la base de datos
+        c.execute(
+            "SELECT id FROM users WHERE email = %s",
+            (email,)
+        )
+        user_global = c.fetchone()
+        if user_global is not None:
+            error = 'El correo electrónico ya ha sido registrado.'
+
+        if error is None:
+            try:
+                hashed_password = generate_password_hash(password)
+                c.execute(
+                    "INSERT INTO users (nombre, apellidos, email, telefono, password, rol, acepto_terminos, hogar_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                    (nombre, apellidos, email, telefono, hashed_password, rol, acepto_terminos, hogar_id)
+                )
+                db.commit()
+                flash('¡Miembro añadido existosamente!', 'success')
+                return redirect(url_for('user.miembros_hogar'))
+            except Exception as e:
+                db.rollback()
+                error = str(e)
+                flash(error, 'error')
+        else:
+            flash(error, 'error')
+    return redirect(url_for('user.miembros_hogar'))
+
+@bp.route('/miembro/<int:id>/delete', methods=['POST'])
+@login_required
+def eliminar_miembro(id):
+    db, c = get_db()
+    c.execute('SELECT * FROM users WHERE id = %s', (id,))
+    miembro = c.fetchone()
+
+    if miembro is None:
+        abort(404, f"Miembro {id} no encontrado.")
+    
+    c.reset()
+    c.execute('DELETE FROM users WHERE id = %s', (id,))
+    db.commit()
+    flash('Miembro eliminado exitosamente.', 'success')
+    return redirect(url_for('user.miembros_hogar'))
+
+@bp.route('/miembro/<int:id>/edit', methods=['POST'])
+@login_required
+def editar_miembro(id):
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        apellidos = request.form['apellidos']
+        email = request.form['email']
+        telefono = request.form['telefono']
+        rol = request.form['rol']
+        acepto_terminos = 1  
+
+        db, c = get_db()
+        error = None
+
+        if not isinstance(nombre, str) or not nombre or len(nombre) < 3:
+            error = 'El nombre es requerido y debe ser una cadena de al menos 3 caracteres.'
+        elif not isinstance(apellidos, str) or not apellidos or len(apellidos) < 3:
+            error = 'Los apellidos son requeridos y deben ser una cadena de al menos 3 caracteres.'
+        elif not isinstance(email, str) or not email or not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            error = 'El email es requerido y debe ser una dirección de correo electrónico válida.'
+        elif not isinstance(telefono, str) or not telefono or len(telefono) > 13:
+            error = 'El teléfono es requerido y no puede tener más de 13 dígitos.'
+
+        c.execute(
+            "SELECT id FROM users WHERE email = %s AND hogar_id = %s AND id != %s",
+            (email, g.user['hogar_id'], id)
+        )
+        user = c.fetchone()
+        if user is not None:
+            error = 'Ya existe un usuario con ese correo electrónico en el hogar.'
+
+        c.execute(
+            "SELECT id FROM users WHERE email = %s AND id != %s",
+            (email, id)
+        )
+        user_global = c.fetchone()
+        if user_global is not None:
+            error = 'El correo electrónico ya ha sido registrado.'
+
+        if error is None:
+            try:
+                c.execute(
+                    "UPDATE users SET nombre = %s, apellidos = %s, email = %s, telefono = %s, rol = %s, acepto_terminos = %s WHERE id = %s",
+                    (nombre, apellidos, email, telefono, rol, acepto_terminos, id)
+                )
+                db.commit()
+                flash('¡Miembro actualizado exitosamente!', 'success')
+                return redirect(url_for('user.miembros_hogar'))
+            except Exception as e:
+                db.rollback()
+                error = str(e)
+                flash(error, 'error')
+        else:
+            flash(error, 'error')
+    return redirect(url_for('user.miembros_hogar'))
 
 @bp.route('/encender-luces-domesticas')
 @login_required

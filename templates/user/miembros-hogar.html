@@ -4,12 +4,11 @@
     {% block title %}Miembros del hogar{% endblock %}
 {% endblock %}
 
-
 {% block content %}
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title">Miembros del hogar</h4>
-        <button type="button" class="btn btn-primary">Nuevo miembro</button>
+        <a href="#" type="button" class="btn btn-primary" data-bs-target="#crearModal" data-bs-toggle="modal">Nuevo miembro</a>
     </div>
 </div>
 
@@ -22,15 +21,41 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="data-table">
                             <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>
-                                    <th scope="col" class="table-th">Nombre</th>
-                                    <th scope="col" class="table-th">Apellidos</th>
-                                    <th scope="col" class="table-th">Teléfono</th>
-                                    <th scope="col" class="table-th">Email</th>
-                                    <th scope="col" class="table-th">Acciones</th>
+                                    <th scope="col" class="table-th text-center">Nombre</th>
+                                    <th scope="col" class="table-th text-center">Apellidos</th>
+                                    <th scope="col" class="table-th text-center">Teléfono</th>
+                                    <th scope="col" class="table-th text-center">Email</th>
+                                    <th scope="col" class="table-th text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                
+                                {% for miembro in miembros %}
+                                <tr class="table-row text-center">
+                                    <td class="table-td text-left"><iconify-icon class="mr-2" icon="ph:user" width="1.4rem" height="1.4rem"></iconify-icon>{{ miembro.nombre }}</td>
+                                    <td class="table-td">{{ miembro.apellidos }}</td>
+                                    <td class="table-td">{{ miembro.telefono }}</td>
+                                    <td class="table-td">{{ miembro.email }}</td>
+                                    <td class="table-td">
+                                        <div class="relative">
+                                            <div class="dropdown relative">
+                                                <button class="text-xl text-center block w-full" type="button" id="tableDropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                                </button>
+                                                <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-10 float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white edit-btn" data-bs-toggle="modal" 
+                                                        data-bs-target="#editModal" data-id="{{ miembro.id }}" data-nombre="{{ miembro.nombre }}" data-apellidos="{{ miembro.apellidos }}" data-telefono="{{ miembro.telefono }}" data-email="{{ miembro.email }}" data-rol="{{ miembro.rol }}">Editar</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white delete-btn" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal" data-id="{{ miembro.id }}" data-nombre="{{ miembro.nombre }}" data-apellidos="{{ miembro.apellidos }}">Eliminar</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -40,27 +65,90 @@
     </div>
 </div>
 
-<!-- Modal de edición -->
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog relative w-auto pointer-events-none top-1/4">
+<!-- Modal de creación -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-2/4">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current mx-4 sm:mx-auto">
             <div class="modal-header px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                <h5 class="modal-title" id="editModalLabel">Editar Hogar</h5>
+                <h5 class="modal-title" id="crearModalLabel"><iconify-icon class="mr-2 mt-5" icon="ph:user-plus" width="1.3em" height="1.3em"></iconify-icon>Crear miembro</h5>
+                <span>Se añadirá un miembro y tendrá acceso a las funcionalidades e información del hogar</span>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="editHogarForm" method="post">
+                <form id="crearMiembroForm" method="post">
                     <div class="mb-3">
-                        <label for="editDireccion" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="editDireccion" readonly>
+                        <label for="crearNombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="crearNombre" name="nombre" placeholder="Ingresa tu nombre" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editPaquete" class="form-label">Paquete</label>
-                        <input type="text" class="form-control" id="editPaquete" name="paquete">
+                        <label for="crearApellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="crearApellidos" name="apellidos" placeholder="Ingresa tus apellidos" required>
                     </div>
                     <div class="mb-3">
-                        <label for="editEstatus" class="form-label">Estatus</label>
-                        <input type="text" class="form-control" id="editEstatus" name="estatus" required>
+                        <label for="crearTelefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="crearTelefono" name="telefono" placeholder="Ingresa tu teléfono" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="crearEmail" class="form-label">Email</label>
+                        <input type="text" class="form-control" id="crearEmail" name="email" placeholder="Ingresa tu email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="crearRol" class="form-label">Rol</label>
+                        <select class="form-control" id="crearRol" name="rol" required>
+                            <option value="" hidden>Selecciona una opción</option>
+                            <option value="Owner">Administrador</option>
+                            <option value="User">Miembro del hogar</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="crearPassword" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="crearPassword" name="password" placeholder="******" required>
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary text-right" id="agregar-miembro-btn">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin modal de creación -->
+
+<!-- Modal de edición -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-2/4">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current mx-4 sm:mx-auto">
+            <div class="modal-header px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                <h5 class="modal-title" id="editModalLabel">Editar miembro</h5>
+                <span>Actualiza la información deseada</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="editMiembroForm" method="post">
+                    <input type="hidden" id="editMiembroId" name="miembroId">
+                    <div class="mb-3">
+                        <label for="editNombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="editNombre" name="nombre" placeholder="Ingresa tu nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editApellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="editApellidos" name="apellidos" placeholder="Ingresa tus apellidos" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTelefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="editTelefono" name="telefono" placeholder="Ingresa tu teléfono" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">Email</label>
+                        <input type="text" class="form-control" id="editEmail" name="email" placeholder="Ingresa tu email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editRol" class="form-label">Rol</label>
+                        <select class="form-control" id="editRol" name="rol" required>
+                            <option value="" hidden>Selecciona una opción</option>
+                            <option value="Owner">Administrador</option>
+                            <option value="User">Miembro del hogar</option>
+                        </select>
                     </div>
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary text-right">Guardar cambios</button>
@@ -72,21 +160,23 @@
 </div>
 <!-- Fin modal de edición -->
 
+
 <!-- Modal eliminar -->
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog relative w-auto pointer-events-none top-1/4 mx-4 sm:mx-auto">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-header px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                <h5 class="modal-title" id="deleteModalLabel">Eliminar Hogar</h5>
+                <h5 class="modal-title" id="deleteModalLabel">Eliminar Miembro</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="text-center">
-                    <p class="text-lg font-semibold mb-3">¿Estás seguro de eliminar el hogar?</p>
+                    <p class="text-lg font-semibold mb-3">¿Estás seguro de eliminar el miembro <span id="miembroNombre"></span> de tu hogar?</p>
                     <p class="text-sm text-gray-600 dark:text-gray-400">Esta acción es irreversible.</p>
                 </div>
                 <div class="text-right">
-                    <form id="deleteHogarForm" method="post">
+                    <form id="deleteMiembroForm" method="post">
+                        <input type="hidden" id="miembroId" name="miembroId">
                         <button type="submit" class="btn btn-danger" id="delete-btn">Eliminar</button>
                     </form>
                 </div>
@@ -96,30 +186,50 @@
 </div>
 <!-- Fin modal eliminar -->
 
-
 <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
+    document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', function() {
-                let hogarId = this.getAttribute('data-id');
-                let direccion = this.getAttribute('data-direccion');
-                let paquete = this.getAttribute('data-paquete');
-                let estatus = this.getAttribute('data-estatus');
-
-                document.getElementById('editDireccion').value = direccion;
-                document.getElementById('editPaquete').value = paquete;
-                document.getElementById('editEstatus').value = estatus;
-
-                document.getElementById('editHogarForm').action = '/hogar/' + hogarId + '/edit';
-
+                const miembroId = this.getAttribute('data-id');
+                const nombre = this.getAttribute('data-nombre');
+                const apellidos = this.getAttribute('data-apellidos');
+                const telefono = this.getAttribute('data-telefono');
+                const email = this.getAttribute('data-email');
+                const rol = this.getAttribute('data-rol');
+    
+                document.getElementById('editMiembroId').value = miembroId;
+                document.getElementById('editNombre').value = nombre;
+                document.getElementById('editApellidos').value = apellidos;
+                document.getElementById('editTelefono').value = telefono;
+                document.getElementById('editEmail').value = email;
+                document.getElementById('editRol').value = rol;
+                document.getElementById('editMiembroForm').action = '/miembro/' + miembroId + '/edit';
             });
         });
     });
 
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function() {
-            let hogarId = this.getAttribute('data-id');
-            document.getElementById('deleteHogarForm').action = '/hogar/' + hogarId + '/delete';
+            let miembroId = this.getAttribute('data-id');
+            let nombre = this.getAttribute('data-nombre');
+            let apellidos = this.getAttribute('data-apellidos');
+
+            document.getElementById('miembroNombre').textContent = `${nombre} ${apellidos}`;
+            document.getElementById('miembroId').value = miembroId;
+            document.getElementById('deleteMiembroForm').action = '/miembro/' + miembroId + '/delete';
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('agregar-miembro-btn').addEventListener('click', function() {
+            let nombre = document.getElementById('crearNombre').value;
+            let apellidos = document.getElementById('crearApellidos').value;
+            let telefono = document.getElementById('crearTelefono').value;
+            let email = document.getElementById('crearEmail').value;
+            let rol = document.getElementById('crearRol').value;
+            let password = document.getElementById('crearPassword').value;
+
+            document.getElementById('crearMiembroForm').action = '/crear-miembro-hogar';
         });
     });
 

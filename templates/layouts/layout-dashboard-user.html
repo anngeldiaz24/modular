@@ -84,15 +84,17 @@
               </a>
             </li>
 
-            <li class>
-              <a href="{{ url_for('user.miembros_hogar') }}" class="navItem">
-                <span class="flex items-center">
-                  <iconify-icon class=" nav-icon"
-                    icon="heroicons-outline:user-group"></iconify-icon>
-                  <span>Gestión de miembros</span>
-                </span>
-              </a>
-            </li>
+            {% if role == 'Owner' %}
+              <li class>
+                <a href="{{ url_for('user.miembros_hogar') }}" class="navItem">
+                  <span class="flex items-center">
+                    <iconify-icon class=" nav-icon"
+                      icon="heroicons-outline:user-group"></iconify-icon>
+                    <span>Gestión de miembros</span>
+                  </span>
+                </a>
+              </li>
+            {% endif %}
 
             <li class>
               <a href="{{ url_for('domotica.user_domotica') }}" class="navItem">
@@ -1257,9 +1259,7 @@
 
                     </li>
 
-                    <li class="
-             menu-item-has-children 
-              ">
+                    <li class="menu-item-has-children ">
                       <!--  Single menu -->
 
                       <!-- has dropdown -->
@@ -1843,6 +1843,7 @@
     <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/chart-active.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -1854,9 +1855,16 @@
               {% endfor %}
             {% endif %}
         {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                  {% if category == 'error' %}
+                  toastr.error("{{ message }}");
+                  {% endif %}
+              {% endfor %}
+            {% endif %}
+        {% endwith %}
     </script>
-    <script src="{{ url_for('static', filename='assets/js/chart-active.js') }}"></script>
-
     <!-- Definir un bloque para los scripts específicos de cada vista -->
     {% block scripts %}
       <!-- Scripts adicionales específicos de la vista -->

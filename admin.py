@@ -56,7 +56,7 @@ def get_hogares():
                     'apellidos': row['apellidos']
                 })
     except Exception as e:
-        flash(f"Ocurrió un error: {e}", 'danger')
+        flash(f"Ocurrió un error: {e}", 'error')
         hogares = {}
 
     return hogares
@@ -121,7 +121,7 @@ def editar_hogar(id):
                 db.rollback()
 
         else:
-            flash('¡Oops, algo salió mal!. Verifica la información', 'error')
+            flash(error, 'error')
 
     return redirect(url_for('admin.admin_hogares'))
 
@@ -130,7 +130,6 @@ def editar_hogar(id):
 @admin_role_required
 def eliminar_hogar(id):
     db, c = get_db()
-    print(id)
     c.execute('SELECT * FROM hogares WHERE id = %s', (id,))
     hogar = c.fetchone()
 

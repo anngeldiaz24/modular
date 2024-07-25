@@ -95,11 +95,8 @@ def login():
         
         if user is None:
             error = 'Email o contraseña inválidas.'
-            print('Usuario no existe')
         elif not check_password_hash(user['password'], password):
             error = 'Email o contraseña inválidas.'
-            print(user['password'])
-            print(password)
             
         if error is None:
             session.clear()
@@ -120,7 +117,6 @@ def login():
 @bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
-    print(user_id)
     
     if user_id is None:
         g.user = None
