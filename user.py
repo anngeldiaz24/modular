@@ -29,6 +29,7 @@ def user_welcome():
     
     paquete = None
     estados = []
+    tamanios = ['pequeño', 'mediano', 'grande']
 
     try:
         # Obtener el paquete del código de acceso utilizado por el owner
@@ -52,6 +53,7 @@ def user_welcome():
         colonia = request.form['colonia']
         municipio = request.form['municipio']
         estado = request.form['estado']
+        tamanio = request.form['tamanio']
         informacion_adicional = request.form.get('informacion_adicional')
 
         # Validaciones
@@ -71,12 +73,14 @@ def user_welcome():
             error = 'El municipio es obligatorio.'
         elif not estado:
             error = 'El estado es obligatorio.'
+        elif not tamanio:
+            error = 'El tamaño es obligatorio.'
 
         if error is None:
             try:
                 # Insertar en la tabla hogares
-                c.execute('INSERT INTO hogares (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, estatus) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
-                    (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, 'activo'))
+                c.execute('INSERT INTO hogares (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, tamanio, informacion_adicional, estatus) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                    (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, tamanio, informacion_adicional, 'activo'))
                 hogar_id = c.lastrowid
 
                 # Actualizar la tabla users con el hogar_id
@@ -92,7 +96,7 @@ def user_welcome():
         else:
             flash(error, 'danger')
 
-    return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user, paquete=paquete, estados=estados)
+    return render_template('user/welcome.html', current_year=datetime.datetime.now().year, user=g.user, paquete=paquete, estados=estados, tamanios=tamanios)
 
 @bp.route('/encender-luces-domesticas')
 @login_required

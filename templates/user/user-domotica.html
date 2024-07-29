@@ -307,7 +307,7 @@
                                 class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
                                 <div class="flex justify-between">
                                     <span>Tipo de hogar</span>
-                                    <span>Mediano</span>
+                                    <span> {{ hogar['tamanio'] | capitalize }} </span>
                                 </div>
                             </li>
                             <li
@@ -315,13 +315,6 @@
                                 <div class="flex justify-between">
                                     <span>Tipo de membresía</span>
                                     <span> {{ paquete | capitalize }} </span>
-                                </div>
-                            </li>
-                            <li
-                                class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
-                                <div class="flex justify-between">
-                                    <span>Tipo de suscripción</span>
-                                    <span>Anual</span>
                                 </div>
                             </li>
                         </ul>

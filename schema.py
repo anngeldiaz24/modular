@@ -32,7 +32,8 @@ instructions = [
             municipio VARCHAR(255) NOT NULL,
             estado VARCHAR(255) NOT NULL,
             informacion_adicional VARCHAR(255) NULL,
-            estatus ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo'
+            estatus ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
+            tamanio ENUM('pequeño', 'mediano', 'grande') NULL DEFAULT 'pequeño'
         );
     """,
     """

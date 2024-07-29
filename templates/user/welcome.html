@@ -105,6 +105,19 @@
                                     </div>
                                 </div>
                                 <div class="fromGroup">
+                                    <label class="block capitalize form-label">Tamaño <span class="text-red-500">*</span></label>
+                                    <div class="relative">
+                                        <select name="tamanio" class="form-control py-2" required>
+                                            <option value="" hidden>Seleccione un tamaño</option>
+                                            {% for tamanio in tamanios %}
+                                                <option value="{{ tamanio }}" {% if request.form['tamanio'] == tamanio %}selected{% endif %}>
+                                                    {{ tamanio | capitalize }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="fromGroup">
                                     <label class="block capitalize form-label">Información Adicional</label>
                                     <div class="relative">
                                         <input type="text" name="informacion_adicional" class="form-control py-2" placeholder="Ingrese información adicional (opcional)" value="{{ request.form['informacion_adicional'] | default('') }}">

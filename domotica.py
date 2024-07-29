@@ -347,6 +347,24 @@ def get_calcular_cambio_agua(hogar_id, columna):
         return consumo_actual, cambio_porcentual, inicio_anterior
     finally:
         close_db()
+        
+def get_hogar_actual():
+    db, c = get_db()
+    
+    try:
+        hogar_id = g.user['hogar_id']  # ID de hogar del usuario que ha iniciado sesión
+        
+        query = """
+        SELECT *
+        FROM hogares
+        WHERE id = %s
+        """
+        c.execute(query, (hogar_id,))
+        hogar = c.fetchone()
+        
+        return hogar if hogar else None
+    finally:
+        close_db()
 
 @bp.route('/user-domotica')
 @login_required
@@ -356,6 +374,9 @@ def user_domotica():
     
     # CANTIDAD DE MIEMBROS POR HOGAR
     miembros = get_miembros_por_hogar()
+   
+    # OBTIENE EL HOGAR ACTUAL 
+    hogar = get_hogar_actual()
     
     # CANTIDAD DE DISPOSITIVOS POR HOGAR
     dispositivos = get_dispositivos_por_hogar()
@@ -456,6 +477,7 @@ def user_domotica():
         dispositivos=dispositivos[0]['total'],
         modo_seguro=modo_seguro,
         paquete=paquete,
+        hogar=hogar,
         # GRÁFICA LINE - CONSUMO DE ENERGIA
         consumo_energia_kwh_2023=consumo_energia_kwh_2023, 
         consumo_energia_kwh_2024=consumo_energia_kwh_2024,

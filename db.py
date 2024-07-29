@@ -210,16 +210,16 @@ def seed_database():
     ]
 
     hogares = [
-        {'codigo_postal': '01000', 'calle': 'Calle Falsa', 'numero_exterior': '123', 'numero_interior': 'A', 'colonia': 'Centro', 'municipio': 'Ciudad de México', 'estado': 'Ciudad de México', 'informacion_adicional': 'Cerca del parque', 'estatus': 'activo'},
-        {'codigo_postal': '02000', 'calle': 'Avenida Siempre Viva', 'numero_exterior': '742', 'numero_interior': '', 'colonia': 'Primavera', 'municipio': 'Monterrey', 'estado': 'Nuevo León', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '03000', 'calle': 'Callejón sin Salida', 'numero_exterior': '666', 'numero_interior': 'B', 'colonia': 'Fantasma', 'municipio': 'Guadalajara', 'estado': 'Jalisco', 'informacion_adicional': 'Al lado del cementerio', 'estatus': 'activo'},
-        {'codigo_postal': '04000', 'calle': 'Camino Real', 'numero_exterior': '789', 'numero_interior': '', 'colonia': 'San Juan', 'municipio': 'Puebla', 'estado': 'Puebla', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '05000', 'calle': 'Av. Revolución', 'numero_exterior': '101', 'numero_interior': 'C', 'colonia': 'Las Flores', 'municipio': 'Querétaro', 'estado': 'Querétaro', 'informacion_adicional': 'Frente a la plaza', 'estatus': 'activo'},
-        {'codigo_postal': '06000', 'calle': 'Boulevard de los Sueños Rotos', 'numero_exterior': '202', 'numero_interior': '', 'colonia': 'Esperanza', 'municipio': 'León', 'estado': 'Guanajuato', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '07000', 'calle': 'Calle del Sol', 'numero_exterior': '303', 'numero_interior': 'D', 'colonia': 'Luz', 'municipio': 'Mérida', 'estado': 'Yucatán', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '08000', 'calle': 'Paseo de la Reforma', 'numero_exterior': '404', 'numero_interior': '', 'colonia': 'Bella Vista', 'municipio': 'Morelia', 'estado': 'Michoacán', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '09000', 'calle': 'Calle del Mar', 'numero_exterior': '505', 'numero_interior': 'E', 'colonia': 'Océano', 'municipio': 'Cancún', 'estado': 'Quintana Roo', 'informacion_adicional': 'Cerca de la playa', 'estatus': 'activo'},
-        {'codigo_postal': '10000', 'calle': 'Calle de los Milagros', 'numero_exterior': '606', 'numero_interior': '', 'colonia': 'Esperanza', 'municipio': 'Tuxtla Gutiérrez', 'estado': 'Chiapas', 'informacion_adicional': '', 'estatus': 'activo'}
+        {'codigo_postal': '01000', 'calle': 'Calle Falsa', 'numero_exterior': '123', 'numero_interior': 'A', 'colonia': 'Centro', 'municipio': 'Ciudad de México', 'estado': 'Ciudad de México', 'informacion_adicional': 'Cerca del parque', 'estatus': 'activo', 'tamanio': 'pequeño'},
+        {'codigo_postal': '02000', 'calle': 'Avenida Siempre Viva', 'numero_exterior': '742', 'numero_interior': '', 'colonia': 'Primavera', 'municipio': 'Monterrey', 'estado': 'Nuevo León', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'mediano'},
+        {'codigo_postal': '03000', 'calle': 'Callejón sin Salida', 'numero_exterior': '666', 'numero_interior': 'B', 'colonia': 'Fantasma', 'municipio': 'Guadalajara', 'estado': 'Jalisco', 'informacion_adicional': 'Al lado del cementerio', 'estatus': 'activo', 'tamanio': 'grande'},
+        {'codigo_postal': '04000', 'calle': 'Camino Real', 'numero_exterior': '789', 'numero_interior': '', 'colonia': 'San Juan', 'municipio': 'Puebla', 'estado': 'Puebla', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'pequeño'},
+        {'codigo_postal': '05000', 'calle': 'Av. Revolución', 'numero_exterior': '101', 'numero_interior': 'C', 'colonia': 'Las Flores', 'municipio': 'Querétaro', 'estado': 'Querétaro', 'informacion_adicional': 'Frente a la plaza', 'estatus': 'activo', 'tamanio': 'mediano'},
+        {'codigo_postal': '06000', 'calle': 'Boulevard de los Sueños Rotos', 'numero_exterior': '202', 'numero_interior': '', 'colonia': 'Esperanza', 'municipio': 'León', 'estado': 'Guanajuato', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'grande'},
+        {'codigo_postal': '07000', 'calle': 'Calle del Sol', 'numero_exterior': '303', 'numero_interior': 'D', 'colonia': 'Luz', 'municipio': 'Mérida', 'estado': 'Yucatán', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'pequeño'},
+        {'codigo_postal': '08000', 'calle': 'Paseo de la Reforma', 'numero_exterior': '404', 'numero_interior': '', 'colonia': 'Bella Vista', 'municipio': 'Morelia', 'estado': 'Michoacán', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'mediano'},
+        {'codigo_postal': '09000', 'calle': 'Calle del Mar', 'numero_exterior': '505', 'numero_interior': 'E', 'colonia': 'Océano', 'municipio': 'Cancún', 'estado': 'Quintana Roo', 'informacion_adicional': 'Cerca de la playa', 'estatus': 'activo', 'tamanio': 'grande'},
+        {'codigo_postal': '10000', 'calle': 'Calle de los Milagros', 'numero_exterior': '606', 'numero_interior': '', 'colonia': 'Esperanza', 'municipio': 'Tuxtla Gutiérrez', 'estado': 'Chiapas', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'pequeño'}
     ]
     
     eventos = [
