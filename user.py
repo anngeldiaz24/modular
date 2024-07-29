@@ -8,7 +8,10 @@ from .raspberry import funciones
 import logging
 import datetime
 from .db import get_db
+import requests
 import re 
+from dotenv import load_dotenv
+import os
 from werkzeug.security import generate_password_hash
 from mysql.connector import Error as MySQLError
 
@@ -17,6 +20,13 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 bp = Blueprint('user', __name__)
+load_dotenv()
+
+@bp.route('/inicio')
+@login_required
+@user_role_required
+def home():
+        return render_template('user/home.html', user=g.user, role=g.user['rol'])
 
 @bp.route('/hogar')
 @login_required
@@ -110,7 +120,7 @@ def miembros_hogar():
 
     miembros = c.fetchall()
 
-    return render_template('user/miembros-hogar.html', miembros=miembros, current_year=datetime.datetime.now().year, user=g.user)
+    return render_template('user/miembros-hogar.html', miembros=miembros, current_year=datetime.datetime.now().year, user=g.user, role=g.user['rol'])
 
 @bp.route('/crear-miembro-hogar', methods=['POST'])
 @login_required
@@ -248,6 +258,38 @@ def editar_miembro(id):
             flash(error, 'error')
     return redirect(url_for('user.miembros_hogar'))
 
+@bp.route('/mi-cuenta', methods=['GET'])
+@login_required
+def mi_cuenta():
+    db, c = get_db()
+    c.execute('''
+        SELECT h.id as hogar_id, h.codigo_postal, h.calle, h.numero_exterior, h.numero_interior,
+            h.colonia, h.municipio, h.estado, h.informacion_adicional
+        FROM users u
+        JOIN hogares h ON u.hogar_id = h.id
+        WHERE u.id = %s
+    ''', (g.user['id'],))
+    hogar = c.fetchone()
+
+    # Construir la dirección completa
+    direccion = f"{hogar['calle']} {hogar['numero_exterior']}, {hogar['colonia']}, {hogar['municipio']}, {hogar['estado']}, {hogar['codigo_postal']}"
+
+    # Hacer una solicitud a la API de Geocoding de Google
+    google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
+    geocoding_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={direccion}&key={google_maps_api_key}"
+    response = requests.get(geocoding_url)
+    geocode_result = response.json()
+
+    # Obtener las coordenadas
+    if geocode_result['status'] == 'OK':
+        location = geocode_result['results'][0]['geometry']['location']
+        latitud = location['lat']
+        longitud = location['lng']
+    else:
+        latitud = None
+        longitud = None
+
+    return render_template('user/mi-cuenta.html', user=g.user, hogar=hogar, role=g.user['rol'], latitud=latitud, longitud=longitud, google_maps_api_key=google_maps_api_key)
 @bp.route('/encender-luces-domesticas')
 @login_required
 def encender_luces_domesticas():

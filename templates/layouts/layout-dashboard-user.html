@@ -24,6 +24,7 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> -->
     <script src="{{ url_for('static', filename='assets/js/chart-active.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
   <body class=" font-inter dashcode-app" id="body_class">
@@ -34,7 +35,7 @@
         <div id="bodyOverlay"
           class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
         <div class="logo-segment">
-          <a class="flex items-center" href="{{ url_for('home') }}">
+          <a class="flex items-center" href="{{ url_for('user.home') }}">
             <img src="{{ url_for('static', filename='assets/images/logo/samsung-8.svg') }}" class="black_logo" alt="logo">
           </a>
           <!-- Sidebar Type Button -->
@@ -66,7 +67,7 @@
             <li class="sidebar-menu-title">MENU</li>
             <!-- Main Area -->
             <li>
-              <a href="{{ url_for('home') }}" class="navItem">
+              <a href="{{ url_for('user.home') }}" class="navItem">
                 <span class="flex items-center">
                   
                     <iconify-icon class="nav-icon" icon="material-symbols:dashboard-outline"></iconify-icon>
@@ -324,16 +325,6 @@
                       class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white"
                       icon="heroicons-outline:menu-alt-3"></iconify-icon>
                   </button>
-                  <button
-                    class="flex items-center xl:text-sm text-lg xl:text-slate-400 text-slate-800 dark:text-slate-300 px-1
-        rtl:space-x-reverse search-modal" data-bs-toggle="modal"
-                    data-bs-target="#searchModal">
-                    <iconify-icon
-                      icon="heroicons-outline:search"></iconify-icon>
-                    <span class="xl:inline-block hidden ml-3">Buscar...
-                    </span>
-                  </button>
-
                 </div>
                 <!-- end vertcial -->
                 <div
@@ -1687,21 +1678,12 @@
                         class="py-1 text-sm text-slate-800 dark:text-slate-200">
 
                         <li>
-                          <a href="settings.html"
+                          <a href="{{ url_for('user.mi_cuenta') }}"
                             class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600
             dark:text-white font-normal">
                             <iconify-icon icon="heroicons-outline:cog"
                               class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
-                            <span class="font-Inter">Configuración</span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="pricing.html"
-                            class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600
-            dark:text-white font-normal">
-                            <iconify-icon icon="heroicons-outline:credit-card"
-                              class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
-                            <span class="font-Inter">Suscripción</span>
+                            <span class="font-Inter">Mi cuenta</span>
                           </a>
                         </li>
                         <li>

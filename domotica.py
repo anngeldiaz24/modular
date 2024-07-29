@@ -235,5 +235,6 @@ def user_domotica():
         consumo_agua_2023=consumo_agua_2023,
         consumo_agua_2024=consumo_agua_2024,
         dispositivos_tipos=dispositivos_tipos,
-        dispositivos_cantidades=dispositivos_cantidades
+        dispositivos_cantidades=dispositivos_cantidades,
+        role=g.user['rol']
         )

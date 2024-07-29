@@ -570,36 +570,6 @@
     }
   });
 
-  // flatpickr
-  $(".flatpickr").flatpickr({
-    dateFormat: "Y-m-d",
-    defaultDate: "today"
-  });
-  if (document.getElementById("map") || document.getElementById("map2")) {
-    // map active
-    var position = [47.31322, -1.319482];
-    var map = L.map("map").setView(position, 8);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-      maxZoom: 18
-    }).addTo(map);
-    L.marker(position).addTo(map).bindPopup('<div class="">A pretty CSS3 popup. <br /> Easily customizable.</div>').openPopup();
-
-    // marker map
-    var circleRadius = 4500;
-    var polygonCoords = [[47.2263299, -1.6222], [47.21024000000001, -1.6270065], [47.1969447, -1.6136169], [47.18527929999999, -1.6143036], [47.1794457, -1.6098404], [47.1775788, -1.5985107], [47.1676598, -1.5753365], [47.1593731, -1.5521622], [47.1593731, -1.5319061], [47.1722111, -1.5143967], [47.1960115, -1.4841843], [47.2095404, -1.4848709], [47.2291277, -1.4683914], [47.2533687, -1.5116501], [47.2577961, -1.5531921], [47.26828069, -1.5621185], [47.2657179, -1.589241], [47.2589612, -1.6204834], [47.237287, -1.6266632], [47.2263299, -1.6222]];
-    var map2 = L.map("map2").setView(position, 10);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-    }).addTo(map2);
-    L.marker(position).addTo(map2);
-    L.circle(position, {
-      radius: circleRadius
-    }).addTo(map2);
-    L.polygon(polygonCoords).addTo(map2);
-  }
-
-  // geo map
 
   // Using Options Array Checkbox
   $('input[name="arrayCheckbox[]"]').on("click", function () {

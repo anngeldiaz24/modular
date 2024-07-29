@@ -1,0 +1,136 @@
+{% extends 'layouts/layout-dashboard-user.html' %}
+
+{% block header %}
+    {% block title %}Mi cuenta{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-5 profile-page mt-3">
+    <div class="profiel-wrap px-[35px] pb-10 md:pt-[84px] pt-10 rounded-lg bg-white dark:bg-slate-800 lg:flex lg:space-y-0 space-y-6 justify-between items-end relative z-[1]">
+        <div class="bg-slate-900 dark:bg-slate-700 absolute left-0 top-0 md:h-1/2 h-[150px] w-full z-[-1] rounded-t-lg"></div>
+        <div class="profile-box flex-none md:text-start text-center">
+            <div class="md:flex items-end md:space-x-6 rtl:space-x-reverse">
+                <div class="flex-none">
+                    <div class="md:h-[186px] md:w-[186px] h-[140px] w-[140px] md:ml-0 md:mr-0 ml-auto mr-auto md:mb-0 mb-4 rounded-full ring-4 ring-slate-100 relative">
+                        <img src="{{ url_for('static', filename='assets/images/all-img/user-photo.jpg') }}" alt="" class="w-full h-full object-cover rounded-full">
+                        <!-- <a href="profile-setting" class="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center md:top-[140px] top-[100px]">
+                            <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                        </a> -->
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[1px]">
+                        {{ user.nombre }} {{ user.apellidos }}
+                    </div>
+                    <div class="text-sm font-light text-slate-600 dark:text-slate-400">
+                        {% if user.rol == 'Owner' %}
+                            Dueño
+                        {% else %}
+                            Miembro del hogar
+                        {% endif %}
+                    </div>
+                    <div class="mt-2 mr-2 text-white bg-yellow-400 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-3 py-1 text-center me-2 mb-2 dark:focus:ring-yellow-900">
+                        <iconify-icon icon="cil:badge" class="mr-2 relative top-[2px] text-lg ltr:mr-1 rtl:ml-1" width="1em" height="1em"></iconify-icon>Deluxe</div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    <div class="grid grid-cols-12 gap-6">
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card h-full">
+                <header class="card-header">
+                    <h4 class="card-title">Info</h4>
+                </header>
+                <div class="card-body p-6">
+                    <ul class="list space-y-8">
+                        <li class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none text-2xl text-slate-600 dark:text-slate-300">
+                                <iconify-icon icon="heroicons:envelope"></iconify-icon>
+                            </div>
+                            <div class="flex-1">
+                                <div class="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
+                                    EMAIL
+                                </div>
+                                <a href="mailto:{{ user.email }}" class="text-base text-slate-600 dark:text-slate-50">
+                                    {{ user.email }}
+                                </a>
+                            </div>
+                        </li>
+                        <!-- end single list -->
+                        <li class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none text-2xl text-slate-600 dark:text-slate-300">
+                                <iconify-icon icon="heroicons:phone-arrow-up-right"></iconify-icon>
+                            </div>
+                            <div class="flex-1">
+                                <div class="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
+                                    TELEFÓNO
+                                </div>
+                                <a href="tel:{{ user.telefono }}" class="text-base text-slate-600 dark:text-slate-50">
+                                    {{ user.telefono }}
+                                </a>
+                            </div>
+                        </li>
+                        <!-- end single list -->
+                        <li class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none text-2xl text-slate-600 dark:text-slate-300">
+                                <iconify-icon icon="heroicons:map"></iconify-icon>
+                            </div>
+                            <div class="flex-1">
+                                <div class="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
+                                    UBICACIÓN DEL HOGAR
+                                </div>
+                                <div class="text-base text-slate-600 dark:text-slate-50">
+                                    {{ hogar.calle }} {{ hogar.numero_exterior }}{{ ', ' ~ hogar.numero_interior if hogar.numero_interior }}<br>
+                                    {{ hogar.colonia }}, {{ hogar.municipio }}, {{ hogar.estado }}<br>
+                                    {{ hogar.codigo_postal }}<br>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- end single list -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="lg:col-span-8 col-span-12">
+            <div class="card">
+                <header class="card-header">
+                    <h4 class="card-title">Ubicación en mapa del hogar</h4>
+                </header>
+                <div class="card-body">
+                    <div id="map" class=" w-full h-[300px]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir el script de Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
+<script>
+    function initMap() {
+        var latitud = {{ latitud if latitud else 0 }};
+        var longitud = {{ longitud if longitud else 0 }};
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: latitud, lng: longitud},
+            zoom: 15
+        });
+
+        var markerIcon = {
+            url: "{{ url_for('static', filename='assets/images/all-img/icono-casa.png') }}", 
+            scaledSize: new google.maps.Size(40, 40), 
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(20, 40) 
+        };
+
+        var marker = new google.maps.Marker({
+            position: {lat: latitud, lng: longitud},
+            map: map,
+            title: 'Ubicación del hogar',
+            icon: markerIcon
+        });
+    }
+
+    window.onload = initMap;
+</script>
+{% endblock %}

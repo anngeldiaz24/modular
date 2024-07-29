@@ -35,10 +35,6 @@ def create_app():
     def index():
         return redirect(url_for('auth.login'))
     
-    @app.route('/home')
-    def home():
-        return render_template('user/home.html', user=g.user)
-    
     # Manejador de error 404 [Rutas no definidas]
     @app.errorhandler(404)
     def pagina_no_encontrada(error):
