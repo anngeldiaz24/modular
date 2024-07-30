@@ -80,7 +80,7 @@ def register():
 
     return render_template('auth/register.html', current_year=datetime.datetime.now().year)
 
-@bp.route('/login', methods=['GET', 'POST']) 
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -88,23 +88,30 @@ def login():
         
         db, c = get_db()
         error = None
-        c.execute(
-            'SELECT * FROM users WHERE email = %s', (email,)
-        )
+        
+        # Consulta para obtener los detalles del usuario y su hogar
+        c.execute("""
+            SELECT u.*, h.estatus
+            FROM users u
+            LEFT JOIN hogares h ON u.hogar_id = h.id
+            WHERE u.email = %s
+        """, (email,))
         user = c.fetchone()
         
         if user is None:
             error = 'Email o contraseña inválidas.'
         elif not check_password_hash(user['password'], password):
             error = 'Email o contraseña inválidas.'
-            
+        elif user['estatus'] == 'cancelado':
+            error = 'Tu cuenta ha sido cancelada, para más información contacte a soporte: safezonesamsung@gmail.com'
+
         if error is None:
             session.clear()
             session['user_id'] = user['id']
             if user['rol'] == 'Admin':
                 return redirect(url_for('admin.admin_index'))
             else:
-                if user['hogar_id'] ==  None:
+                if user['hogar_id'] is None:
                     return redirect(url_for('user.user_welcome'))
                 else:
                     flash(f'¡Bienvenido, {user["nombre"]}!', 'success')

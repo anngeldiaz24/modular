@@ -272,6 +272,7 @@ def mi_cuenta():
         WHERE u.id = %s
     ''', (g.user['id'],))
     hogar = c.fetchone()
+    hogar_id = hogar['hogar_id']
 
     if not hogar:
         return "No se encontró la información del hogar.", 404
@@ -312,8 +313,34 @@ def mi_cuenta():
         latitud = None
         longitud = None
 
-    return render_template('user/mi-cuenta.html', user=g.user, hogar=hogar, role=g.user['rol'], latitud=latitud, longitud=longitud, google_maps_api_key=google_maps_api_key, paquete=paquete)
+    return render_template('user/mi-cuenta.html', user=g.user, hogar=hogar, hogar_id=hogar_id, role=g.user['rol'], latitud=latitud, longitud=longitud, google_maps_api_key=google_maps_api_key, paquete=paquete)
 
+@bp.route('/cancelar-suscripcion/<int:id>', methods=['POST'])
+@login_required
+def cancelar_suscripcion(id):
+    db, c = get_db()
+
+    try:
+        c.execute("""
+            UPDATE hogares
+            SET estatus = 'cancelado'
+            WHERE id = %s
+        """, (id,))
+        db.commit()
+        
+    except Exception as e:
+        # Manejo de errores en la base de datos
+        db.rollback()
+        error = str(e)
+        flash(f"Error al actualizar el estatus del hogar: {error}", 'error')
+        return redirect(url_for('user.mi_cuenta'))
+
+    # Cierra la sesión del usuario
+    session.clear()
+    
+    # Redirige a la página de inicio de sesión
+    return redirect(url_for('auth.login'))
+    
 @bp.route('/encender-luces-domesticas')
 @login_required
 def encender_luces_domesticas():
