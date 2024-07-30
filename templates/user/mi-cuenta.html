@@ -33,17 +33,24 @@
                         {% endif %}
                     </div>
                     <div class="mt-2 mr-2 text-white bg-yellow-400 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-3 py-1 text-center me-2 mb-2 dark:focus:ring-yellow-900">
-                        <iconify-icon icon="cil:badge" class="mr-2 relative top-[2px] text-lg ltr:mr-1 rtl:ml-1" width="1em" height="1em"></iconify-icon>Deluxe</div>
+                        <iconify-icon icon="cil:badge" class="mr-2 relative top-[2px] text-lg ltr:mr-1 rtl:ml-1" width="1em" height="1em"></iconify-icon>{{ paquete }}</div>
                 </div>
             </div>
         </div>
-    
+        <div class="text-left">
+            <button class="btn inline-flex justify-center btn-danger">
+                <span class="flex items-center">
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="material-symbols:cancel-outline"></iconify-icon>
+                    <span>Cancelar suscripción</span>
+                </span>
+            </button>
+        </div>
     </div>
     <div class="grid grid-cols-12 gap-6">
         <div class="lg:col-span-4 col-span-12">
             <div class="card h-full">
                 <header class="card-header">
-                    <h4 class="card-title">Info</h4>
+                    <h4 class="card-title">Información</h4>
                 </header>
                 <div class="card-body p-6">
                     <ul class="list space-y-8">
@@ -55,9 +62,9 @@
                                 <div class="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
                                     EMAIL
                                 </div>
-                                <a href="mailto:{{ user.email }}" class="text-base text-slate-600 dark:text-slate-50">
+                                <span class="text-base text-slate-600 dark:text-slate-50">
                                     {{ user.email }}
-                                </a>
+                                </span>
                             </div>
                         </li>
                         <!-- end single list -->
@@ -69,9 +76,9 @@
                                 <div class="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
                                     TELEFÓNO
                                 </div>
-                                <a href="tel:{{ user.telefono }}" class="text-base text-slate-600 dark:text-slate-50">
+                                <span class="text-base text-slate-600 dark:text-slate-50">
                                     {{ user.telefono }}
-                                </a>
+                                </span>
                             </div>
                         </li>
                         <!-- end single list -->

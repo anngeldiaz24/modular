@@ -262,14 +262,37 @@ def editar_miembro(id):
 @login_required
 def mi_cuenta():
     db, c = get_db()
+    
+    # Consulta para obtener la información del hogar y el código de acceso
     c.execute('''
         SELECT h.id as hogar_id, h.codigo_postal, h.calle, h.numero_exterior, h.numero_interior,
-            h.colonia, h.municipio, h.estado, h.informacion_adicional
+            h.colonia, h.municipio, h.estado, h.informacion_adicional, u.codigo_acceso
         FROM users u
         JOIN hogares h ON u.hogar_id = h.id
         WHERE u.id = %s
     ''', (g.user['id'],))
     hogar = c.fetchone()
+
+    if not hogar:
+        return "No se encontró la información del hogar.", 404
+
+    # Si el usuario no tiene un codigo_acceso, buscar uno existente en el hogar
+    if not hogar['codigo_acceso']:
+        c.execute('''
+            SELECT codigo_acceso
+            FROM users
+            WHERE hogar_id = %s AND codigo_acceso IS NOT NULL
+            LIMIT 1
+        ''', (hogar['hogar_id'],))
+        codigo_acceso = c.fetchone()
+        hogar['codigo_acceso'] = codigo_acceso['codigo_acceso'] if codigo_acceso else None
+
+    # Obtener el paquete del código de acceso
+    paquete = 'N/A'
+    if hogar['codigo_acceso']:
+        c.execute('SELECT paquete FROM codigos_acceso WHERE id = %s', (hogar['codigo_acceso'],))
+        codigo_acceso = c.fetchone()
+        paquete = codigo_acceso['paquete'] if codigo_acceso else 'N/A'
 
     # Construir la dirección completa
     direccion = f"{hogar['calle']} {hogar['numero_exterior']}, {hogar['colonia']}, {hogar['municipio']}, {hogar['estado']}, {hogar['codigo_postal']}"
@@ -289,7 +312,8 @@ def mi_cuenta():
         latitud = None
         longitud = None
 
-    return render_template('user/mi-cuenta.html', user=g.user, hogar=hogar, role=g.user['rol'], latitud=latitud, longitud=longitud, google_maps_api_key=google_maps_api_key)
+    return render_template('user/mi-cuenta.html', user=g.user, hogar=hogar, role=g.user['rol'], latitud=latitud, longitud=longitud, google_maps_api_key=google_maps_api_key, paquete=paquete)
+
 @bp.route('/encender-luces-domesticas')
 @login_required
 def encender_luces_domesticas():
