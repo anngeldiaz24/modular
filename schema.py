@@ -12,12 +12,26 @@ instructions = [
     'DROP TABLE IF EXISTS dispositivos;',
     'SET FOREIGN_KEY_CHECKS=1;',
     """
+        -- Creación de la tabla periodos
+        CREATE TABLE periodos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL,
+            inicio DATE NOT NULL,
+            fin DATE NOT NULL
+        );
+    """,
+    """
         -- Creación de la tabla codigos_acceso
         CREATE TABLE codigos_acceso (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
             codigo VARCHAR(10) NOT NULL,
             paquete VARCHAR(100) NOT NULL,
-            disponible BOOLEAN
+            disponible BOOLEAN,
+            periodo_id INT NULL,
+            tipo_suscripcion ENUM('semestral', 'anual') NULL,
+            inicio DATE NULL,
+            fin DATE NULL,
+            FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
     """,
     """
@@ -33,7 +47,7 @@ instructions = [
             estado VARCHAR(255) NOT NULL,
             informacion_adicional VARCHAR(255) NULL,
             estatus ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
-            tamanio ENUM('pequeño', 'mediano', 'grande') NULL DEFAULT 'pequeño'
+            tamanio ENUM('pequeño', 'mediano', 'grande') NOT NULL
         );
     """,
     """
@@ -65,15 +79,6 @@ instructions = [
         CREATE TABLE eventos (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nombre VARCHAR(255) NOT NULL
-        );
-    """,
-    """
-        -- Creación de la tabla periodos
-        CREATE TABLE periodos (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            nombre VARCHAR(255) NOT NULL,
-            inicio DATE NOT NULL,
-            fin DATE NOT NULL
         );
     """,
     """

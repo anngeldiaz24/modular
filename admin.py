@@ -4,9 +4,177 @@ from flask import (
 import datetime
 from werkzeug.exceptions import abort
 from .auth import login_required, admin_role_required
-from .db import get_db
+from .db import get_db, close_db
 
 bp = Blueprint('admin', __name__)
+
+def get_cantidad_hogares():
+    db, c = get_db()
+    
+    try:    
+        query = """
+        SELECT COUNT(id) as total
+        FROM hogares
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        hogares = c.fetchone()
+        
+        return hogares
+    finally:
+        close_db()
+        
+def get_cantidad_usuarios():
+    db, c = get_db()
+    
+    try:    
+        query = """
+        SELECT COUNT(id) as total
+        FROM users
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        usuarios = c.fetchone()
+        
+        return usuarios
+    finally:
+        close_db()
+        
+def get_cantidad_dispositivos():
+    db, c = get_db()
+    
+    try:    
+        query = """
+        SELECT COUNT(id) as total
+        FROM dispositivos
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        dispositivos = c.fetchone()
+        
+        return dispositivos
+    finally:
+        close_db()
+        
+def get_cantidad_paquetes_vendidos():
+    db, c = get_db()
+    
+    try:    
+        query = """
+        SELECT COUNT(id) as total
+        FROM codigos_acceso
+        WHERE disponible = 0
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        paquetes_vendidos = c.fetchone()
+        
+        return paquetes_vendidos
+    finally:
+        close_db()
+        
+def get_estatus_hogares():
+    db, c = get_db()
+    
+    try:
+        # Consulta para obtener los dispositivos del hogar por hogar
+        query = """
+        SELECT estatus, COUNT(id) as total
+        FROM hogares
+        GROUP BY estatus
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        estatus_todos = c.fetchall()
+        
+        estatus_tipos = [estatus['estatus'] for estatus in estatus_todos]
+        estatus_cantidades = [estatus['total'] for estatus in estatus_todos]
+        
+        return estatus_tipos, estatus_cantidades
+    finally:
+        close_db()
+        
+def get_ventas_mensuales_por_paquete2023():
+    db, c = get_db()
+    
+    try:
+        query = """
+        SELECT
+            MONTH(p.inicio) as mes,
+            c.paquete,
+            COUNT(c.id) as total
+        FROM
+            codigos_acceso c
+        JOIN
+            periodos p ON c.periodo_id = p.id
+        WHERE
+            YEAR(p.inicio) = 2023
+        GROUP BY
+            MONTH(p.inicio), c.paquete
+        ORDER BY
+            MONTH(p.inicio), c.paquete
+        """
+        
+        c.execute(query)
+        resultados = c.fetchall()
+
+        # Inicializar diccionario para almacenar los datos
+        ventas = {
+            'basico': [0] * 12,
+            'premium': [0] * 12,
+            'deluxe': [0] * 12
+        }
+
+        for resultado in resultados:
+            mes = resultado['mes'] - 1  # ajustar para el índice de la lista
+            ventas[resultado['paquete']][mes] = resultado['total']
+        
+        return ventas
+    finally:
+        close_db()
+        
+def get_ventas_mensuales_por_suscripcion2023():
+    db, c = get_db()
+    
+    try:
+        query = """
+        SELECT
+            MONTH(p.inicio) as mes,
+            c.tipo_suscripcion,
+            COUNT(c.id) as total
+        FROM
+            codigos_acceso c
+        JOIN
+            periodos p ON c.periodo_id = p.id
+        WHERE
+            YEAR(p.inicio) = 2023
+        GROUP BY
+            MONTH(p.inicio), c.tipo_suscripcion
+        ORDER BY
+            MONTH(p.inicio), c.tipo_suscripcion
+        """
+        
+        c.execute(query)
+        resultados = c.fetchall()
+
+        # Inicializar diccionario para almacenar los datos
+        suscripciones = {
+            'semestral': [0] * 12,
+            'anual': [0] * 12
+        }
+
+        for resultado in resultados:
+            mes = resultado['mes'] - 1  # ajustar para el índice de la lista
+            suscripciones[resultado['tipo_suscripcion']][mes] = resultado['total']
+        
+        return suscripciones
+    finally:
+        close_db()
 
 @bp.route('/admin-dashboard')
 @login_required
@@ -18,7 +186,41 @@ def admin_index():
 @login_required
 @admin_role_required
 def admin_estadisticas():
-    return render_template('admin/admin-estadisticas.html', user=g.user)
+    # TOTAL DE HOGARES
+    total_hogares = get_cantidad_hogares()
+    
+    # TOTAL DE USUARIOS
+    total_usuarios = get_cantidad_usuarios()
+    
+    # TOTAL DE DISPOSITIVOS
+    total_dispositivos = get_cantidad_dispositivos()
+    
+    # TOTAL DE PAQUETES VENDIDOS
+    total_paquetes_vendidos = get_cantidad_paquetes_vendidos()
+    
+    # ESTATUS DE HOGARES
+    estatus_tipos, estatus_cantidades = get_estatus_hogares()
+    
+    # GRÁFICA STACK BAR - VENTAS POR MES 2023
+    ventasPaquete2023 = get_ventas_mensuales_por_paquete2023()
+    ventasSuscripcion2023 = get_ventas_mensuales_por_suscripcion2023()
+    print(ventasSuscripcion2023)
+    
+    return render_template(
+        'admin/admin-estadisticas.html', 
+        user=g.user,
+        # TABLA ADMINISTRACIÓN
+        total_hogares=total_hogares['total'],
+        total_usuarios=total_usuarios['total'],
+        total_dispositivos=total_dispositivos['total'],
+        total_paquetes_vendidos=total_paquetes_vendidos['total'],
+        # GRÁFICA STACK BAR - VENTAS POR MES 2023
+        ventasPaquete2023=ventasPaquete2023,
+        ventasSuscripcion2023=ventasSuscripcion2023,
+        # GRÁFICA PIE - TIPOS ESTATUS HOGAR
+        estatus_tipos=estatus_tipos,
+        estatus_cantidades=estatus_cantidades
+        )
 
 
 def get_hogares():
