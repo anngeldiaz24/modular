@@ -1,25 +1,85 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, url_for, request,
 )
-import datetime
+import requests
+import os
+from datetime import datetime
 from werkzeug.exceptions import abort
 from .auth import login_required, admin_role_required
 from .db import get_db
+from dotenv import load_dotenv
 
 bp = Blueprint('admin', __name__)
+load_dotenv()
 
-@bp.route('/admin-dashboard')
+@bp.route('/inicio')
 @login_required
 @admin_role_required
 def admin_index():
-    return render_template('admin/admin-dashboard.html', user=g.user)
+    # Determinar el saludo basado en la hora del día
+    current_hour = datetime.now().hour
+    if 5 <= current_hour < 12:
+        greeting = "Buenos días"
+    elif 12 <= current_hour < 18:
+        greeting = "Buenas tardes"
+    else:
+        greeting = "Buenas noches"
+
+    # Obtener la temperatura actual de Guadalajara
+    api_key = os.getenv('OPENWEATHER_API_KEY')
+    weather_url = f'http://api.openweathermap.org/data/2.5/weather?q=Guadalajara,MX&appid={api_key}&units=metric'
+    response = requests.get(weather_url)
+    weather_data = response.json()
+    temperature = round(weather_data['main']['temp']) if response.status_code == 200 else "N/A"
+
+    # Obtener todas las casas activas
+    db, c = get_db()
+    c.execute('SELECT * FROM hogares WHERE estatus = "activo"')
+    hogares = c.fetchall()
+    total_activos = len(hogares)
+
+    # Obtener coordenadas para cada casa
+    google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
+    for hogar in hogares:
+        direccion = f"{hogar['calle']} {hogar['numero_exterior']}, {hogar['colonia']}, {hogar['municipio']}, {hogar['estado']}, {hogar['codigo_postal']}"
+        geocoding_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={direccion}&key={google_maps_api_key}"
+        response = requests.get(geocoding_url)
+        geocode_result = response.json()
+        if geocode_result['status'] == 'OK':
+            location = geocode_result['results'][0]['geometry']['location']
+            hogar['lat'] = location['lat']
+            hogar['lng'] = location['lng']
+        else:
+            hogar['lat'] = None
+            hogar['lng'] = None
+
+    # Obtener los 4 estados con mayor número de casas activas
+    c.execute('''
+        SELECT estado, COUNT(*) as num_casas
+        FROM hogares
+        WHERE estatus = 'activo'
+        GROUP BY estado
+        ORDER BY num_casas DESC
+        LIMIT 4
+    ''')
+    estados_mayores = c.fetchall()
+
+    return render_template(
+        'admin/admin-inicio.html',
+        user=g.user,
+        greeting=greeting,
+        temperature=temperature,
+        hogares=hogares,
+        total_activos=total_activos,
+        google_maps_api_key=google_maps_api_key,
+        estados_mayores=estados_mayores
+    )
 
 @bp.route('/admin-estadisticas')
 @login_required
 @admin_role_required
 def admin_estadisticas():
     return render_template('admin/admin-estadisticas.html', user=g.user)
-
 
 def get_hogares():
     db, c = get_db()

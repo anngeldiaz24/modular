@@ -804,6 +804,7 @@
     backgroundColor: "transparent"
   });
   $("#dashcode-mini-calendar").zabuto_calendar({
+    language: "es",
     header_format: "[year] - [month]",
     week_starts: "sunday",
     show_days: true,
