@@ -19,15 +19,19 @@
                                 <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
                                     <img src="{{ url_for('static', filename='assets/images/all-img/shade-1.png') }}" draggable="false" class="w-full h-full object-contain">
                                 </div>
-                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Ventas</span>
-                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">354</span>
+                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Ventas - paquetes (más reciente)</span>
+                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">{{ card_ventas.consumo_actual }} paquetes</span>
                                 <div class="flex space-x-2 rtl:space-x-reverse">
-                                    <div class="flex-none text-xl text-primary-500">
-                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    <div class="flex-none text-xl {% if card_ventas and card_ventas.positivo %}text-green-600{% else %}text-red-500{% endif %}">
+                                        {% if card_ventas and card_ventas.positivo %}
+                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                        {% else %}
+                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                        {% endif %}
                                     </div>
                                     <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] text-primary-500">25.67%</span>
-                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">From last week</span>
+                                        <span class="block mb-[2px] {% if card_ventas and card_ventas.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_ventas.porcentaje_cambio }}%</span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_venta_formateada | capitalize}})</span>
                                     </div>
                                 </div>
                             </div>
@@ -36,15 +40,19 @@
                                 <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
                                     <img src="{{ url_for('static', filename='assets/images/all-img/shade-2.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
                                 </div>
-                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Ingresos</span>
-                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">$86,954</span>
+                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Ingresos - MXN (más reciente)</span>
+                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">${{ card_ingresos.ingreso_actual }}</span>
                                 <div class="flex space-x-2 rtl:space-x-reverse">
-                                    <div class="flex-none text-xl text-primary-500">
-                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    <div class="flex-none text-xl {% if card_ingresos and card_ingresos.positivo %}text-green-600{% else %}text-red-500{% endif %}">
+                                        {% if card_ingresos and card_ingresos.positivo %}
+                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                        {% else %}
+                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                        {% endif %}
                                     </div>
                                     <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] text-primary-500">8.67%</span>
-                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">From last week</span>
+                                        <span class="block mb-[2px] {% if card_ingresos and card_ingresos.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_ingresos.porcentaje_cambio }}%</span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_ingresos_formateada | capitalize}})</span>
                                     </div>
                                 </div>
                             </div>
@@ -70,15 +78,19 @@
                                 <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
                                     <img src="{{ url_for('static', filename='assets/images/all-img/shade-4.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
                                 </div>
-                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Nuevos usuarios</span>
-                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">654</span>
+                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Nuevos usuarios (más recientes)</span>
+                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">{{ card_usuarios.nuevos_usuarios_actual }} usuarios</span>
                                 <div class="flex space-x-2 rtl:space-x-reverse">
-                                    <div class="flex-none text-xl text-primary-500">
-                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    <div class="flex-none text-xl {% if card_usuarios and card_usuarios.positivo %}text-green-600{% else %}text-red-500{% endif %}">
+                                        {% if card_usuarios and card_usuarios.positivo %}
+                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                        {% else %}
+                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                        {% endif %}
                                     </div>
                                     <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] text-primary-500">11.67%</span>
-                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">From last week</span>
+                                        <span class="block mb-[2px] {% if card_usuarios and card_usuarios.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_usuarios.porcentaje_cambio }}%</span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_usuarios_formateada | capitalize}})</span>
                                     </div>
                                 </div>
                             </div>

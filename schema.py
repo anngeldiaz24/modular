@@ -31,6 +31,7 @@ instructions = [
             tipo_suscripcion ENUM('semestral', 'anual') NULL,
             inicio DATE NULL,
             fin DATE NULL,
+            precio DECIMAL (10, 2) NULL,
             FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
     """,
@@ -63,8 +64,10 @@ instructions = [
             codigo_acceso INT(10),
             acepto_terminos BOOLEAN NOT NULL DEFAULT 0,
             hogar_id INT(10),
+            periodo_id INT(10) NULL,
             FOREIGN KEY (codigo_acceso) REFERENCES codigos_acceso(id),
-            FOREIGN KEY (hogar_id) REFERENCES hogares(id) ON DELETE CASCADE
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id) ON DELETE CASCADE,
+            FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
     """,
     """

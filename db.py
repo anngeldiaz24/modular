@@ -77,6 +77,14 @@ def generate_codigos_acceso(num_codigos, periodos):
             fin = inicio + timedelta(days=365)  # Aproximadamente 1 año
         return inicio.strftime('%Y-%m-%d'), fin.strftime('%Y-%m-%d')
     
+    def calcular_precio(paquete, tipo_suscripcion):
+        precios = {
+            'basico': {'semestral': 50, 'anual': 90},
+            'premium': {'semestral': 80, 'anual': 150},
+            'deluxe': {'semestral': 100, 'anual': 190},
+        }
+        return precios[paquete][tipo_suscripcion]
+    
     for i in range(num_codigos):  # Generar 100 códigos de acceso
         codigo = generar_codigo()
         paquete = generar_paquete()
@@ -86,6 +94,7 @@ def generate_codigos_acceso(num_codigos, periodos):
         inicio_periodo = periodo['inicio']
         tipo_suscripcion = generar_tipo_suscripcion()
         inicio, fin = calcular_fechas(inicio_periodo, tipo_suscripcion)
+        precio = calcular_precio(paquete, tipo_suscripcion)
         
         codigos_acceso.append({
             'codigo': codigo,
@@ -94,7 +103,8 @@ def generate_codigos_acceso(num_codigos, periodos):
             'periodo_id': periodo_id,
             'tipo_suscripcion': tipo_suscripcion,
             'inicio': inicio,
-            'fin': fin
+            'fin': fin,
+            'precio': precio
         })
     
     return codigos_acceso
@@ -561,9 +571,9 @@ def seed_database():
         codigos_acceso = generate_codigos_acceso(num_codigos, periodosCommit)
         for codigo in codigos_acceso:
             c.execute(
-                '''INSERT INTO codigos_acceso (codigo, paquete, disponible, periodo_id, tipo_suscripcion, inicio, fin)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)''',
-                (codigo['codigo'], codigo['paquete'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'])
+                '''INSERT INTO codigos_acceso (codigo, paquete, disponible, periodo_id, tipo_suscripcion, inicio, fin, precio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
+                (codigo['codigo'], codigo['paquete'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'], codigo['precio'])
             )
         
         db.commit()  # Hacer commit de los cambios finales
