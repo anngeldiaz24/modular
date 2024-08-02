@@ -5,7 +5,6 @@ import requests
 import os
 from datetime import datetime
 from dotenv import load_dotenv
-import datetime
 from babel.dates import format_date
 from werkzeug.exceptions import abort
 from .auth import login_required, admin_role_required
@@ -189,7 +188,7 @@ def get_nuevos_usuarios():
                 'positivo': porcentaje_cambio > 0,
                 'inicio': ultimos_periodos[1]['inicio']
             }
-        
+            
         return datos_grafica, diferencia_porcentual
     finally:
         close_db(db)

@@ -291,11 +291,11 @@ def seed_database():
     ]
 
     hogares = [
-        {'codigo_postal': '01000', 'calle': 'Calle Falsa', 'numero_exterior': '123', 'numero_interior': 'A', 'colonia': 'Centro', 'municipio': 'Ciudad de México', 'estado': 'Ciudad de México', 'informacion_adicional': 'Cerca del parque', 'estatus': 'activo'},
-        {'codigo_postal': '02000', 'calle': 'Avenida Siempre Viva', 'numero_exterior': '742', 'numero_interior': '', 'colonia': 'Primavera', 'municipio': 'Monterrey', 'estado': 'Nuevo León', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '03000', 'calle': 'Callejón sin Salida', 'numero_exterior': '666', 'numero_interior': 'B', 'colonia': 'Fantasma', 'municipio': 'Guadalajara', 'estado': 'Jalisco', 'informacion_adicional': 'Al lado del cementerio', 'estatus': 'activo'},
-        {'codigo_postal': '04000', 'calle': 'Camino Real', 'numero_exterior': '789', 'numero_interior': '', 'colonia': 'San Juan', 'municipio': 'Puebla', 'estado': 'Puebla', 'informacion_adicional': '', 'estatus': 'activo'},
-        {'codigo_postal': '05000', 'calle': 'Av. Revolución', 'numero_exterior': '101', 'numero_interior': 'C', 'colonia': 'Las Flores', 'municipio': 'Querétaro', 'estado': 'Querétaro', 'informacion_adicional': 'Frente a la plaza', 'estatus': 'activo'}
+        {'codigo_postal': '01000', 'calle': 'Calle Falsa', 'numero_exterior': '123', 'numero_interior': 'A', 'colonia': 'Centro', 'municipio': 'Ciudad de México', 'estado': 'Ciudad de México', 'informacion_adicional': 'Cerca del parque', 'estatus': 'activo', 'tamanio': 'pequeño'},
+        {'codigo_postal': '02000', 'calle': 'Avenida Siempre Viva', 'numero_exterior': '742', 'numero_interior': '', 'colonia': 'Primavera', 'municipio': 'Monterrey', 'estado': 'Nuevo León', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'mediano'},
+        {'codigo_postal': '03000', 'calle': 'Callejón sin Salida', 'numero_exterior': '666', 'numero_interior': 'B', 'colonia': 'Fantasma', 'municipio': 'Guadalajara', 'estado': 'Jalisco', 'informacion_adicional': 'Al lado del cementerio', 'estatus': 'activo', 'tamanio': 'grande'},
+        {'codigo_postal': '04000', 'calle': 'Camino Real', 'numero_exterior': '789', 'numero_interior': '', 'colonia': 'San Juan', 'municipio': 'Puebla', 'estado': 'Puebla', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'pequeño'},
+        {'codigo_postal': '05000', 'calle': 'Av. Revolución', 'numero_exterior': '101', 'numero_interior': 'C', 'colonia': 'Las Flores', 'municipio': 'Querétaro', 'estado': 'Querétaro', 'informacion_adicional': 'Frente a la plaza', 'estatus': 'activo', 'tamanio': 'mediano'}
     ]
     
     eventos = [
