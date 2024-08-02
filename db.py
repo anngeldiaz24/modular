@@ -273,21 +273,21 @@ def seed_database():
     ]
 
     usuarios = [
-        {'nombre': 'Juan', 'apellidos': 'Pérez', 'email': 'juan.perez@example.com', 'password': generate_password_hash('password'), 'telefono': '1234567890', 'rol': 'Admin', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id': None},
-        {'nombre': 'Ana', 'apellidos': 'García', 'email': 'ana.garcia@example.com', 'password': generate_password_hash('password'), 'telefono': '0987654321', 'rol': 'Owner', 'codigo_acceso': 1, 'acepto_terminos': True, 'hogar_id':1},
-        {'nombre': 'Luis', 'apellidos': 'Martínez', 'email': 'luis.martinez@example.com', 'password': generate_password_hash('password'), 'telefono': '1122334455', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':1},
-        {'nombre': 'Carlos', 'apellidos': 'Hernández', 'email': 'carlos.hernandez@example.com', 'password': generate_password_hash('password'), 'telefono': '5566778899', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':1},
-        {'nombre': 'María', 'apellidos': 'López', 'email': 'maria.lopez@example.com', 'password': generate_password_hash('password'), 'telefono': '6677889900', 'rol': 'Owner', 'codigo_acceso': 2, 'acepto_terminos': True,'hogar_id':2},
-        {'nombre': 'Miguel', 'apellidos': 'Rodríguez', 'email': 'miguel.rodriguez@example.com', 'password': generate_password_hash('password'), 'telefono': '7788990011', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2},
-        {'nombre': 'Laura', 'apellidos': 'Gómez', 'email': 'laura.gomez@example.com', 'password': generate_password_hash('password'), 'telefono': '8899001122', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2},
-        {'nombre': 'David', 'apellidos': 'Díaz', 'email': 'david.diaz@example.com', 'password': generate_password_hash('password'), 'telefono': '9900112233', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2},
-        {'nombre': 'Sofía', 'apellidos': 'Fernández', 'email': 'sofia.fernandez@example.com', 'password': generate_password_hash('password'), 'telefono': '0011223344', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2},
-        {'nombre': 'Jorge', 'apellidos': 'Morales', 'email': 'jorge.morales@example.com', 'password': generate_password_hash('password'), 'telefono': '1122334455', 'rol': 'Owner', 'codigo_acceso': 3, 'acepto_terminos': True,'hogar_id':3},
-        {'nombre': 'Patricia', 'apellidos': 'Ramírez', 'email': 'patricia.ramirez@example.com', 'password': generate_password_hash('password'), 'telefono': '2233445566', 'rol': 'Owner', 'codigo_acceso': 4, 'acepto_terminos': True,'hogar_id':4},
-        {'nombre': 'Manuel', 'apellidos': 'Cruz', 'email': 'manuel.cruz@example.com', 'password': generate_password_hash('password'), 'telefono': '3344556677', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':4},
-        {'nombre': 'Gabriela', 'apellidos': 'Sánchez', 'email': 'gabriela.sanchez@example.com', 'password': generate_password_hash('password'), 'telefono': '4455667788', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':4},
-        {'nombre': 'Fernando', 'apellidos': 'Ortiz', 'email': 'fernando.ortiz@example.com', 'password': generate_password_hash('password'), 'telefono': '5566778899', 'rol': 'Owner', 'codigo_acceso': 5, 'acepto_terminos': True,'hogar_id':5},
-        {'nombre': 'Elena', 'apellidos': 'Vargas', 'email': 'elena.vargas@example.com', 'password': generate_password_hash('password'), 'telefono': '6677889900', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':5}
+        {'nombre': 'Juan', 'apellidos': 'Pérez', 'email': 'juan.perez@example.com', 'password': generate_password_hash('password'), 'telefono': '1234567890', 'rol': 'Admin', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id': None, 'periodo_id': None},
+        {'nombre': 'Ana', 'apellidos': 'García', 'email': 'ana.garcia@example.com', 'password': generate_password_hash('password'), 'telefono': '0987654321', 'rol': 'Owner', 'codigo_acceso': 1, 'acepto_terminos': True, 'hogar_id':1, 'periodo_id': 19},
+        {'nombre': 'Luis', 'apellidos': 'Martínez', 'email': 'luis.martinez@example.com', 'password': generate_password_hash('password'), 'telefono': '1122334455', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':1, 'periodo_id': 19},
+        {'nombre': 'Carlos', 'apellidos': 'Hernández', 'email': 'carlos.hernandez@example.com', 'password': generate_password_hash('password'), 'telefono': '5566778899', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':1, 'periodo_id': 19},
+        {'nombre': 'María', 'apellidos': 'López', 'email': 'maria.lopez@example.com', 'password': generate_password_hash('password'), 'telefono': '6677889900', 'rol': 'Owner', 'codigo_acceso': 2, 'acepto_terminos': True,'hogar_id':2, 'periodo_id': 19},
+        {'nombre': 'Miguel', 'apellidos': 'Rodríguez', 'email': 'miguel.rodriguez@example.com', 'password': generate_password_hash('password'), 'telefono': '7788990011', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2, 'periodo_id': 19},
+        {'nombre': 'Laura', 'apellidos': 'Gómez', 'email': 'laura.gomez@example.com', 'password': generate_password_hash('password'), 'telefono': '8899001122', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2, 'periodo_id': 18},
+        {'nombre': 'David', 'apellidos': 'Díaz', 'email': 'david.diaz@example.com', 'password': generate_password_hash('password'), 'telefono': '9900112233', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2, 'periodo_id': 18},
+        {'nombre': 'Sofía', 'apellidos': 'Fernández', 'email': 'sofia.fernandez@example.com', 'password': generate_password_hash('password'), 'telefono': '0011223344', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2, 'periodo_id': 18},
+        {'nombre': 'Jorge', 'apellidos': 'Morales', 'email': 'jorge.morales@example.com', 'password': generate_password_hash('password'), 'telefono': '1122334455', 'rol': 'Owner', 'codigo_acceso': 3, 'acepto_terminos': True,'hogar_id':3, 'periodo_id': 18},
+        {'nombre': 'Patricia', 'apellidos': 'Ramírez', 'email': 'patricia.ramirez@example.com', 'password': generate_password_hash('password'), 'telefono': '2233445566', 'rol': 'Owner', 'codigo_acceso': 4, 'acepto_terminos': True,'hogar_id':4, 'periodo_id': 17},
+        {'nombre': 'Manuel', 'apellidos': 'Cruz', 'email': 'manuel.cruz@example.com', 'password': generate_password_hash('password'), 'telefono': '3344556677', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':4,'periodo_id': 17},
+        {'nombre': 'Gabriela', 'apellidos': 'Sánchez', 'email': 'gabriela.sanchez@example.com', 'password': generate_password_hash('password'), 'telefono': '4455667788', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':4, 'periodo_id': 17},
+        {'nombre': 'Fernando', 'apellidos': 'Ortiz', 'email': 'fernando.ortiz@example.com', 'password': generate_password_hash('password'), 'telefono': '5566778899', 'rol': 'Owner', 'codigo_acceso': 5, 'acepto_terminos': True,'hogar_id':5, 'periodo_id': 17},
+        {'nombre': 'Elena', 'apellidos': 'Vargas', 'email': 'elena.vargas@example.com', 'password': generate_password_hash('password'), 'telefono': '6677889900', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':5, 'periodo_id': 17}
     ]
 
     hogares = [
@@ -519,9 +519,9 @@ def seed_database():
         
         for usuario in usuarios:
             c.execute(
-                '''INSERT INTO users (nombre, apellidos, email, password, telefono, rol, codigo_acceso, acepto_terminos, hogar_id)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''',
-                (usuario['nombre'], usuario['apellidos'], usuario['email'], usuario['password'], usuario['telefono'], usuario['rol'], usuario['codigo_acceso'], usuario['acepto_terminos'], usuario['hogar_id'])
+                '''INSERT INTO users (nombre, apellidos, email, password, telefono, rol, codigo_acceso, acepto_terminos, hogar_id, periodo_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+                (usuario['nombre'], usuario['apellidos'], usuario['email'], usuario['password'], usuario['telefono'], usuario['rol'], usuario['codigo_acceso'], usuario['acepto_terminos'], usuario['hogar_id'], usuario['periodo_id'])
             )
             
         for evento in eventos:
