@@ -1,5 +1,7 @@
 import mysql.connector
 import os
+import string
+from faker import Faker
 
 #Ejecutar comandos en la terminal
 import click
@@ -33,6 +35,101 @@ def generate_periodos():
 
     return periodos
 
+# Calcula el precio total del consumo de agua basado en las tarifas y el consumo
+def calcular_precio_agua(consumo_litros):
+    if consumo_litros <= 10000:
+        tarifa = 'básico'
+        precio_agua = 15.25
+    elif 10001 <= consumo_litros <= 20000:
+        tarifa = 'intermedio'
+        precio_agua = 23.22
+    else:
+        tarifa = 'excedente'
+        precio_agua = 26.67
+    
+    precio_total = (consumo_litros / 1000) * precio_agua
+    return tarifa, precio_agua, precio_total
+
+def generate_codigos_acceso(num_codigos, periodos):
+    codigos_acceso = []
+    
+    def generar_codigo():
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=4)) + '-' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
+    
+    def generar_paquete():
+        return random.choice(['basico', 'premium', 'deluxe'])
+    
+    def generar_disponible(index):
+        return index >= num_codigos // 2
+    
+    def obtener_periodo_aleatorio():
+        return random.choice(periodos)
+    
+    def generar_tipo_suscripcion():
+        return random.choice(['semestral', 'anual'])
+    
+    def calcular_fechas(inicio_periodo, tipo_suscripcion):
+        inicio_str = inicio_periodo.strftime('%Y-%m-%d')
+        inicio = datetime.strptime(inicio_str, '%Y-%m-%d')
+        if tipo_suscripcion == 'semestral':
+            fin = inicio + timedelta(days=182)  # Aproximadamente 6 meses
+        else:
+            fin = inicio + timedelta(days=365)  # Aproximadamente 1 año
+        return inicio.strftime('%Y-%m-%d'), fin.strftime('%Y-%m-%d')
+    
+    def calcular_precio(paquete, tipo_suscripcion):
+        precios = {
+            'basico': {'semestral': 50, 'anual': 90},
+            'premium': {'semestral': 80, 'anual': 150},
+            'deluxe': {'semestral': 100, 'anual': 190},
+        }
+        return precios[paquete][tipo_suscripcion]
+    
+    for i in range(num_codigos):  # Generar 100 códigos de acceso
+        codigo = generar_codigo()
+        paquete = generar_paquete()
+        disponible = generar_disponible(i)
+        periodo = obtener_periodo_aleatorio()
+        periodo_id = periodo['id']
+        inicio_periodo = periodo['inicio']
+        tipo_suscripcion = generar_tipo_suscripcion()
+        inicio, fin = calcular_fechas(inicio_periodo, tipo_suscripcion)
+        precio = calcular_precio(paquete, tipo_suscripcion)
+        
+        codigos_acceso.append({
+            'codigo': codigo,
+            'paquete': paquete,
+            'disponible': 0,
+            'periodo_id': periodo_id,
+            'tipo_suscripcion': tipo_suscripcion,
+            'inicio': inicio,
+            'fin': fin,
+            'precio': precio
+        })
+    
+    return codigos_acceso
+
+# Generar hogares en función de los códigos de acceso
+def generate_hogares(codigos_acceso):
+    fake = Faker('es_MX')
+    hogares = []
+    for codigo in codigos_acceso:
+        hogar = {
+            'codigo_postal': fake.postcode(),
+            'calle': fake.street_name(),
+            'numero_exterior': fake.building_number(),
+            'numero_interior': fake.building_number(),
+            'colonia': fake.city(),
+            'municipio': fake.city(),
+            'estado': fake.state(),
+            'informacion_adicional': fake.catch_phrase(),
+            'estatus': 'activo',
+            'tamanio': random.choice(['pequeño', 'mediano', 'grande'])
+            # 'codigo_acceso': codigo['codigo']
+        }
+        hogares.append(hogar)
+    return hogares
+
 def init_app(app):
     # Carga las variables de entorno desde el archivo .env
     load_dotenv()
@@ -43,7 +140,6 @@ def init_app(app):
     app.cli.add_command(init_db_command)
     app.cli.add_command(drop_tables_command)
     app.cli.add_command(seed_database_command)
-    app.cli.add_command(seed_registros_eventos_command)
     
     # Configuración de la base de datos
     app.config['DATABASE_HOST'] = os.getenv('DATABASE_HOST')
@@ -86,6 +182,7 @@ def init_db():
             c.fetchall()  # Consumir los resultados de la consulta
         # Se ejecutan   
         db.commit()
+        db.close()
     except Exception as e:
         click.echo(f'Error al inicializar la base de datos: {str(e)}')
         return
@@ -117,6 +214,7 @@ def drop_tables():
         c.execute("SET FOREIGN_KEY_CHECKS = 1;")
         
         db.commit()
+        db.close()
     except Exception as e:
         click.echo(f'Error al dropear las tablas: {str(e)}')
         return
@@ -213,6 +311,19 @@ def seed_database():
     ]
     
     periodos = generate_periodos()
+    
+    codigos = [
+        {'codigo': 'CODE-1AB', 'paquete': 'basico', 'disponible': False},
+        {'codigo': 'CODE-2BC', 'paquete': 'basico', 'disponible': False},
+        {'codigo': 'CODE-3CD', 'paquete': 'premium', 'disponible': False},
+        {'codigo': 'CODE-4DE', 'paquete': 'premium', 'disponible': False},
+        {'codigo': 'CODE-5EF', 'paquete': 'deluxe', 'disponible': False},
+        {'codigo': 'CODE-6FG', 'paquete': 'deluxe', 'disponible': True},
+        {'codigo': 'CODE-7GH', 'paquete': 'basico', 'disponible': True},
+        {'codigo': 'CODE-8HI', 'paquete': 'premium', 'disponible': True},
+        {'codigo': 'CODE-9IJ', 'paquete': 'deluxe', 'disponible': True},
+        {'codigo': 'CODE-0JK', 'paquete': 'basico', 'disponible': True}
+    ]
     
     registros_eventos = [
         {'hogar_id': 1, 'usuario_id': 2, 'evento_id': 9, 'periodo_id': 1},
@@ -357,9 +468,17 @@ def seed_database():
     consumo_agua_hogares = []
     
     for hogar_id, miembros in miembros_por_hogar.items():
-            for periodo_id in range(1, 20):  # Considerando periodos del 1 al 19
-                consumo_litros = round(random.uniform(50, 150) * miembros * 30, 2)
-                consumo_agua_hogares.append({'hogar_id': hogar_id, 'periodo_id': periodo_id, 'consumo_litros': consumo_litros})
+        for periodo_id in range(1, 20):  # Considerando periodos del 1 al 19
+            consumo_litros = round(random.uniform(50, 150) * miembros * 30, 2)
+            tarifa, precio_agua, precio_total = calcular_precio_agua(consumo_litros)
+            consumo_agua_hogares.append({
+                'hogar_id': hogar_id, 
+                'periodo_id': periodo_id, 
+                'consumo_litros': consumo_litros,
+                'tarifa': tarifa,
+                'precio_agua': precio_agua,
+                'precio_total': precio_total
+            })
                 
     dispositivos = []
     
@@ -370,6 +489,13 @@ def seed_database():
             dispositivos.append({'hogar_id': hogar_id, 'user_id': user_id, 'tipo': tipo, 'estado': estado})
     
     try:
+        for periodo in periodos:
+            c.execute(
+                '''INSERT INTO periodos (nombre, inicio, fin)
+                VALUES (%s, %s, %s)''',
+                (periodo['nombre'], periodo['inicio'], periodo['fin'])
+            )
+            
         for codigo in codigos:
             c.execute(
                 '''INSERT INTO codigos_acceso (codigo, paquete, disponible)
@@ -386,9 +512,9 @@ def seed_database():
         
         for hogar in hogares:
             c.execute(
-                '''INSERT INTO hogares (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, estatus)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''',
-                (hogar['codigo_postal'], hogar['calle'], hogar['numero_exterior'], hogar['numero_interior'], hogar['colonia'], hogar['municipio'], hogar['estado'], hogar['informacion_adicional'], hogar['estatus'])
+                '''INSERT INTO hogares (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, estatus, tamanio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+                (hogar['codigo_postal'], hogar['calle'], hogar['numero_exterior'], hogar['numero_interior'], hogar['colonia'], hogar['municipio'], hogar['estado'], hogar['informacion_adicional'], hogar['estatus'], hogar['tamanio'])
             )
         
         for usuario in usuarios:
@@ -405,13 +531,6 @@ def seed_database():
                 (evento['nombre'],)
             )
             
-        for periodo in periodos:
-            c.execute(
-                '''INSERT INTO periodos (nombre, inicio, fin)
-                VALUES (%s, %s, %s)''',
-                (periodo['nombre'], periodo['inicio'], periodo['fin'])
-            )
-            
         for registro_evento in registros_eventos:
             c.execute(
                 '''INSERT INTO registros_eventos (hogar_id, usuario_id, evento_id, periodo_id)
@@ -424,14 +543,15 @@ def seed_database():
                 '''INSERT INTO consumo_energia (hogar_id, periodo_id, consumo_kwh, tarifa, precio_energia, precio_total)
                 VALUES (%s, %s, %s, %s, %s, %s)''',
                 (consumo_energia['hogar_id'], consumo_energia['periodo_id'], consumo_energia['consumo_kwh'],
-                 consumo_energia['tarifa'], consumo_energia['precio_energia'], consumo_energia['precio_total'])
+                consumo_energia['tarifa'], consumo_energia['precio_energia'], consumo_energia['precio_total'])
             )
             
         for consumo_agua in consumo_agua_hogares:
             c.execute(
-                '''INSERT INTO consumo_agua (hogar_id, periodo_id, consumo_litros)
-                VALUES (%s, %s, %s)''',
-                (consumo_agua['hogar_id'], consumo_agua['periodo_id'], consumo_agua['consumo_litros'])
+                '''INSERT INTO consumo_agua (hogar_id, periodo_id, consumo_litros, tarifa, precio_agua, precio_total)
+                VALUES (%s, %s, %s, %s, %s, %s)''',
+                (consumo_agua['hogar_id'], consumo_agua['periodo_id'], consumo_agua['consumo_litros'],
+                consumo_agua['tarifa'], consumo_agua['precio_agua'], consumo_agua['precio_total'])
             )
             
         for dispositivo in dispositivos:
@@ -442,41 +562,47 @@ def seed_database():
             )
 
         db.commit()
+        
+        # PARTE 2 DE LOS SEEDERS
+        # Seleccionar IDs de hogares insertados
+        c.execute("SELECT id FROM hogares")
+        hogaresCommit = c.fetchall()
+        
+        # Seleccionar periodos desde la base de datos con sus IDs
+        c.execute("SELECT * FROM periodos")
+        periodosCommit = c.fetchall()
+        
+        # Generar y insertar códigos de acceso
+        num_codigos = 100  # Número de códigos de acceso a generar
+        codigos_acceso = generate_codigos_acceso(num_codigos, periodosCommit)
+        for codigo in codigos_acceso:
+            c.execute(
+                '''INSERT INTO codigos_acceso (codigo, paquete, disponible, periodo_id, tipo_suscripcion, inicio, fin, precio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
+                (codigo['codigo'], codigo['paquete'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'], codigo['precio'])
+            )
+        
+        db.commit()  # Hacer commit de los cambios finales
+        
+        # Generar y insertar hogares en función de los códigos de acceso
+        hogares = generate_hogares(codigos_acceso)
+        for hogar in hogares:
+            c.execute(
+                '''INSERT INTO hogares (codigo_postal, calle, numero_exterior, numero_interior, colonia, municipio, estado, informacion_adicional, estatus, tamanio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+                (hogar['codigo_postal'], hogar['calle'], hogar['numero_exterior'], hogar['numero_interior'], hogar['colonia'], hogar['municipio'], hogar['estado'], hogar['informacion_adicional'], hogar['estatus'], hogar['tamanio'])
+            )
+            
+        db.commit()     
     except Exception as e:
         db.rollback()
         click.echo(f'Error al poblar la base de datos: {str(e)}')
         return
+    finally:
+        close_db()  # Cerrar conexión a la base de datos
 
 @click.command('seed-database')
 @with_appcontext
 def seed_database_command():
     seed_database()
     click.echo('Seeders ejecutados')
-    
-def seed_registros_eventos():
-    db, c = get_db()
-
-    registros_eventos = [
-        {'hogar_id': 1, 'evento_id': 1, 'timestamp': '2024-06-28 12:00:00'},
-        {'hogar_id': 1, 'evento_id': 3, 'timestamp': '2024-06-28 12:10:00'},
-        {'hogar_id': 2, 'evento_id': 2, 'timestamp': '2024-06-28 12:20:00'},
-        {'hogar_id': 3, 'evento_id': 4, 'timestamp': '2024-06-28 12:30:00'}
-    ]
-
-    try:
-        for registro_evento in registros_eventos:
-            c.execute(
-                '''INSERT INTO registros_eventos (hogar_id, evento_id, timestamp)
-                VALUES (%s, %s, %s)''',
-                (registro_evento['hogar_id'], registro_evento['evento_id'], registro_evento['timestamp'])
-            )
-        db.commit()
-    except Exception as e:
-        click.echo(f'Error al poblar la base de datos: {str(e)}')
-        return
-
-@click.command('seed-registros-eventos')
-@with_appcontext
-def seed_registros_eventos_command():
-    seed_registros_eventos()
-    click.echo('Tabla registros eventos poblada')

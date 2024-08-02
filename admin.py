@@ -4,13 +4,363 @@ from flask import (
 import requests
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+import datetime
+from babel.dates import format_date
 from werkzeug.exceptions import abort
 from .auth import login_required, admin_role_required
-from .db import get_db
-from dotenv import load_dotenv
+from .db import get_db, close_db
 
 bp = Blueprint('admin', __name__)
 load_dotenv()
+
+# Función para formatear la fecha al mes en español
+def formatear_fecha(fecha):
+    if fecha:
+        return format_date(fecha, format='MMMM yyyy', locale='es')
+    return None
+
+# Función para obtener el último periodo
+def get_ultimo_periodo_ventas():
+    db, c = get_db()
+    
+    try:
+        query = """
+        SELECT MAX(periodo_id) as ultimo_periodo_id
+        FROM codigos_acceso
+        """
+        
+        c.execute(query)
+        resultado = c.fetchone()
+        
+        print(f"ultimo periodo: {resultado}")
+    
+        return resultado['ultimo_periodo_id'] if resultado else None
+    finally:
+        close_db()
+        
+def get_consumo_ventas():
+    db, c = get_db()
+    
+    try: 
+        query = f"""
+        SELECT periodo_id
+        FROM codigos_acceso
+        WHERE disponible = 0
+        ORDER BY periodo_id
+        """
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        datos = c.fetchall()
+        
+        # Convierte los resultados a un formato de lista de diccionarios
+        datos_grafica = [{'periodo_id': dato['periodo_id']} for dato in datos]
+        
+        # Consulta para obtener los consumos de los dos últimos periodos
+        query_ultimos_periodos = """
+        SELECT COUNT(ca.periodo_id) as consumo, ca.periodo_id, p.inicio
+        FROM codigos_acceso ca
+        JOIN periodos p ON ca.periodo_id = p.id
+        WHERE ca.disponible = 0
+        GROUP BY ca.periodo_id, p.inicio
+        ORDER BY ca.periodo_id DESC
+        LIMIT 2
+        """
+    
+        c.execute(query_ultimos_periodos)
+        ultimos_periodos = c.fetchall()
+        print(f"Ultimos periodos: {ultimos_periodos}")
+        
+        if len(ultimos_periodos) < 2:
+            diferencia_porcentual = None  # No hay suficientes datos para calcular la diferencia porcentual
+        else:
+            consumo_actual = ultimos_periodos[0]['consumo']
+            consumo_anterior = ultimos_periodos[1]['consumo']
+            diferencia = consumo_actual - consumo_anterior
+            porcentaje_cambio = (diferencia / consumo_anterior) * 100
+            diferencia_porcentual = {
+                'consumo_actual': consumo_actual,
+                'consumo_anterior': consumo_anterior,
+                'porcentaje_cambio': round(porcentaje_cambio, 2),
+                'positivo': porcentaje_cambio > 0,
+                'inicio': ultimos_periodos[1]['inicio']
+            }
+        
+        return datos_grafica, diferencia_porcentual
+    finally:
+        close_db()
+        
+def get_ingreso_ventas():
+    db, c = get_db()
+    
+    try: 
+        # Consulta para obtener los ingresos por periodo
+        query = """
+        SELECT ca.periodo_id, SUM(ca.precio) as ingreso, p.inicio
+        FROM codigos_acceso ca
+        JOIN periodos p ON ca.periodo_id = p.id
+        WHERE ca.disponible = 0
+        GROUP BY ca.periodo_id, p.inicio
+        ORDER BY ca.periodo_id
+        """
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        datos = c.fetchall()
+        
+        # Convierte los resultados a un formato de lista de diccionarios para la gráfica
+        datos_grafica = [{'periodo_id': dato['periodo_id'], 'ingreso': dato['ingreso']} for dato in datos]
+        
+        # Consulta para obtener los ingresos de los dos últimos periodos
+        query_ultimos_periodos = """
+        SELECT SUM(ca.precio) as ingreso, ca.periodo_id, p.inicio
+        FROM codigos_acceso ca
+        JOIN periodos p ON ca.periodo_id = p.id
+        WHERE ca.disponible = 0
+        GROUP BY ca.periodo_id, p.inicio
+        ORDER BY ca.periodo_id DESC
+        LIMIT 2
+        """
+    
+        c.execute(query_ultimos_periodos)
+        ultimos_periodos = c.fetchall()
+        
+        if len(ultimos_periodos) < 2:
+            diferencia_porcentual = None  # No hay suficientes datos para calcular la diferencia porcentual
+        else:
+            ingreso_actual = ultimos_periodos[0]['ingreso']
+            ingreso_anterior = ultimos_periodos[1]['ingreso']
+            diferencia = ingreso_actual - ingreso_anterior
+            porcentaje_cambio = (diferencia / ingreso_anterior) * 100
+            diferencia_porcentual = {
+                'ingreso_actual': ingreso_actual,
+                'ingreso_anterior': ingreso_anterior,
+                'porcentaje_cambio': round(porcentaje_cambio, 2),
+                'positivo': porcentaje_cambio > 0,
+                'inicio': ultimos_periodos[1]['inicio']
+            }
+        
+        return datos_grafica, diferencia_porcentual
+    finally:
+        close_db(db)
+        
+def get_nuevos_usuarios():
+    db, c = get_db()
+    
+    try: 
+        # Consulta para obtener los nuevos usuarios por periodo
+        query = """
+        SELECT u.periodo_id, COUNT(u.id) as nuevos_usuarios, p.inicio
+        FROM users u
+        JOIN periodos p ON u.periodo_id = p.id
+        GROUP BY u.periodo_id, p.inicio
+        ORDER BY u.periodo_id
+        """
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        datos = c.fetchall()
+        
+        # Convierte los resultados a un formato de lista de diccionarios para la gráfica
+        datos_grafica = [{'periodo_id': dato['periodo_id'], 'nuevos_usuarios': dato['nuevos_usuarios']} for dato in datos]
+        
+        # Consulta para obtener los nuevos usuarios de los dos últimos periodos
+        query_ultimos_periodos = """
+        SELECT COUNT(u.id) as nuevos_usuarios, u.periodo_id, p.inicio
+        FROM users u
+        JOIN periodos p ON u.periodo_id = p.id
+        GROUP BY u.periodo_id, p.inicio
+        ORDER BY u.periodo_id DESC
+        LIMIT 2
+        """
+    
+        c.execute(query_ultimos_periodos)
+        ultimos_periodos = c.fetchall()
+        
+        if len(ultimos_periodos) < 2:
+            diferencia_porcentual = None  # No hay suficientes datos para calcular la diferencia porcentual
+        else:
+            nuevos_usuarios_actual = ultimos_periodos[0]['nuevos_usuarios']
+            nuevos_usuarios_anterior = ultimos_periodos[1]['nuevos_usuarios']
+            diferencia = nuevos_usuarios_actual - nuevos_usuarios_anterior
+            porcentaje_cambio = (diferencia / nuevos_usuarios_anterior) * 100
+            diferencia_porcentual = {
+                'nuevos_usuarios_actual': nuevos_usuarios_actual,
+                'nuevos_usuarios_anterior': nuevos_usuarios_anterior,
+                'porcentaje_cambio': round(porcentaje_cambio, 2),
+                'positivo': porcentaje_cambio > 0,
+                'inicio': ultimos_periodos[1]['inicio']
+            }
+        
+        return datos_grafica, diferencia_porcentual
+    finally:
+        close_db(db)
+        
+def get_cantidad_hogares():
+    db, c = get_db()
+    
+    try:    
+        query = """
+        SELECT COUNT(id) as total
+        FROM hogares
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        hogares = c.fetchone()
+        
+        return hogares
+    finally:
+        close_db()
+        
+def get_cantidad_usuarios():
+    db, c = get_db()
+    
+    try:    
+        query = """
+        SELECT COUNT(id) as total
+        FROM users
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        usuarios = c.fetchone()
+        
+        return usuarios
+    finally:
+        close_db()
+        
+def get_cantidad_dispositivos():
+    db, c = get_db()
+    
+    try:    
+        query = """
+        SELECT COUNT(id) as total
+        FROM dispositivos
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        dispositivos = c.fetchone()
+        
+        return dispositivos
+    finally:
+        close_db()
+        
+def get_cantidad_paquetes_vendidos():
+    db, c = get_db()
+    
+    try:    
+        query = """
+        SELECT COUNT(id) as total
+        FROM codigos_acceso
+        WHERE disponible = 0
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        paquetes_vendidos = c.fetchone()
+        
+        return paquetes_vendidos
+    finally:
+        close_db()
+        
+def get_estatus_hogares():
+    db, c = get_db()
+    
+    try:
+        # Consulta para obtener los dispositivos del hogar por hogar
+        query = """
+        SELECT estatus, COUNT(id) as total
+        FROM hogares
+        GROUP BY estatus
+        """
+        
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        estatus_todos = c.fetchall()
+        
+        estatus_tipos = [estatus['estatus'] for estatus in estatus_todos]
+        estatus_cantidades = [estatus['total'] for estatus in estatus_todos]
+        
+        return estatus_tipos, estatus_cantidades
+    finally:
+        close_db()
+        
+def get_ventas_mensuales_por_paquete2023():
+    db, c = get_db()
+    
+    try:
+        query = """
+        SELECT
+            MONTH(p.inicio) as mes,
+            c.paquete,
+            COUNT(c.id) as total
+        FROM
+            codigos_acceso c
+        JOIN
+            periodos p ON c.periodo_id = p.id
+        WHERE
+            YEAR(p.inicio) = 2023
+        GROUP BY
+            MONTH(p.inicio), c.paquete
+        ORDER BY
+            MONTH(p.inicio), c.paquete
+        """
+        
+        c.execute(query)
+        resultados = c.fetchall()
+
+        # Inicializar diccionario para almacenar los datos
+        ventas = {
+            'basico': [0] * 12,
+            'premium': [0] * 12,
+            'deluxe': [0] * 12
+        }
+
+        for resultado in resultados:
+            mes = resultado['mes'] - 1  # ajustar para el índice de la lista
+            ventas[resultado['paquete']][mes] = resultado['total']
+        
+        return ventas
+    finally:
+        close_db()
+        
+def get_ventas_mensuales_por_suscripcion2023():
+    db, c = get_db()
+    
+    try:
+        query = """
+        SELECT
+            MONTH(p.inicio) as mes,
+            c.tipo_suscripcion,
+            COUNT(c.id) as total
+        FROM
+            codigos_acceso c
+        JOIN
+            periodos p ON c.periodo_id = p.id
+        WHERE
+            YEAR(p.inicio) = 2023
+        GROUP BY
+            MONTH(p.inicio), c.tipo_suscripcion
+        ORDER BY
+            MONTH(p.inicio), c.tipo_suscripcion
+        """
+        
+        c.execute(query)
+        resultados = c.fetchall()
+
+        # Inicializar diccionario para almacenar los datos
+        suscripciones = {
+            'semestral': [0] * 12,
+            'anual': [0] * 12
+        }
+
+        for resultado in resultados:
+            mes = resultado['mes'] - 1  # ajustar para el índice de la lista
+            suscripciones[resultado['tipo_suscripcion']][mes] = resultado['total']
+        
+        return suscripciones
+    finally:
+        close_db()
 
 @bp.route('/inicio')
 @login_required
@@ -79,7 +429,67 @@ def admin_index():
 @login_required
 @admin_role_required
 def admin_estadisticas():
-    return render_template('admin/admin-estadisticas.html', user=g.user)
+    # CARD VENTAS
+    datos_grafica_ventas, card_ventas = get_consumo_ventas()
+    fecha_venta = card_ventas['inicio']
+
+    fecha_venta_formateada = formatear_fecha(fecha_venta)
+    
+    # CARD INGRESOS
+    datos_grafica_ingresos, card_ingresos = get_ingreso_ventas()
+    fecha_ingresos = card_ingresos['inicio']
+    
+    fecha_ingresos_formateada = formatear_fecha(fecha_ingresos)
+    
+    # CARD USUSARIOS
+    datos_grafica_usuarios, card_usuarios = get_nuevos_usuarios()
+    fecha_usuarios = card_usuarios['inicio']
+    
+    fecha_usuarios_formateada = formatear_fecha(fecha_usuarios)
+
+    # TOTAL DE HOGARES
+    total_hogares = get_cantidad_hogares()
+    
+    # TOTAL DE USUARIOS
+    total_usuarios = get_cantidad_usuarios()
+    
+    # TOTAL DE DISPOSITIVOS
+    total_dispositivos = get_cantidad_dispositivos()
+    
+    # TOTAL DE PAQUETES VENDIDOS
+    total_paquetes_vendidos = get_cantidad_paquetes_vendidos()
+    
+    # ESTATUS DE HOGARES
+    estatus_tipos, estatus_cantidades = get_estatus_hogares()
+    
+    # GRÁFICA STACK BAR - VENTAS POR MES 2023
+    ventasPaquete2023 = get_ventas_mensuales_por_paquete2023()
+    ventasSuscripcion2023 = get_ventas_mensuales_por_suscripcion2023()
+    
+    return render_template(
+        'admin/admin-estadisticas.html', 
+        user=g.user,
+        # CARD VENTAS
+        card_ventas=card_ventas,
+        fecha_venta_formateada=fecha_venta_formateada,
+        # CARD INGRESOS
+        card_ingresos=card_ingresos,
+        fecha_ingresos_formateada=fecha_ingresos_formateada,
+        # CARD USUARIOS
+        card_usuarios=card_usuarios,
+        fecha_usuarios_formateada=fecha_usuarios_formateada,
+        # TABLA ADMINISTRACIÓN
+        total_hogares=total_hogares['total'],
+        total_usuarios=total_usuarios['total'],
+        total_dispositivos=total_dispositivos['total'],
+        total_paquetes_vendidos=total_paquetes_vendidos['total'],
+        # GRÁFICA STACK BAR - VENTAS POR MES 2023
+        ventasPaquete2023=ventasPaquete2023,
+        ventasSuscripcion2023=ventasSuscripcion2023,
+        # GRÁFICA PIE - TIPOS ESTATUS HOGAR
+        estatus_tipos=estatus_tipos,
+        estatus_cantidades=estatus_cantidades
+        )
 
 def get_hogares():
     db, c = get_db()

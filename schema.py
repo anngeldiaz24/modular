@@ -12,12 +12,27 @@ instructions = [
     'DROP TABLE IF EXISTS dispositivos;',
     'SET FOREIGN_KEY_CHECKS=1;',
     """
+        -- Creación de la tabla periodos
+        CREATE TABLE periodos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL,
+            inicio DATE NOT NULL,
+            fin DATE NOT NULL
+        );
+    """,
+    """
         -- Creación de la tabla codigos_acceso
         CREATE TABLE codigos_acceso (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
             codigo VARCHAR(10) NOT NULL,
             paquete VARCHAR(100) NOT NULL,
-            disponible BOOLEAN
+            disponible BOOLEAN,
+            periodo_id INT NULL,
+            tipo_suscripcion ENUM('semestral', 'anual') NULL,
+            inicio DATE NULL,
+            fin DATE NULL,
+            precio DECIMAL (10, 2) NULL,
+            FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
     """,
     """
@@ -33,6 +48,7 @@ instructions = [
             estado VARCHAR(255) NOT NULL,
             informacion_adicional VARCHAR(255) NULL,
             estatus ENUM('activo', 'inactivo', 'cancelado') NOT NULL DEFAULT 'activo'
+            tamanio ENUM('pequeño', 'mediano', 'grande') NOT NULL
         );
     """,
     """
@@ -48,8 +64,10 @@ instructions = [
             codigo_acceso INT(10),
             acepto_terminos BOOLEAN NOT NULL DEFAULT 0,
             hogar_id INT(10),
+            periodo_id INT(10) NULL,
             FOREIGN KEY (codigo_acceso) REFERENCES codigos_acceso(id),
-            FOREIGN KEY (hogar_id) REFERENCES hogares(id) ON DELETE CASCADE
+            FOREIGN KEY (hogar_id) REFERENCES hogares(id) ON DELETE CASCADE,
+            FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
     """,
     """
@@ -64,15 +82,6 @@ instructions = [
         CREATE TABLE eventos (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nombre VARCHAR(255) NOT NULL
-        );
-    """,
-    """
-        -- Creación de la tabla periodos
-        CREATE TABLE periodos (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            nombre VARCHAR(255) NOT NULL,
-            inicio DATE NOT NULL,
-            fin DATE NOT NULL
         );
     """,
     """
@@ -110,6 +119,9 @@ instructions = [
             hogar_id INT NOT NULL,
             periodo_id INT NOT NULL,
             consumo_litros DECIMAL(10, 2) NOT NULL,
+            tarifa ENUM('básico', 'intermedio', 'excedente') NULL,
+            precio_agua DECIMAL(5, 3) NULL,
+            precio_total DECIMAL(10, 2) NULL,
             FOREIGN KEY (hogar_id) REFERENCES hogares(id),
             FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
