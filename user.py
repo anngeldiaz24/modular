@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 bp = Blueprint('user', __name__)
 load_dotenv()
 
-@bp.route('/inicio')
+@bp.route('/inicio-usuario')
 @login_required
 @user_role_required
 def home():
