@@ -11,6 +11,7 @@ from .db import get_db
 import requests
 import re 
 from dotenv import load_dotenv
+from datetime import datetime
 import os
 from werkzeug.security import generate_password_hash
 from mysql.connector import Error as MySQLError
@@ -26,7 +27,42 @@ load_dotenv()
 @login_required
 @user_role_required
 def home():
-    return render_template('user/user-inicio.html', user=g.user, role=g.user['rol'])
+    db, c = get_db()
+    current_hour = datetime.now().hour
+    
+    if 5 <= current_hour < 12:
+        greeting = "Buenos días"
+    elif 12 <= current_hour < 18:
+        greeting = "Buenas tardes"
+    else:
+        greeting = "Buenas noches"
+    
+    # Obtener la información del hogar del usuario
+    c.execute('SELECT * FROM hogares WHERE id = %s', (g.user['hogar_id'],))
+    hogar_usuario = c.fetchone()
+    
+    if not hogar_usuario:
+        flash('Hogar no encontrado', 'error')
+    
+    estado_hogar = hogar_usuario['estado']
+    
+    # Obtener la temperatura actual del estado del hogar del usuario
+    api_key = os.getenv('OPENWEATHER_API_KEY')
+    weather_url = f'http://api.openweathermap.org/data/2.5/weather?q={estado_hogar},MX&appid={api_key}&units=metric'
+    response = requests.get(weather_url)
+    
+    if response.status_code == 200:
+        weather_data = response.json()
+        temperature = round(weather_data['main']['temp'])
+    else:
+        temperature = "N/A"
+    
+    return render_template('user/user-inicio.html', 
+                            user=g.user, 
+                            role=g.user['rol'], 
+                            greeting=greeting, 
+                            estado_hogar=estado_hogar,
+                            temperature=temperature)
 
 @bp.route('/hogar')
 @login_required
@@ -101,7 +137,7 @@ def user_welcome():
                 db.commit()
 
                 flash('¡Bienvenido a SSafeZone!', 'success')
-                return redirect(url_for('user.user_index'))
+                return redirect(url_for('user.home'))
             except Exception as e:
                 db.rollback()
                 error = f"Ocurrió un error al guardar la dirección: {e}"
@@ -125,7 +161,7 @@ def miembros_hogar():
 
     miembros = c.fetchall()
 
-    return render_template('user/miembros-hogar.html', miembros=miembros, current_year=datetime.datetime.now().year, user=g.user, role=g.user['rol'])
+    return render_template('user/miembros-hogar.html', miembros=miembros, current_year=datetime.now().year, user=g.user, role=g.user['rol'])
 
 @bp.route('/crear-miembro-hogar', methods=['POST'])
 @login_required

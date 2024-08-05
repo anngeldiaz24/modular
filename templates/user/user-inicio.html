@@ -27,8 +27,8 @@
                                         <div class="bg-no-repeat bg-cover bg-center p-6 rounded-[6px] relative" style="background-image: url('{{ url_for('static', filename='assets/images/all-img/widget-bg-6.png') }}');">
                                             <div class="flex flex-col items-start max-w-[300px]">
                                                 <h4 class="text-3xl font-bold text-white mb-3">
-                                                   <!-- <span class="block text-lg font-normal">{{ greeting }},</span>
-                                                    <span class="block text-2xl">{{ user.nombre }} {{ user.apellidos }}</span>-->
+                                                    <span class="block text-lg font-normal">{{ greeting }},</span>
+                                                    <span class="block text-2xl">{{ user.nombre }} {{ user.apellidos }}</span>
                                                 </h4>
                                                 <p class="text-md text-white font-semibold">
                                                     Bienvenido a SSafeNet
@@ -42,11 +42,11 @@
                                             <div class="flex items-center space-x-4 max-w-[300px]">
                                                 <div class="flex-1">
                                                     <h4 class="text-xl font-medium text-white mb-2">
-                                                        <span class="block">La temperatura actual en Guadalajara es:</span>
+                                                        <span class="block">La temperatura actual en {{ estado_hogar }} es:</span>
                                                     </h4>
                                                 </div>
                                                 <div class="flex-none text-4xl text-white mr-2">
-                                                <!--  <span>{{ temperature }}</span> °C -->
+                                                    <span>{{ temperature }}</span> °C
                                                 </div>
                                             </div>
                                         </div>
@@ -61,30 +61,49 @@
                             <div class="card-body flex flex-col p-6">
                                 <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
                                     <div class="flex-1">
-                                        <div class="card-title text-slate-900 dark:text-white">Carousel Interval</div>
+                                        <div class="card-title text-slate-900 dark:text-white">Funcionalidades del hogar</div>
                                     </div>
                                 </header>
                                 <div class="card-text h-full">
                                     <div class="space-y-5">
-                                        <div class="slider carousel-interval owl-carousel">
-                                            <div class="item">
-                                                <div class="carousel-container">
-                                                    <img src="static/assets/images/all-img/c1.png" class="carousel-image" alt="image">
+                                        <div class="slider width-caption owl-carousel carousel-interval">
+                                            <div class="relative carousel-container">
+                                                <img class="w-full carousel-image" src="{{ url_for('static', filename='assets/images/all-img/lights.jpg') }}" alt="image">
+                                                <div class="absolute w-full bottom-14 text-center">
+                                                    <h3 class="text-white font-Inter text-lg">Dispositivos inteligentes</h3>
+                                                    <p class="text-white font-Inter text-sm">Transforma tu hogar con nuestros dispotivos inteligentes. Disfruta de la comodidad y seguridad</p>
+                                                    <p class="text-white font-Inter text-sm">ofreciéndote un control total desde cualquier lugar.</p>
                                                 </div>
                                             </div>
-                                            <div class="item">
-                                                <div class="carousel-container">
-                                                    <img src="static/assets/images/all-img/c2.png" class="carousel-image" alt="image">
+                                            <div class="relative carousel-container">
+                                                <img class="w-full carousel-image" src="{{ url_for('static', filename='assets/images/all-img/alarma-casa.png') }}" alt="image">
+                                                <div class="absolute w-full bottom-14 text-center">
+                                                    <h3 class="text-white font-Inter text-lg">Alarmas inteligente</h3>
+                                                    <p class="text-white font-Inter text-sm">Protege tu hogar con alarmas que siempre estarán para ti.</p>
                                                 </div>
                                             </div>
-                                            <div class="item">
-                                                <div class="carousel-container">
-                                                    <img src="static/assets/images/all-img/c3.png" class="carousel-image" alt="image">
+                                            <div class="relative carousel-container">
+                                                <img class="w-full carousel-image" src="{{ url_for('static', filename='assets/images/all-img/camaras-seguridad-hogar.png') }}" alt="image">
+                                                <div class="absolute w-full bottom-14 text-center">
+                                                    <h3 class="text-white font-Inter text-lg">Camáras de seguridad</h3>
+                                                    <p class="text-white font-Inter text-sm">Vigila tu hogar en todo momento con nuestras cámaras de seguridad. Disfruta de tranquilidad y protección,</p>
+                                                    <p class="text-white font-Inter text-sm">sabiendo que tu hogar está siempre bajo vigilancia.</p>
                                                 </div>
                                             </div>
-                                            <div class="item">
-                                                <div class="carousel-container">
-                                                    <img src="static/assets/images/all-img/c4.png" class="carousel-image" alt="image">
+                                            <div class="relative carousel-container">
+                                                <img class="w-full carousel-image" src="{{ url_for('static', filename='assets/images/all-img/motion-detector.jpg') }}" alt="image">
+                                                <div class="absolute w-full bottom-14 text-center">
+                                                    <h3 class="text-white font-Inter text-lg">Detector de movimiento</h3>
+                                                    <p class="text-white font-Inter text-sm">Protege tu hogar con nuestros sensores de movimiento avanzados,</p></p>
+                                                    <p class="text-white font-Inter text-sm">brindándote una seguridad inigualable las 24 horas del día.</p>
+                                                </div>
+                                            </div>
+                                            <div class="relative carousel-container">
+                                                <img class="w-full carousel-image" src="{{ url_for('static', filename='assets/images/all-img/police.jpg') }}" alt="image">
+                                                <div class="absolute w-full bottom-14 text-center">
+                                                    <h3 class="text-white font-Inter text-lg">Enlace a la policia</h3>
+                                                    <p class="text-white font-Inter text-sm">En caso de intrusión, nuestro sistema puede notificar automáticamente</p>
+                                                    <p class="text-white font-Inter text-sm">a las autoridades locales para una respuesta rápida.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -108,16 +127,69 @@
                         </div>
                         <div class="lg:col-span-4 col-span-12 space-y-5 mt-3">
                             <div class="card">
-                                <header class="card-header">
-                                    <h4 class="card-title">
-                                        Estados con mayor número de casas
-                                    </h4>
-                                </header>
-                                <div class="card-body p-6">
-                                    <ul class="divide-y divide-slate-100 dark:divide-slate-700">
-                                        
-                                    </ul>
-                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Activity</h4>
+                                    </div>
+                                    <div class="card-body p-6">
+                                        <!-- BEGIN: Activity Card -->
+                
+                
+                                        <ul class="relative ltr:pl-2 rtl:pr-2">
+                
+                
+                                            <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
+                                last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
+                                rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
+                                    before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
+                                    before:content-[url('../images/all-img/ck.svg')]">
+                                            <div class="p-[10px] relative top-[-20px]">
+                                                <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
+                                                Project start date
+                                                </h2>
+                                                <p class="text-xs capitalize dark:text-slate-400">
+                                                Sep 20, 2021
+                                                </p>
+                                            </div>
+                                            </li>
+                
+                
+                                            <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
+                                last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
+                                rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
+                                    before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
+                                    before:content-[url('../images/all-img/ck.svg')]">
+                                            <div class="p-[10px] relative top-[-20px]">
+                                                <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
+                                                Project start date
+                                                </h2>
+                                                <p class="text-xs capitalize dark:text-slate-400">
+                                                Sep 20, 2021
+                                                </p>
+                                            </div>
+                                            </li>
+                
+                
+                                            <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
+                                last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
+                                rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
+                                    before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
+                                    before:content-[url('../images/all-img/ck.svg')]">
+                                            <div class="p-[10px] relative top-[-20px]">
+                                                <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
+                                                Project start date
+                                                </h2>
+                                                <p class="text-xs capitalize dark:text-slate-400">
+                                                Sep 20, 2021
+                                                </p>
+                                            </div>
+                                            </li>
+                
+                                        </ul>
+                                        <!-- END: Activity Card -->
+                                        </div>
+                                    </div>
+                                    <!-- end activity -->
                             </div>
                         </div>
                     </div>
@@ -129,9 +201,10 @@
 
 <style>
 .carousel-container {
-    width: 886px;
-    height: 519px;
+    width: 100%;
+    height: 400px;
     overflow: hidden;
+    position: relative;
 }
 
 .carousel-image {
