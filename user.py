@@ -26,13 +26,13 @@ load_dotenv()
 @login_required
 @user_role_required
 def home():
-    return render_template('user/home.html', user=g.user, role=g.user['rol'])
+    return render_template('user/user-inicio.html', user=g.user, role=g.user['rol'])
 
 @bp.route('/hogar')
 @login_required
 @user_role_required
 def user_index():
-    return render_template('user/user-dashboard.html', user=g.user, role=g.user['rol'])
+    return render_template('user/user-home.html', user=g.user, role=g.user['rol'])
 
 @login_required
 @user_role_required
