@@ -17,7 +17,14 @@ from flask.cli import with_appcontext
 from .schema import instructions
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv # para cargar las variables del .env
+from unidecode import unidecode
 
+fake = Faker('es_MX')
+
+# Definir tipos de dispositivo y posibles estados
+tipos_dispositivo = ['celular', 'computadora', 'tablet']
+estados_dispositivo = ['conectado', 'desconectado']
+    
 def generate_periodos():
     start_year = 2023
     end_year = 2024
@@ -57,7 +64,7 @@ def generate_codigos_acceso(num_codigos, periodos):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=4)) + '-' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
     
     def generar_paquete():
-        return random.choice(['basico', 'premium', 'deluxe'])
+        return random.choice(['Básico', 'Premium', 'Deluxe'])
     
     def generar_disponible(index):
         return index >= num_codigos // 2
@@ -79,9 +86,9 @@ def generate_codigos_acceso(num_codigos, periodos):
     
     def calcular_precio(paquete, tipo_suscripcion):
         precios = {
-            'basico': {'semestral': 50, 'anual': 90},
-            'premium': {'semestral': 80, 'anual': 150},
-            'deluxe': {'semestral': 100, 'anual': 190},
+            'Básico': {'semestral': 50, 'anual': 90},
+            'Premium': {'semestral': 80, 'anual': 150},
+            'Deluxe': {'semestral': 100, 'anual': 190},
         }
         return precios[paquete][tipo_suscripcion]
     
@@ -111,7 +118,6 @@ def generate_codigos_acceso(num_codigos, periodos):
 
 # Generar hogares en función de los códigos de acceso
 def generate_hogares(codigos_acceso):
-    fake = Faker('es_MX')
     hogares = []
     for codigo in codigos_acceso:
         hogar = {
@@ -123,12 +129,193 @@ def generate_hogares(codigos_acceso):
             'municipio': fake.city(),
             'estado': fake.state(),
             'informacion_adicional': fake.catch_phrase(),
-            'estatus': 'activo',
+            'estatus': random.choice(['activo', 'inactivo', 'cancelado']),
             'tamanio': random.choice(['pequeño', 'mediano', 'grande'])
-            # 'codigo_acceso': codigo['codigo']
         }
         hogares.append(hogar)
     return hogares
+
+def generate_usuarios(hogares, codigos_acceso):
+    usuarios = []
+    emails = set() # Para asegurarnos de que los correos electrónicos sean únicos
+    
+    def generar_nombre():
+        return fake.first_name()
+    
+    def generar_apellidos():
+        return fake.last_name()
+    
+    def generar_email(nombre):
+        # Eliminar acentos del nombre y convertirlo a minúsculas
+        nombre_sin_acentos = unidecode(nombre).lower().replace(' ', '.')
+        base_email = f"{nombre_sin_acentos}@example.com"
+        email = base_email
+        i = 1
+        while email in emails:
+            email = f"{nombre_sin_acentos}_{i}@example.com"
+            i += 1
+        emails.add(email)
+        return email
+    
+    def generar_password():
+        return generate_password_hash('password')
+    
+    def generar_telefono():
+        return ''.join(random.choices(string.digits, k=10))
+    
+    def generar_rol(admin):
+        return 'Owner' if admin else 'User'
+    
+    codigo_index = 0
+    
+    for hogar in hogares:
+        # Generar un usuario administrador
+        nombre = generar_nombre()
+        apellidos = generar_apellidos()
+        email = generar_email(nombre)
+        password = generar_password()
+        telefono = generar_telefono()
+        rol = generar_rol(admin=True)
+        codigo_acceso_id = codigos_acceso[codigo_index]['id'] if codigo_index < len(codigos_acceso) else None
+        periodo_id = codigos_acceso[codigo_index]['periodo_id'] if codigo_index < len(codigos_acceso) else None
+        usuario_admin = {
+            'nombre': nombre,
+            'apellidos': apellidos,
+            'email': email,
+            'password': password,
+            'telefono': telefono,
+            'rol': rol,
+            'codigo_acceso': codigo_acceso_id,
+            'acepto_terminos': True,
+            'hogar_id': hogar['id'],
+            'periodo_id': periodo_id
+        }
+        
+        usuarios.append(usuario_admin)
+        codigo_index += 1
+        
+        # Generar otros usuarios para el hogar
+        num_usuarios = random.randint(1, 4)  # Número aleatorio de usuarios por hogar
+        for _ in range(num_usuarios):
+            nombre = generar_nombre()
+            apellidos = generar_apellidos()
+            email = generar_email(nombre)
+            password = generar_password()
+            telefono = generar_telefono()
+            rol = generar_rol(admin=False)
+            
+            usuario = {
+                'nombre': nombre,
+                'apellidos': apellidos,
+                'email': email,
+                'password': password,
+                'telefono': telefono,
+                'rol': rol,
+                'codigo_acceso': None,  # Otros usuarios no necesitan código de acceso
+                'acepto_terminos': True,
+                'hogar_id': hogar['id'],
+                'periodo_id': periodo_id
+            }
+            
+            usuarios.append(usuario)
+    
+    return usuarios
+
+def generate_registros_eventos(hogares, usuarios, eventos, periodos):
+    registros_eventos = []
+
+    for hogar in hogares:
+        for usuario in usuarios:
+            if usuario['hogar_id'] == hogar['id']:
+                num_eventos = random.randint(0, 5)  # Número aleatorio de eventos por usuario
+                for _ in range(num_eventos):
+                    evento_id = 9
+                    periodo_id = random.choice(periodos)['id']
+                    
+                    registro_evento = {
+                        'hogar_id': hogar['id'],
+                        'usuario_id': usuario['id'],
+                        'evento_id': evento_id,
+                        'periodo_id': periodo_id
+                    }
+                    
+                    registros_eventos.append(registro_evento)
+    
+    return registros_eventos
+
+# Generate consumption data
+def generate_consumo_energia_hogares(hogares, periodos):
+    consumo_energia_hogares = []
+    for hogar in hogares:
+        hogar_id = hogar['id']
+        for periodo in periodos:
+            periodo_id = periodo['id']
+            consumo_kwh = random.randint(100, 400)
+            
+            if consumo_kwh <= 300:
+                tarifa = 'básico'
+                precio_energia = 0.595
+            elif 301 <= consumo_kwh <= 750:
+                tarifa = 'intermedio-bajo'
+                precio_energia = 0.741
+            elif 751 <= consumo_kwh <= 900:
+                tarifa = 'intermedio-alto'
+                precio_energia = 0.967
+            else:
+                tarifa = 'excedente'
+                precio_energia = 2.859
+                
+            precio_total = consumo_kwh * precio_energia
+            
+            consumo_energia_hogares.append({
+                'hogar_id': hogar_id, 
+                'periodo_id': periodo_id, 
+                'consumo_kwh': consumo_kwh,
+                'tarifa': tarifa,
+                'precio_energia': precio_energia,
+                'precio_total': precio_total
+            })
+    return consumo_energia_hogares
+
+def generate_consumo_agua_hogares(hogares, periodos):
+    consumo_agua_hogares = []
+    for hogar in hogares:
+        hogar_id = hogar['id']
+        num_miembros = random.randint(1, 5)  # Número aleatorio de miembros por hogar
+        for periodo in periodos:
+            periodo_id = periodo['id']
+            consumo_litros = round(random.uniform(50, 150) * num_miembros * 30, 2)
+            tarifa, precio_agua, precio_total = calcular_precio_agua(consumo_litros)
+            consumo_agua_hogares.append({
+                'hogar_id': hogar_id, 
+                'periodo_id': periodo_id, 
+                'consumo_litros': consumo_litros,
+                'tarifa': tarifa,
+                'precio_agua': precio_agua,
+                'precio_total': precio_total
+            })
+    return consumo_agua_hogares
+
+def generate_dispositivos(usuarios):
+    usuarios_por_hogar = {}
+    for usuario in usuarios:
+        hogar_id = usuario['hogar_id']
+        if hogar_id not in usuarios_por_hogar:
+            usuarios_por_hogar[hogar_id] = []
+        usuarios_por_hogar[hogar_id].append(usuario['id'])
+    
+    dispositivos = []
+    for hogar_id, user_ids in usuarios_por_hogar.items():
+        for user_id in user_ids:
+            tipo = random.choice(tipos_dispositivo)
+            estado = random.choice(estados_dispositivo)
+            dispositivos.append({
+                'hogar_id': hogar_id, 
+                'user_id': user_id, 
+                'tipo': tipo, 
+                'estado': estado
+            })
+    return dispositivos
 
 def init_app(app):
     # Carga las variables de entorno desde el archivo .env
@@ -235,10 +422,6 @@ def seed_database():
         5: 2   # Hogar 5 tiene 2 miembros
     }
     
-    # Definir tipos de dispositivo y posibles estados
-    tipos_dispositivo = ['celular', 'computadora', 'tablet']
-    estados_dispositivo = ['conectado', 'desconectado']
-    
     # Distribución de usuario_id y hogar_id como se proporcionó
     usuarios_por_hogar = {
         1: [2, 3, 4],
@@ -250,26 +433,31 @@ def seed_database():
     
     # Obtiene la conexión a la base de datos y el cursor
     db, c = get_db()
-
-    codigos = [
-        {'codigo': 'CODE-1AB', 'paquete': 'Básico', 'disponible': False},
-        {'codigo': 'CODE-2BC', 'paquete': 'Básico', 'disponible': False},
-        {'codigo': 'CODE-3CD', 'paquete': 'Premium', 'disponible': False},
-        {'codigo': 'CODE-4DE', 'paquete': 'Premium', 'disponible': False},
-        {'codigo': 'CODE-5EF', 'paquete': 'Deluxe', 'disponible': False},
-        {'codigo': 'CODE-6FG', 'paquete': 'Deluxe', 'disponible': True},
-        {'codigo': 'CODE-7GH', 'paquete': 'Básico', 'disponible': True},
-        {'codigo': 'CODE-8HI', 'paquete': 'Premium', 'disponible': True},
-        {'codigo': 'CODE-9IJ', 'paquete': 'Deluxe', 'disponible': True},
-        {'codigo': 'CODE-0JK', 'paquete': 'Básico', 'disponible': True}
-    ]
-
+    
+    periodos = generate_periodos()
+    
     estados = [
         'Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche', 'Chiapas', 'Chihuahua', 
         'Coahuila', 'Colima', 'Durango', 'Guanajuato', 'Guerrero', 'Hidalgo', 'Jalisco', 'Estado de México', 
         'Michoacán', 'Morelos', 'Nayarit', 'Nuevo León', 'Oaxaca', 'Puebla', 'Querétaro', 'Quintana Roo', 
         'San Luis Potosí', 'Sinaloa', 'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán', 
         'Zacatecas'
+    ]
+
+    codigos = [
+        {'codigo': 'CODE-1AB', 'paquete': 'Básico', 'disponible': False, 'periodo_id': 19, 'tipo_suscripcion': 'anual', 'inicio': '2024-07-01', 'fin': '2025-07-01', 'precio': 90.0},
+        {'codigo': 'CODE-2BC', 'paquete': 'Básico', 'disponible': False, 'periodo_id': 19, 'tipo_suscripcion': 'semestral', 'inicio': '2024-07-01', 'fin': '2024-12-30', 'precio': 50.0},
+        {'codigo': 'CODE-3CD', 'paquete': 'Premium', 'disponible': False, 'periodo_id': 18, 'tipo_suscripcion': 'anual', 'inicio': '2024-06-01', 'fin': '2025-06-01','precio': 150.0},
+        {'codigo': 'CODE-4DE', 'paquete': 'Premium', 'disponible': False, 'periodo_id': 18, 'tipo_suscripcion': 'semestral', 'inicio': '2024-06-01', 'fin': '2024-11-30', 'precio': 80.0},
+        {'codigo': 'CODE-5EF', 'paquete': 'Deluxe', 'disponible': False, 'periodo_id': 17, 'tipo_suscripcion': 'anual', 'inicio': '2024-05-01', 'fin': '2025-05-01', 'precio': 190.0}
+    ]
+    
+    hogares = [
+        {'codigo_postal': '01000', 'calle': 'Calle Falsa', 'numero_exterior': '123', 'numero_interior': 'A', 'colonia': 'Centro', 'municipio': 'Ciudad de México', 'estado': 'Ciudad de México', 'informacion_adicional': 'Cerca del parque', 'estatus': 'activo', 'tamanio': 'pequeño'},
+        {'codigo_postal': '02000', 'calle': 'Avenida Siempre Viva', 'numero_exterior': '742', 'numero_interior': '', 'colonia': 'Primavera', 'municipio': 'Monterrey', 'estado': 'Nuevo León', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'mediano'},
+        {'codigo_postal': '03000', 'calle': 'Callejón sin Salida', 'numero_exterior': '666', 'numero_interior': 'B', 'colonia': 'Fantasma', 'municipio': 'Guadalajara', 'estado': 'Jalisco', 'informacion_adicional': 'Al lado del cementerio', 'estatus': 'activo', 'tamanio': 'grande'},
+        {'codigo_postal': '04000', 'calle': 'Camino Real', 'numero_exterior': '789', 'numero_interior': '', 'colonia': 'San Juan', 'municipio': 'Puebla', 'estado': 'Puebla', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'pequeño'},
+        {'codigo_postal': '05000', 'calle': 'Av. Revolución', 'numero_exterior': '101', 'numero_interior': 'C', 'colonia': 'Las Flores', 'municipio': 'Querétaro', 'estado': 'Querétaro', 'informacion_adicional': 'Frente a la plaza', 'estatus': 'activo', 'tamanio': 'mediano'}
     ]
 
     usuarios = [
@@ -289,14 +477,6 @@ def seed_database():
         {'nombre': 'Fernando', 'apellidos': 'Ortiz', 'email': 'fernando.ortiz@example.com', 'password': generate_password_hash('password'), 'telefono': '5566778899', 'rol': 'Owner', 'codigo_acceso': 5, 'acepto_terminos': True,'hogar_id':5, 'periodo_id': 17},
         {'nombre': 'Elena', 'apellidos': 'Vargas', 'email': 'elena.vargas@example.com', 'password': generate_password_hash('password'), 'telefono': '6677889900', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':5, 'periodo_id': 17}
     ]
-
-    hogares = [
-        {'codigo_postal': '01000', 'calle': 'Calle Falsa', 'numero_exterior': '123', 'numero_interior': 'A', 'colonia': 'Centro', 'municipio': 'Ciudad de México', 'estado': 'Ciudad de México', 'informacion_adicional': 'Cerca del parque', 'estatus': 'activo', 'tamanio': 'pequeño'},
-        {'codigo_postal': '02000', 'calle': 'Avenida Siempre Viva', 'numero_exterior': '742', 'numero_interior': '', 'colonia': 'Primavera', 'municipio': 'Monterrey', 'estado': 'Nuevo León', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'mediano'},
-        {'codigo_postal': '03000', 'calle': 'Callejón sin Salida', 'numero_exterior': '666', 'numero_interior': 'B', 'colonia': 'Fantasma', 'municipio': 'Guadalajara', 'estado': 'Jalisco', 'informacion_adicional': 'Al lado del cementerio', 'estatus': 'activo', 'tamanio': 'grande'},
-        {'codigo_postal': '04000', 'calle': 'Camino Real', 'numero_exterior': '789', 'numero_interior': '', 'colonia': 'San Juan', 'municipio': 'Puebla', 'estado': 'Puebla', 'informacion_adicional': '', 'estatus': 'activo', 'tamanio': 'pequeño'},
-        {'codigo_postal': '05000', 'calle': 'Av. Revolución', 'numero_exterior': '101', 'numero_interior': 'C', 'colonia': 'Las Flores', 'municipio': 'Querétaro', 'estado': 'Querétaro', 'informacion_adicional': 'Frente a la plaza', 'estatus': 'activo', 'tamanio': 'mediano'}
-    ]
     
     eventos = [
         {'nombre': 'activacion_alarma'},
@@ -308,21 +488,6 @@ def seed_database():
         {'nombre': 'monitoreo_camara'},
         {'nombre': 'alerta'},
         {'nombre': 'modo_seguro'}
-    ]
-    
-    periodos = generate_periodos()
-    
-    codigos = [
-        {'codigo': 'CODE-1AB', 'paquete': 'basico', 'disponible': False},
-        {'codigo': 'CODE-2BC', 'paquete': 'basico', 'disponible': False},
-        {'codigo': 'CODE-3CD', 'paquete': 'premium', 'disponible': False},
-        {'codigo': 'CODE-4DE', 'paquete': 'premium', 'disponible': False},
-        {'codigo': 'CODE-5EF', 'paquete': 'deluxe', 'disponible': False},
-        {'codigo': 'CODE-6FG', 'paquete': 'deluxe', 'disponible': True},
-        {'codigo': 'CODE-7GH', 'paquete': 'basico', 'disponible': True},
-        {'codigo': 'CODE-8HI', 'paquete': 'premium', 'disponible': True},
-        {'codigo': 'CODE-9IJ', 'paquete': 'deluxe', 'disponible': True},
-        {'codigo': 'CODE-0JK', 'paquete': 'basico', 'disponible': True}
     ]
     
     registros_eventos = [
@@ -496,18 +661,18 @@ def seed_database():
                 (periodo['nombre'], periodo['inicio'], periodo['fin'])
             )
             
-        for codigo in codigos:
-            c.execute(
-                '''INSERT INTO codigos_acceso (codigo, paquete, disponible)
-                VALUES (%s, %s, %s)''',
-                (codigo['codigo'], codigo['paquete'], codigo['disponible'])
-            )
-        
         for estado in estados:
             c.execute(
                 '''INSERT INTO estados (nombre)
                 VALUES (%s)''',
                 (estado,)
+            )
+            
+        for codigo in codigos:
+            c.execute(
+                '''INSERT INTO codigos_acceso (codigo, paquete, disponible, periodo_id, tipo_suscripcion, inicio, fin, precio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
+                (codigo['codigo'], codigo['paquete'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'], codigo['precio'])
             )
         
         for hogar in hogares:
@@ -561,19 +726,16 @@ def seed_database():
                 (dispositivo['hogar_id'], dispositivo['user_id'], dispositivo['tipo'], dispositivo['estado'])
             )
 
-        db.commit()
+        # db.commit()
         
         # PARTE 2 DE LOS SEEDERS
-        # Seleccionar IDs de hogares insertados
-        c.execute("SELECT id FROM hogares")
-        hogaresCommit = c.fetchall()
         
         # Seleccionar periodos desde la base de datos con sus IDs
         c.execute("SELECT * FROM periodos")
         periodosCommit = c.fetchall()
         
         # Generar y insertar códigos de acceso
-        num_codigos = 100  # Número de códigos de acceso a generar
+        num_codigos = 10  # Número de códigos de acceso a generar
         codigos_acceso = generate_codigos_acceso(num_codigos, periodosCommit)
         for codigo in codigos_acceso:
             c.execute(
@@ -581,8 +743,7 @@ def seed_database():
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
                 (codigo['codigo'], codigo['paquete'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'], codigo['precio'])
             )
-        
-        db.commit()  # Hacer commit de los cambios finales
+            codigo['id'] = c.lastrowid
         
         # Generar y insertar hogares en función de los códigos de acceso
         hogares = generate_hogares(codigos_acceso)
@@ -592,8 +753,53 @@ def seed_database():
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
                 (hogar['codigo_postal'], hogar['calle'], hogar['numero_exterior'], hogar['numero_interior'], hogar['colonia'], hogar['municipio'], hogar['estado'], hogar['informacion_adicional'], hogar['estatus'], hogar['tamanio'])
             )
+            hogar['id'] = c.lastrowid
+        
+        # Generar y insertar usuarios en función de los hogares
+        usuarios = generate_usuarios(hogares, codigos_acceso) 
+        for usuario in usuarios:
+            c.execute(
+                '''INSERT INTO users (nombre, apellidos, email, password, telefono, rol, codigo_acceso, acepto_terminos, hogar_id, periodo_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+                (usuario['nombre'], usuario['apellidos'], usuario['email'], usuario['password'], usuario['telefono'], usuario['rol'], usuario['codigo_acceso'], usuario['acepto_terminos'], usuario['hogar_id'], usuario['periodo_id'])
+            )
+            usuario['id'] = c.lastrowid
             
-        db.commit()     
+        registros_eventos = generate_registros_eventos(hogares, usuarios, eventos, periodosCommit)     
+        for registro in registros_eventos:
+            c.execute(
+                '''INSERT INTO registros_eventos (hogar_id, usuario_id, evento_id, periodo_id)
+                VALUES (%s, %s, %s, %s)''',
+                (registro['hogar_id'], registro['usuario_id'], registro['evento_id'], registro['periodo_id'])
+            )
+            
+        registros_consumo_energia = generate_consumo_energia_hogares(hogares, periodosCommit)      
+        for consumo in registros_consumo_energia:
+            c.execute(
+                '''INSERT INTO consumo_energia (hogar_id, periodo_id, consumo_kwh, tarifa, precio_energia, precio_total)
+                VALUES (%s, %s, %s, %s, %s, %s)''',
+                (consumo['hogar_id'], consumo['periodo_id'], consumo['consumo_kwh'], consumo['tarifa'], consumo['precio_energia'], consumo['precio_total'])
+            )
+            
+        registros_consumo_agua = generate_consumo_agua_hogares(hogares, periodosCommit)
+        for consumo in registros_consumo_agua:
+            c.execute(
+                '''INSERT INTO consumo_agua (hogar_id, periodo_id, consumo_litros, tarifa, precio_agua, precio_total)
+                VALUES (%s, %s, %s, %s, %s, %s)''',
+                (consumo['hogar_id'], consumo['periodo_id'], consumo['consumo_litros'], consumo['tarifa'], consumo['precio_agua'], consumo['precio_total'])
+            )
+            
+        registros_dispositivos = generate_dispositivos(usuarios)
+        
+        for dispositivo in registros_dispositivos:
+            c.execute(
+                '''INSERT INTO dispositivos (hogar_id, user_id, tipo, estado)
+                VALUES (%s, %s, %s, %s)''',
+                (dispositivo['hogar_id'], dispositivo['user_id'], dispositivo['tipo'], dispositivo['estado'])
+            )
+          
+        db.commit()
+                 
     except Exception as e:
         db.rollback()
         click.echo(f'Error al poblar la base de datos: {str(e)}')

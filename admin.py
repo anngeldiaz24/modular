@@ -310,9 +310,9 @@ def get_ventas_mensuales_por_paquete2023():
 
         # Inicializar diccionario para almacenar los datos
         ventas = {
-            'basico': [0] * 12,
-            'premium': [0] * 12,
-            'deluxe': [0] * 12
+            'Básico': [0] * 12,
+            'Premium': [0] * 12,
+            'Deluxe': [0] * 12
         }
 
         for resultado in resultados:
