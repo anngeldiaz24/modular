@@ -43,8 +43,18 @@ def home():
     
     if not hogar_usuario:
         flash('Hogar no encontrado', 'error')
+        return redirect(url_for('main.index'))
     
     estado_hogar = hogar_usuario['estado']
+    
+    # Obtener la información del código de acceso del hogar del usuario
+    c.execute('SELECT * FROM codigos_acceso WHERE id = %s', (hogar_usuario['id'],))
+    codigo_acceso = c.fetchone()
+    print(codigo_acceso)
+    
+    if not codigo_acceso:
+        flash('Código de acceso no encontrado', 'error')
+        codigo_acceso = {}
     
     # Obtener la temperatura actual del estado del hogar del usuario
     api_key = os.getenv('OPENWEATHER_API_KEY')
@@ -62,7 +72,9 @@ def home():
                             role=g.user['rol'], 
                             greeting=greeting, 
                             estado_hogar=estado_hogar,
-                            temperature=temperature)
+                            temperature=temperature,
+                            codigo_acceso=codigo_acceso)
+
 
 @bp.route('/hogar')
 @login_required
