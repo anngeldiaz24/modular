@@ -97,11 +97,21 @@
                     </div>
                     <div class="mb-3">
                         <label for="editPaquete" class="form-label">Paquete</label>
-                        <input type="text" class="form-control" id="editPaquete" name="paquete">
+                        <select class="form-control" id="editPaquete" name="paquete">
+                            <option value="" hidden>Selecciona una opción</option>
+                            <option value="Básico">Básico</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Deluxe">Deluxe</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="editEstatus" class="form-label">Estatus</label>
-                        <input type="text" class="form-control" id="editEstatus" name="estatus" required>
+                        <select class="form-control" id="editEstatus" name="estatus" required>
+                            <option value="" hidden>Selecciona una opción</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
                     </div>
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary text-right">Guardar cambios</button>
@@ -146,13 +156,17 @@
                 let direccion = this.getAttribute('data-direccion');
                 let paquete = this.getAttribute('data-paquete');
                 let estatus = this.getAttribute('data-estatus');
-
+    
+                // Precargar los valores en los inputs y selects
                 document.getElementById('editDireccion').value = direccion;
-                document.getElementById('editPaquete').value = paquete;
-                document.getElementById('editEstatus').value = estatus;
-
+    
+                let paqueteSelect = document.getElementById('editPaquete');
+                paqueteSelect.value = paquete;
+    
+                let estatusSelect = document.getElementById('editEstatus');
+                estatusSelect.value = estatus;
+    
                 document.getElementById('editHogarForm').action = '/hogar/' + hogarId + '/edit';
-
             });
         });
     });
