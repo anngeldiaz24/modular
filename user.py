@@ -10,6 +10,7 @@ import datetime
 from .db import get_db
 import requests
 import re 
+from babel.dates import format_date
 from dotenv import load_dotenv
 from datetime import datetime
 import os
@@ -50,12 +51,15 @@ def home():
     # Obtener la información del código de acceso del hogar del usuario
     c.execute('SELECT * FROM codigos_acceso WHERE id = %s', (hogar_usuario['id'],))
     codigo_acceso = c.fetchone()
-    print(codigo_acceso)
     
-    if not codigo_acceso:
-        flash('Código de acceso no encontrado', 'error')
-        codigo_acceso = {}
-    
+    if codigo_acceso:
+        inicio = format_date(codigo_acceso['inicio'], format='long', locale='es') if codigo_acceso['inicio'] else "N/A"
+        fecha_actual = format_date(datetime.now(), format='long', locale='es')
+        fin = format_date(codigo_acceso['fin'], format='long', locale='es') if codigo_acceso['fin'] else "N/A"
+    else:
+        inicio = "N/A"
+        fin = "N/A"
+        
     # Obtener la temperatura actual del estado del hogar del usuario
     api_key = os.getenv('OPENWEATHER_API_KEY')
     weather_url = f'http://api.openweathermap.org/data/2.5/weather?q={estado_hogar},MX&appid={api_key}&units=metric'
@@ -73,7 +77,10 @@ def home():
                             greeting=greeting, 
                             estado_hogar=estado_hogar,
                             temperature=temperature,
-                            codigo_acceso=codigo_acceso)
+                            codigo_acceso=codigo_acceso,
+                            inicio=inicio,
+                            fin=fin,
+                            fecha_actual=fecha_actual)
 
 
 @bp.route('/hogar')

@@ -131,65 +131,61 @@
                                     <div class="card-header">
                                         <h4 class="card-title">Suscripción: {{ codigo_acceso['paquete'] }}</h4>
                                     </div>
-                                    <div class="card-body p-6">
-                                        <!-- BEGIN: Activity Card -->
-    
-                
-                                        <ul class="relative ltr:pl-2 rtl:pr-2">
-                
-                
-                                            <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
-                                last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
-                                rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
-                                    before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
-                                    before:content-[url('../images/all-img/ck.svg')]">
-                                            <div class="p-[10px] relative top-[-20px]">
-                                                <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
-                                                Fecha de inicio
-                                                </h2>
-                                                <p class="text-xs capitalize dark:text-slate-400">
-                                                    {{ codigo_acceso['inicio'] }}
-                                                </p>
-                                            </div>
-                                            </li>
-                
-                
-                                            <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
-                                last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
-                                rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
-                                    before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
-                                    before:content-[url('../images/all-img/ck.svg')]">
-                                            <div class="p-[10px] relative top-[-20px]">
-                                                <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
-                                                Fecha actual
-                                                </h2>
-                                                <p class="text-xs capitalize dark:text-slate-400">
-                                                Sep 20, 2021
-                                                </p>
-                                            </div>
-                                            </li>
-                
-                
-                                            <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
-                                last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
-                                rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
-                                    before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
-                                    before:content-[url('../images/all-img/ck.svg')]">
-                                            <div class="p-[10px] relative top-[-20px]">
-                                                <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
-                                                Fecha de finalización
-                                                </h2>
-                                                <p class="text-xs capitalize dark:text-slate-400">
-                                                    {{  codigo_acceso['fin'] }}
-                                                </p>
-                                            </div>
-                                            </li>
-                
-                                        </ul>
-                                        <!-- END: Activity Card -->
+                                    {% if codigo_acceso['periodo_id'] != None %}
+                                        <div class="card-body p-6">
+                                            <!-- BEGIN: Activity Card -->
+                                            <ul class="relative ltr:pl-2 rtl:pr-2">
+                                                <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
+                                    last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
+                                    rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
+                                        before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
+                                        before:content-[url('../images/all-img/ck.svg')]">
+                                                    <div class="p-[10px] relative top-[-20px]">
+                                                        <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
+                                                            Fecha de inicio
+                                                        </h2>
+                                                        <p class="text-xs capitalize dark:text-slate-400">
+                                                            {{ inicio }}
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                                <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
+                                    last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
+                                    rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
+                                        before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
+                                        before:content-[url('../images/all-img/ck.svg')]">
+                                                    <div class="p-[10px] relative top-[-20px]">
+                                                        <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
+                                                            Fecha actual
+                                                        </h2>
+                                                        <p class="text-xs capitalize dark:text-slate-400">
+                                                            {{ fecha_actual }}
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                                <li class="ltr:border-l-2 rtl:border-r-2 border-slate-100 dark:border-slate-700 pb-4 
+                                    last:border-none ltr:pl-[22px] rtl:pr-[22px] relative before:absolute ltr:before:left-[-8px] 
+                                    rtl:before:-right-2 before:top-[0px] before:rounded-full before:w-4 before:h-4
+                                        before:bg-slate-900 dark:before:bg-slate-600 before:leading-[2px] 
+                                        before:content-[url('../images/all-img/ck.svg')]">
+                                                    <div class="p-[10px] relative top-[-20px]">
+                                                        <h2 class="text-sm font-medium dark:text-slate-400-900 mb-1 text-slate-600">
+                                                            Fecha de finalización
+                                                        </h2>
+                                                        <p class="text-xs capitalize dark:text-slate-400">
+                                                            {{ fin }}
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <!-- END: Activity Card -->
                                         </div>
-                                    </div>
-                                    <!-- end activity -->
+                                    {% else %}
+                                        <div class="card-body p-6">
+                                            <h5 class="text-center text-slate-600 dark:text-slate-400">No hay información disponible</h5>
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
