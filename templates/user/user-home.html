@@ -5,64 +5,117 @@
 {% endblock %}
 
 {% block content %}
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="card-title">Protege tu hogar</h4>
-            </div>
-        </div>
-        <div class="card mt-3">
-            <div class="card-body flex flex-col p-6">
-                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
-                    <div class="flex-1">
-                    <div class="card-title text-slate-900 dark:text-white">Cámara principal de la casa</div>
-                    </div>
-                </header>
-                <div class="card-text h-full space-y-10">
-                    <video class="w-full" id="player" playsinline="playsinline" controls="controls" data-poster="https://vjs.zencdn.net/v/oceans.png">
-                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mt-5">
-            <div class="card-body flex flex-col p-6">
-                <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
-                    <div class="flex-1">
-                        <div class="card-title text-slate-900 dark:text-white">Acciones del hogar</div>
-                    </div>
-                </header>
-                <div class="card-text h-full ">
-                    <div class="btn-group-safezone btn-group">
-                        <!-- First Row -->
-                        <button class="btn inline-flex justify-center btn-dark" onclick="location.href='/user-dashboard/encender-luces-domesticas'">
-                            Encender luces
-                        </button>
-                        <button class="btn inline-flex justify-center btn-dark" onclick="location.href='/user-dashboard/activar-alarma'">
-                            Activar alarma
-                        </button>
-                        <button class="btn inline-flex justify-center btn-dark" onclick="location.href='/user-dashboard/bloquear-puertas'">
-                            Bloquear accesos
-                        </button>
-                        <button class="btn inline-flex justify-center btn-dark" onclick="location.href='/user-dashboard/llamar-policia'">
-                            Llamar a la policía
-                        </button>
-                        <!-- Second Row -->
-                        <button class="btn inline-flex justify-center btn-dark" onclick="location.href='/user-dashboard/apagar-luces-domesticas'">
-                            Apagar luces
-                        </button>
-                        <button class="btn inline-flex justify-center btn-dark" onclick="location.href='/user-dashboard/desactivar-alarma'">
-                            Desactivar alarma
-                        </button>
-                        <button class="btn inline-flex justify-center btn-dark" onclick="location.href='/user-dashboard/desbloquear-puertas'">
-                            Desbloquear accesos
-                        </button>
-                        <button class="btn inline-flex justify-center btn-dark" onclick="location.href='/user-dashboard/grabar-contenido'">
-                            Grabar contenido
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="card-title">Protege tu hogar</h4>
         </div>
     </div>
+    <div class="grid grid-cols-12 gap-4 mt-3">
+        <div class="lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2">
+            <video id="camera" class="w-full" style="max-height: 500px;" autoplay playsinline></video>
+        </div>
+        <div class="lg:col-span-3 col-span-12 card p-6 order-2 lg:order-1">
+            <a href="/user-dashboard/encender-luces-domesticas" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+                <iconify-icon icon="mdi:lights" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                <span class="flex-grow text-left">Encender luces</span>
+            </a>
+            <a href="/user-dashboard/apagar-luces-domesticas" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+                <iconify-icon icon="mdi:lights-outline" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                <span class="flex-grow text-left">Apagar luces</span>
+            </a>
+            <div class="relative mb-2">
+                <button onclick="toggleDropdown('blockDropdown')" class="btn flex items-center justify-between btn-outline-dark rounded-[25px] w-full">
+                    <div class="flex items-center">
+                        <iconify-icon icon="material-symbols:lock" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                        <span class="flex-grow text-left">Bloquear accesos</span>
+                    </div>
+                    <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
+                </button>
+                <div id="blockDropdown" class="hidden absolute z-10 bg-white rounded-lg shadow w-full mt-2">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 1</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 2</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 3</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 4</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Bloquear todos los accesos</a>
+                </div>
+            </div>
+            <div class="relative mb-2">
+                <button onclick="toggleDropdown('unlockDropdown')" class="btn flex items-center justify-between btn-outline-dark rounded-[25px] w-full">
+                    <div class="flex items-center">
+                        <iconify-icon icon="mdi:unlocked-outline" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                        <span class="flex-grow text-left">Desbloquear accesos</span>
+                    </div>
+                    <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
+                </button>
+                <div id="unlockDropdown" class="hidden absolute z-10 bg-white rounded-lg shadow w-full mt-2">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 1</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 2</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 3</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 4</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Desbloquear todos los accesos</a>
+                </div>
+            </div>
+            <a href="/user-dashboard/activar-alarma" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+                <iconify-icon icon="icon-park-solid:alarm" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                <span class="flex-grow text-left">Activar alarma</span>
+            </a>
+            <a href="/user-dashboard/desactivar-alarma" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+                <iconify-icon icon="icon-park-outline:alarm" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                <span class="flex-grow text-left">Desactivar alarma</span>
+            </a>
+            <a href="/user-dashboard/llamar-policia" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+                <iconify-icon icon="mdi:car-police" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                <span class="flex-grow text-left">Llamar a la policía</span>
+            </a>
+            <a href="/user-dashboard/grabar-contenido" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+                <iconify-icon icon="solar:videocamera-record-outline" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                <span class="flex-grow text-left">Grabar contenido</span>
+            </a>  
+            <a href="#" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+                <iconify-icon icon="mdi:shield-lock" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                <span class="flex-grow text-left">Modo seguro</span>
+            </a>      
+        </div>
+    </div>
+
 {% endblock %}
+
+{% block scripts %}
+    <script>
+        // Acceder a la cámara del dispositivo
+        const videoElement = document.getElementById('camera');
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                videoElement.srcObject = stream;
+                videoElement.play();
+            })
+            .catch(function(error) {
+                console.log("Error al acceder a la cámara: ", error);
+            });
+        } else {
+            console.log("La API de getUserMedia no es soportada por este navegador.");
+        }
+
+        // Función para mostrar/ocultar los dropdowns
+        function toggleDropdown(dropdownId) {
+            var dropdown = document.getElementById(dropdownId);
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Cerrar el dropdown si se hace clic fuera de él
+        window.onclick = function(event) {
+            if (!event.target.matches('.btn') && !event.target.matches('.iconify-icon')) {
+                var dropdowns = document.querySelectorAll('.relative .absolute');
+                dropdowns.forEach(function(dropdown) {
+                    if (!dropdown.classList.contains('hidden')) {
+                        dropdown.classList.add('hidden');
+                    }
+                });
+            }
+        }
+    </script>
+
+{% endblock %}
+
