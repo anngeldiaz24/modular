@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, url_for, request, session
+    Blueprint, flash, g, redirect, render_template, url_for, request, session, jsonify, Response
 )
 from werkzeug.exceptions import abort
 from .auth import login_required, user_role_required
@@ -7,6 +7,8 @@ from .db import get_db
 from .raspberry import funciones
 import logging
 import datetime
+import cv2 
+import threading
 from .db import get_db
 import requests
 import re 
@@ -20,6 +22,11 @@ from mysql.connector import Error as MySQLError
 # Configurar el logging para este módulo
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+# Variable global para controlar la grabación
+is_recording = False
+output_file = 'output.avi'
+video_writer = None
 
 bp = Blueprint('user', __name__)
 load_dotenv()
@@ -81,7 +88,6 @@ def home():
                             inicio=inicio,
                             fin=fin,
                             fecha_actual=fecha_actual)
-
 
 @bp.route('/hogar')
 @login_required
@@ -465,3 +471,61 @@ def grabar_contenido():
     funciones.grabarContenido()
     logger.info('Saliendo de Grabar contenido llamado')
     return redirect(url_for('user.user_index'))
+
+def start_recording():
+    global is_recording, video_writer, cap
+    is_recording = True
+
+    now = datetime.now()
+    nombre_video = now.strftime("%Y-%m-%d_%H-%M-%S") + '.mp4'
+    carpeta = 'records'
+    ruta_carpeta = os.path.join(os.getcwd(), carpeta)
+    
+    if not os.path.exists(ruta_carpeta):
+        os.makedirs(ruta_carpeta)
+    
+    ruta_video = os.path.join(ruta_carpeta, nombre_video)
+
+    # Configuración del VideoCapture
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: No se puede abrir la cámara.")
+        return
+    
+    # Configuración del VideoWriter
+    video_writer = cv2.VideoWriter(ruta_video, cv2.VideoWriter_fourcc(*'mp4v'), 10.0, (650, 350))
+    if not video_writer.isOpened():
+        print("Error: No se puede abrir el escritor de video.")
+        cap.release()
+        return
+
+    while is_recording:
+        ret, frame = cap.read()
+        if ret:
+            frame = cv2.resize(frame, (650, 350))
+            video_writer.write(frame)
+        else:
+            print("Error al capturar el frame.")
+            break
+
+    cap.release()
+    video_writer.release()
+
+def stop_recording():
+    global is_recording
+    is_recording = False
+
+@bp.route('/start-recording', methods=['POST'])
+@login_required
+def start_video_recording():
+    global is_recording
+    if not is_recording:
+        threading.Thread(target=start_recording).start()
+    return jsonify({"status": "recording started"})
+
+@bp.route('/stop-recording', methods=['POST'])
+@login_required
+def stop_video_recording():
+    if is_recording:
+        stop_recording()
+    return jsonify({"status": "recording stopped"})
