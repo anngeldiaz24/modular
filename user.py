@@ -23,13 +23,53 @@ from mysql.connector import Error as MySQLError
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Variable global para controlar la grabación
-is_recording = False
-output_file = 'output.avi'
-video_writer = None
 
 bp = Blueprint('user', __name__)
 load_dotenv()
+
+# URL del endpoint de captura en el ESP32 (configurable con variables de entorno)
+camera_ip = os.getenv('CAMERA_IP', 'http://192.168.100.28')  # Cambia esto por la IP de tu ESP32 si no usas variables de entorno
+capture_url = f"{camera_ip}/capture"
+
+def capture_photo():
+    try:
+        # Realiza la solicitud GET al endpoint de captura
+        response = requests.get(capture_url, stream=True)
+
+        # Verifica si la solicitud fue exitosa
+        if response.status_code == 200:
+            # Crear la carpeta 'fotos' si no existe
+            fotos_dir = "fotos"
+            if not os.path.exists(fotos_dir):
+                os.makedirs(fotos_dir)
+                logger.info(f"Carpeta '{fotos_dir}' creada.")
+
+            # Generar el nombre del archivo basado en la fecha y hora actuales
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"{fotos_dir}/captura_{timestamp}.jpg"
+
+            # Guardar la imagen en la carpeta 'fotos'
+            with open(filename, "wb") as file:
+                for chunk in response.iter_content(chunk_size=8192):
+                    file.write(chunk)
+            logger.info(f"Foto capturada y guardada como '{filename}'")
+            return True, f"Foto capturada y guardada como '{filename}'"
+        else:
+            logger.error(f"Error al capturar la foto. Código de estado: {response.status_code}")
+            return False, f"Error al capturar la foto. Código de estado: {response.status_code}"
+    except requests.RequestException as e:
+        logger.error(f"Error en la solicitud: {e}")
+        return False, f"Error en la solicitud: {e}"
+
+@bp.route('/capture-photo', methods=['GET'])
+def capture_photo_endpoint():
+    success, message = capture_photo()
+    if success:
+        flash('¡Foto tomada exitosamente!', 'success')
+    else:
+        flash(f'¡Oops! Ocurrió un error', 'error')
+
+    return redirect(url_for('user.user_index'))
 
 @bp.route('/inicio-usuario')
 @login_required
@@ -464,68 +504,3 @@ def llamar_policia():
     logger.info('Saliendo de Llamar policia llamado')
     return redirect(url_for('user.user_index'))
     
-@bp.route('/grabar-contenido')
-@login_required
-def grabar_contenido():
-    logger.info('Entrando a Grabar contenido llamado')
-    funciones.grabarContenido()
-    logger.info('Saliendo de Grabar contenido llamado')
-    return redirect(url_for('user.user_index'))
-
-def start_recording():
-    global is_recording, video_writer, cap
-    is_recording = True
-
-    now = datetime.now()
-    nombre_video = now.strftime("%Y-%m-%d_%H-%M-%S") + '.mp4'
-    carpeta = 'records'
-    ruta_carpeta = os.path.join(os.getcwd(), carpeta)
-    
-    if not os.path.exists(ruta_carpeta):
-        os.makedirs(ruta_carpeta)
-    
-    ruta_video = os.path.join(ruta_carpeta, nombre_video)
-
-    # Configuración del VideoCapture
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("Error: No se puede abrir la cámara.")
-        return
-    
-    # Configuración del VideoWriter
-    video_writer = cv2.VideoWriter(ruta_video, cv2.VideoWriter_fourcc(*'mp4v'), 10.0, (650, 350))
-    if not video_writer.isOpened():
-        print("Error: No se puede abrir el escritor de video.")
-        cap.release()
-        return
-
-    while is_recording:
-        ret, frame = cap.read()
-        if ret:
-            frame = cv2.resize(frame, (650, 350))
-            video_writer.write(frame)
-        else:
-            print("Error al capturar el frame.")
-            break
-
-    cap.release()
-    video_writer.release()
-
-def stop_recording():
-    global is_recording
-    is_recording = False
-
-@bp.route('/start-recording', methods=['POST'])
-@login_required
-def start_video_recording():
-    global is_recording
-    if not is_recording:
-        threading.Thread(target=start_recording).start()
-    return jsonify({"status": "recording started"})
-
-@bp.route('/stop-recording', methods=['POST'])
-@login_required
-def stop_video_recording():
-    if is_recording:
-        stop_recording()
-    return jsonify({"status": "recording stopped"})

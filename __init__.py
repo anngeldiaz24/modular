@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, jsonify, g
+from flask import Flask, render_template, redirect, url_for, jsonify, g, session
 import os
 import json
 from . import db
@@ -33,7 +33,19 @@ def create_app():
 
     @app.route('/')
     def index():
-        return redirect(url_for('auth.login'))
+        if 'user_id' in session:
+            user_role = g.user['rol']
+            print(user_role)
+
+            if user_role == 'Owner' or user_role == 'User':
+                return redirect(url_for('user.home'))
+            elif user_role == 'Admin':
+                return redirect(url_for('admin.admin_index'))
+            else:
+                return redirect(url_for('auth.login'))
+        else:
+            # Usuario no está logueado, redirigir al login
+            return redirect(url_for('auth.login'))
     
     # Manejador de error 404 [Rutas no definidas]
     @app.errorhandler(404)

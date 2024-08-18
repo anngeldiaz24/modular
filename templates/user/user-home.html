@@ -11,13 +11,12 @@
         </div>
     </div>
     <div class="grid grid-cols-12 gap-4 mt-3">
-        <!-- <div class="lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2">
+        <div class="lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2">
             <video id="camera" class="w-full" style="max-height: 500px;" autoplay playsinline></video>
-        </div>-->
-        <div class="lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2 iframe-container">
-            <iframe src="http://10.206.23.150:81/stream" allowfullscreen></iframe>
         </div>
-        
+        <!--<div class="lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2 iframe-container">
+            <iframe src="http://192.168.100.28:81/stream" allowfullscreen></iframe>
+        </div>-->
         <div class="lg:col-span-3 col-span-12 card p-6 order-2 lg:order-1">
             <a href="/user-dashboard/encender-luces-domesticas" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="mdi:lights" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
@@ -36,11 +35,11 @@
                     <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
                 </button>
                 <div id="blockDropdown" class="hidden absolute z-10 bg-white rounded-lg shadow w-full mt-2">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 1</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 2</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 3</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 4</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Bloquear todos los accesos</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 1</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 2</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 3</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 4</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Bloquear todos los accesos</a>
                 </div>
             </div>
             <div class="relative mb-2">
@@ -52,11 +51,11 @@
                     <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
                 </button>
                 <div id="unlockDropdown" class="hidden absolute z-10 bg-white rounded-lg shadow w-full mt-2">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 1</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 2</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 3</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Puerta 4</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Desbloquear todos los accesos</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 1</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 2</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 3</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 4</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Desbloquear todos los accesos</a>
                 </div>
             </div>
             <a href="/user-dashboard/activar-alarma" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
@@ -67,39 +66,16 @@
                 <iconify-icon icon="icon-park-outline:alarm" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Desactivar alarma</span>
             </a>
-            <a href="/user-dashboard/llamar-policia" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
-                <iconify-icon icon="mdi:car-police" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
-                <span class="flex-grow text-left">Llamar a la policía</span>
-            </a>
-            <a href="/user-dashboard/grabar-contenido" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+            <a href="{{ url_for('user.capture_photo_endpoint') }}" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="solar:videocamera-record-outline" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
-                <span class="flex-grow text-left">Grabar contenido</span>
-            </a>  
+                <span class="flex-grow text-left">Tomar fotografía</span>
+            </a>
             <a href="#" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="mdi:shield-lock" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Modo seguro</span>
             </a>      
         </div>
     </div>
-    <style>
-        .iframe-container {
-            display: flex;
-            justify-content: center; 
-            align-items: center;     
-            width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; 
-            position: relative;
-            overflow: hidden;
-        }
-        .iframe-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
 
 {% endblock %}
 
@@ -138,7 +114,6 @@
                 });
             }
         }
+
     </script>
-
 {% endblock %}
-
