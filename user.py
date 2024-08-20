@@ -1,5 +1,6 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, url_for, request, session, jsonify, Response
+    Blueprint, flash, g, redirect, render_template, url_for, request, session,
+    send_from_directory, current_app
 )
 from werkzeug.exceptions import abort
 from .auth import login_required, user_role_required
@@ -36,7 +37,6 @@ def capture_photo():
         # Realiza la solicitud GET al endpoint de captura
         response = requests.get(capture_url, stream=True)
 
-        # Verifica si la solicitud fue exitosa
         if response.status_code == 200:
             # Crear la carpeta 'fotos' si no existe
             fotos_dir = "fotos"
@@ -72,6 +72,21 @@ def capture_photo_endpoint():
         flash(f'¡Oops! Ocurrió un error', 'error')
 
     return redirect(url_for('user.user_index'))
+
+@bp.route('/galeria-vigilancia')
+@login_required
+@user_role_required
+def galeria():
+    # Directorio de fotos
+    photos_dir = os.path.join(current_app.root_path, 'fotos')
+    # Listar todos los archivos de imagen
+    photos = [f for f in os.listdir(photos_dir) if os.path.isfile(os.path.join(photos_dir, f))]
+
+    return render_template('user/galeria-vigilancia.html', photos=photos, user=g.user, role=g.user['rol'])
+
+@bp.route('/fotos/<filename>')
+def get_photo(filename):
+    return send_from_directory(os.path.join(current_app.root_path, 'fotos'), filename)
 
 @bp.route('/inicio-usuario')
 @login_required

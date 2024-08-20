@@ -1,0 +1,106 @@
+{% extends 'layouts/layout-dashboard-user.html' %}
+
+{% block header %}
+    {% block title %}Galería de vigilancia {% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="card-title">Galería de vigilancia</h4>
+    </div>
+</div>
+<div class="card mt-4 p-4">
+    <div class="gallery ml-4 mt-3">
+        {% for photo in photos %}
+            <div class="photo-container">
+                <img src="{{ url_for('user.get_photo', filename=photo) }}" alt="{{ photo }}" class="thumbnail" ondblclick="showFullSize(this, '{{ photo }}')">
+                <p class="photo-name">{{ photo }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- Modal para mostrar la imagen en tamaño completo -->
+<div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="fullImage">
+    <div id="imageName" class="modal-caption"></div>
+</div>
+
+<style>
+    .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px; /* Espacio entre las imágenes */
+    }
+    .photo-container {
+        text-align: center;
+    }
+    .thumbnail {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        cursor: pointer;
+    }
+    .photo-name {
+        margin-top: 8px; /* Espacio entre la imagen y el nombre */
+        font-size: 14px;
+        color: #333;
+    }
+    .modal {
+        display: none; 
+        position: fixed;
+        z-index: 1; 
+        padding-top: 60px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.9);
+    }
+    .modal-content {
+        margin: auto;
+        display: block;
+        max-width: 80%;
+    }
+    .modal-caption {
+        margin: auto;
+        text-align: center;
+        font-size: 18px;
+        color: #fff;
+        padding-top: 10px;
+    }
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .close:hover,
+    .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function showFullSize(img, photoName) {
+        var modal = document.getElementById("imageModal");
+        var modalImg = document.getElementById("fullImage");
+        var modalCaption = document.getElementById("imageName");
+        modal.style.display = "block";
+        modalImg.src = img.src;
+        modalCaption.innerText = photoName;
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("imageModal");
+        modal.style.display = "none";
+    }
+</script>
+{% endblock %}
