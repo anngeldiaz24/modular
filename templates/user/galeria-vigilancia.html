@@ -31,10 +31,11 @@
     .gallery {
         display: flex;
         flex-wrap: wrap;
-        gap: 15px; /* Espacio entre las imágenes */
+        gap: 15px; 
     }
     .photo-container {
         text-align: center;
+        max-width: 150px; 
     }
     .thumbnail {
         width: 150px;
@@ -43,9 +44,11 @@
         cursor: pointer;
     }
     .photo-name {
-        margin-top: 8px; /* Espacio entre la imagen y el nombre */
+        margin-top: 8px; 
         font-size: 14px;
         color: #333;
+        word-wrap: break-word;
+        max-width: 150px;  
     }
     .modal {
         display: none; 
