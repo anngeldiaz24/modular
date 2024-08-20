@@ -62,6 +62,8 @@ def capture_photo():
         return False, f"Error en la solicitud: {e}"
 
 @bp.route('/capture-photo', methods=['GET'])
+@login_required
+@user_role_required
 def capture_photo_endpoint():
     success, message = capture_photo()
     if success:
