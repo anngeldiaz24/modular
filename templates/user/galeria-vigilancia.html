@@ -16,7 +16,7 @@
             {% for photo in photos %}
                 <div class="photo-container">
                     <img src="{{ url_for('user.get_photo', filename=photo) }}" alt="{{ photo }}" class="thumbnail" ondblclick="showFullSize(this, '{{ photo }}')">
-                    <p class="photo-name">{{ photo }}</p>
+                    <p class="photo-name dark:text-white">{{ photo }}</p>
                 </div>
             {% endfor %}
         {% else %}

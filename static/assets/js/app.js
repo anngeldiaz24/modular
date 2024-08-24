@@ -11,7 +11,7 @@
   var ParentClass = $("a.active").parent().parent().parent();
   $(ParentClass).addClass("active");
   function screenWidth() {
-    if ($(window).width() < 1281) {
+    if ($(window).width() < 200) {
       $(".sidebar-wrapper").addClass("menu-hide");
       $("#menuCollapse").hide();
       $(".app-header").addClass("margin-0");
