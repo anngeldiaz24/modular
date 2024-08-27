@@ -32,27 +32,27 @@ load_dotenv()
 camera_ip = os.getenv('CAMERA_IP', 'http://192.168.100.28')  # Cambia esto por la IP de tu ESP32 si no usas variables de entorno
 capture_url = f"{camera_ip}/capture"
 
-def capture_photo():
+def capture_photo(hogar_id):
     try:
         # Realiza la solicitud GET al endpoint de captura
         response = requests.get(capture_url, stream=True)
 
         if response.status_code == 200:
-            # Crear la carpeta 'fotos' si no existe
-            fotos_dir = "fotos"
+            # Crear la carpeta 'fotos/hogar_hogar_id' si no existe
+            fotos_dir = os.path.join("fotos", f"hogar_{hogar_id}")
             if not os.path.exists(fotos_dir):
                 os.makedirs(fotos_dir)
-                logger.info(f"Carpeta '{fotos_dir}' creada.")
+                logger.info(f"Carpeta '{fotos_dir}' creada para hogar {hogar_id}.")
 
             # Generar el nombre del archivo basado en la fecha y hora actuales
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"{fotos_dir}/captura_{timestamp}.jpg"
 
-            # Guardar la imagen en la carpeta 'fotos'
+            # Guardar la imagen en la carpeta 'fotos/hogar_hogar_id'
             with open(filename, "wb") as file:
                 for chunk in response.iter_content(chunk_size=8192):
                     file.write(chunk)
-            logger.info(f"Foto capturada y guardada como '{filename}'")
+            logger.info(f"Foto capturada y guardada como '{filename}' para hogar {hogar_id}.")
             return True, f"Foto capturada y guardada como '{filename}'"
         else:
             logger.error(f"Error al capturar la foto. Código de estado: {response.status_code}")
@@ -65,7 +65,9 @@ def capture_photo():
 @login_required
 @user_role_required
 def capture_photo_endpoint():
-    success, message = capture_photo()
+    # Obtener el ID del hogar del usuario actual
+    hogar_id = g.user['hogar_id']
+    success, message = capture_photo(hogar_id)
     if success:
         flash('¡Foto tomada exitosamente!', 'success')
     else:
@@ -77,16 +79,32 @@ def capture_photo_endpoint():
 @login_required
 @user_role_required
 def galeria():
-    # Directorio de fotos
-    photos_dir = os.path.join(current_app.root_path, 'fotos')
-    # Listar todos los archivos de imagen
+    # Obtener el ID del hogar del usuario actual
+    hogar_id = g.user['hogar_id']
+    
+    # Directorio de fotos específico del hogar
+    photos_dir = os.path.join(current_app.root_path, 'fotos', f'hogar_{hogar_id}')
+    
+    # Verifica si el directorio existe
+    if not os.path.exists(photos_dir):
+        os.makedirs(photos_dir)
+    
+    # Listar todos los archivos de imagen en la carpeta del hogar
     photos = [f for f in os.listdir(photos_dir) if os.path.isfile(os.path.join(photos_dir, f))]
 
     return render_template('user/galeria-vigilancia.html', photos=photos, user=g.user, role=g.user['rol'])
 
 @bp.route('/fotos/<filename>')
+@login_required
 def get_photo(filename):
-    return send_from_directory(os.path.join(current_app.root_path, 'fotos'), filename)
+    # Obtener el ID del hogar del usuario actual
+    hogar_id = g.user['hogar_id']
+    
+    # Directorio de fotos específico del hogar
+    photos_dir = os.path.join(current_app.root_path, 'fotos', f'hogar_{hogar_id}')
+    
+    return send_from_directory(photos_dir, filename)
+
 
 @bp.route('/inicio-usuario')
 @login_required
