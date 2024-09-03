@@ -52,7 +52,7 @@
                                     <td class="table-td">
                                         <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-25 {% if hogar.estatus == 'activo' %}text-success-500 bg-green-500{% elif hogar.estatus == 'inactivo' %}text-red-500 bg-red-500{% else %}text-warning-500
                                             bg-warning-500{% endif %}">
-                                            {{ hogar.estatus }}
+                                            {{ hogar.estatus | capitalize }}
                                         </div>
                                     </td>
                                     <td class="table-td">
