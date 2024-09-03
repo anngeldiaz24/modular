@@ -25,11 +25,13 @@ def create_app():
     from . import admin
     from . import user
     from . import domotica
+    from . import public
     
     app.register_blueprint(auth.bp)
     app.register_blueprint(admin.bp)
     app.register_blueprint(user.bp)
     app.register_blueprint(domotica.bp)
+    app.register_blueprint(public.bp)
 
     @app.route('/')
     def index():

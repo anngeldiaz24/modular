@@ -161,24 +161,44 @@
                                 Consumo de luz - kwh (más reciente)
                             </span>
                             <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
-                                {{ consumo_actual_kwh }} kwh
+                                {% if consumo_actual_kwh is none %}
+                                    0 kwh
+                                {% else %}
+                                    {{ consumo_actual_kwh }} kwh
+                                {% endif %}
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}text-red-500{% else %}text-green-500{% endif %}">
-                                    {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}
-                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
-                                    {% else %}
-                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
-                                    {% endif %}
-                                </div>
-                                <div class="flex-1 text-sm">
-                                    <span class="block mb-[2px] {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}text-red-500{% else %}text-green-700{% endif %}">
-                                        {{ cambio_porcentual_kwh }}%
-                                    </span>
-                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
-                                        Desde el último mes ({{ inicio_anterior_kwh_formateado | capitalize }})
-                                    </span>
-                                </div>
+                                {% if consumo_actual_kwh is none %}
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            Aún no existen datos suficientes
+                                        </span>
+                                    </div>
+                                {% elif inicio_anterior_kwh is none and consumo_actual_kwh is not none %}
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            No existe un registro del periodo anterior
+                                        </span>
+                                    </div>
+                                {% else %}    
+                                    <div class="flex-none text-xl {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}text-red-500{% elif cambio_porcentual_kwh == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                        {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}
+                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                        {% elif cambio_porcentual_kwh == 0.00 %}
+                                            <iconify-icon icon="heroicons:arrow-path"></iconify-icon>
+                                        {% else %}
+                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>     
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-[2px] {% if diferencia_porcentual_kwh and diferencia_porcentual_kwh.positivo %}text-red-500{% elif cambio_porcentual_kwh == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                            {{ cambio_porcentual_kwh }}%
+                                        </span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            Desde el último mes ({{ inicio_anterior_kwh_formateado | capitalize }})
+                                        </span>
+                                    </div>
+                                {% endif %}    
                             </div>
                         </div>
                         <div id="card1Content2" class="hidden">
@@ -186,24 +206,44 @@
                                 Consumo de luz - MXN (más reciente)
                             </span>
                             <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
-                                ${{ consumo_actual_energia_mxn }}
+                                {% if consumo_actual_energia_mxn is none %}
+                                    $0.00
+                                {% else %}
+                                    ${{ consumo_actual_energia_mxn }}
+                                {% endif %}
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}text-red-500{% else %}text-green-500{% endif %}">
-                                    {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}
-                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
-                                    {% else %}
-                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
-                                    {% endif %}
-                                </div>
-                                <div class="flex-1 text-sm">
-                                    <span class="block mb-[2px] {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}text-red-500{% else %}text-green-500{% endif %}">
-                                        {{ cambio_porcentual_energia_mxn }}%
-                                    </span>
-                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
-                                        Desde el último mes ({{ inicio_anterior_kwh_formateado | capitalize }})
-                                    </span>
-                                </div>
+                                {% if consumo_actual_energia_mxn is none %}
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            Aún no existen datos suficientes
+                                        </span>
+                                    </div>
+                                {% elif inicio_anterior_kwh is none and consumo_actual_kwh is not none %}
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            No existe un registro del periodo anterior
+                                        </span>
+                                    </div>    
+                                {% else %}
+                                    <div class="flex-none text-xl {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}text-red-500{% elif cambio_porcentual_energia_mxn == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                        {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}
+                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                        {% elif cambio_porcentual_energia_mxn == 0.00 %}
+                                            <iconify-icon icon="heroicons:arrow-path"></iconify-icon>    
+                                        {% else %}
+                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-[2px] {% if diferencia_porcentual_energia_mxn and diferencia_porcentual_energia_mxn.positivo %}text-red-500{% elif cambio_porcentual_energia_mxn == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                            {{ cambio_porcentual_energia_mxn }}%
+                                        </span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            Desde el último mes ({{ inicio_anterior_kwh_formateado | capitalize }})
+                                        </span>
+                                    </div>
+                                {% endif %}    
                             </div>
                         </div>
                     </div>
@@ -221,24 +261,44 @@
                                 Consumo de agua - L (más reciente)
                             </span>
                             <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
-                                {{ consumo_actual_litros }} L
+                                {% if consumo_actual_litros is none %}
+                                    0 L
+                                {% else %}
+                                    {{ consumo_actual_litros }} L
+                                {% endif %}
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}text-red-500{% else %}text-green-600{% endif %}">
-                                    {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}
-                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
-                                    {% else %}
-                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
-                                    {% endif %}
-                                </div>
-                                <div class="flex-1 text-sm">
-                                    <span class="block mb-[2px] {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}text-red-500{% else %}text-green-600{% endif %}">
-                                        {{ cambio_porcentual_litros }}%
-                                    </span>
-                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
-                                        Desde el último mes ({{ inicio_anterior_litros_formateado | capitalize }})
-                                    </span>
-                                </div>
+                                {% if consumo_actual_litros is none %}
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            Aún no existen datos suficientes
+                                        </span>
+                                    </div>
+                                {% elif inicio_anterior_litros is none and consumo_actual_litros is not none %}
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            No existe un registro del periodo anterior
+                                        </span>
+                                    </div>     
+                                {% else %}
+                                    <div class="flex-none text-xl {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}text-red-500{% elif cambio_porcentual_litros == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                        {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}
+                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                        {% elif cambio_porcentual_litros == 0.00 %}
+                                            <iconify-icon icon="heroicons:arrow-path"></iconify-icon>   
+                                        {% else %}
+                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-[2px] {% if diferencia_porcentual_litros and diferencia_porcentual_litros.positivo %}text-red-500{% elif cambio_porcentual_litros == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                            {{ cambio_porcentual_litros }}%
+                                        </span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            Desde el último mes ({{ inicio_anterior_litros_formateado | capitalize }})
+                                        </span>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                         <div id="card2Content2" class="hidden">
@@ -246,24 +306,44 @@
                                 Consumo de agua - MXN (más reciente)
                             </span>
                             <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">
-                                ${{ consumo_actual_agua_mxn }}
+                                {% if consumo_actual_agua_mxn is none %}
+                                    $0.00
+                                {% else %}
+                                    ${{ consumo_actual_agua_mxn }}
+                                {% endif %}
                             </span>
                             <div class="flex space-x-2 rtl:space-x-reverse">
-                                <div class="flex-none text-xl {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}text-red-500{% else %}text-green-600{% endif %}">
-                                    {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}
-                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
-                                    {% else %}
-                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
-                                    {% endif %}
-                                </div>
-                                <div class="flex-1 text-sm">
-                                    <span class="block mb-[2px] {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}text-red-500{% else %}text-green-600{% endif %}">
-                                        {{ cambio_porcentual_agua_mxn }}%
-                                    </span>
-                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
-                                        Desde el último mes ({{ inicio_anterior_agua_mxn_formateado | capitalize }})
-                                    </span>
-                                </div>
+                                {% if consumo_actual_agua_mxn is none %}
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            Aún no existen datos suficientes
+                                        </span>
+                                    </div>
+                                {% elif inicio_anterior_litros is none and consumo_actual_litros is not none %}
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            No existe un registro del periodo anterior
+                                        </span>
+                                    </div>     
+                                {% else %}
+                                    <div class="flex-none text-xl {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}text-red-500{% elif cambio_porcentual_agua_mxn == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                        {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}
+                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                        {% elif cambio_porcentual_agua_mxn == 0.00 %}
+                                            <iconify-icon icon="heroicons:arrow-path"></iconify-icon>
+                                        {% else %}
+                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1 text-sm">
+                                        <span class="block mb-[2px] {% if diferencia_porcentual_agua_mxn and diferencia_porcentual_agua_mxn.positivo %}text-red-500{% elif cambio_porcentual_agua_mxn == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                            {{ cambio_porcentual_agua_mxn }}%
+                                        </span>
+                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                            Desde el último mes ({{ inicio_anterior_agua_mxn_formateado | capitalize }})
+                                        </span>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

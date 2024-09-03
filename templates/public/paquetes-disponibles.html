@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="light">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content>
+    <title>Paquetes disponibles - SSafeZone</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/logo/logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/rt-plugins.css') }}">
+    <link href="https://unpkg.com/aos@2.3.0/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/app.css') }}">
+    <!-- START : Theme Config js-->
+    <script src="{{ url_for('static', filename='assets/js/settings.js') }}" sync></script>
+    <!-- END : Theme Config js-->
+  </head>
+
+  <body class="font-inter skin-default">
+    <div class="loginwrapper">
+      <div class="lg-inner-column">
+        <div class="right-column relative">
+          <div class="inner-content h-full flex flex-col bg-white dark:bg-slate-800">
+            <div class="auth-box h-full flex flex-col justify-center">
+              <div class="mobile-logo text-center mb-6 lg:hidden block">
+                <a href="{{ url_for('public.paquetes_disponibles') }}">
+                  <img src="static/assets/images/logo/samsung-8.svg" alt class="mb-10 dark_logo_samsung semiDark_logo_samsung" style="width:250px;">
+                  <img src="static/assets/images/logo/samsung-8-white.svg" alt class="mb-10 white_logo_samsung" style="width:250px;">
+                </a>
+                <!-- Botón para modo claro (pantallas pequeñas) -->
+                <a href="{{ url_for('auth.login') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10 dark:hidden">
+                  Iniciar sesión
+                </a>
+                <!-- Botón para modo oscuro (pantallas pequeñas) -->
+                <a href="{{ url_for('auth.login') }}" class="absolute btn-light top-6 right-2 m-5 text-black px-6 py-2 rounded z-10 hidden dark:block">
+                  Iniciar sesión
+                </a>
+              </div>
+
+              <div class="text-center 2xl:mb-10 mb-4">
+                <h4 class="font-bold">Paquetes disponibles</h4>
+                <div class="text-slate-500 dark:text-slate-400 text-base">
+                  Selecciona un paquete y aumenta tu nivel de confianza con Samsung
+                </div>
+              </div>
+
+              <!-- CONTENIDO DE LOS PAQUETES -->
+              <div class="grid md:grid-cols-2 sm:grid-cols-1 grid-cols-1 gap-5">
+
+                {% for paquete_id, paquete in paquetes.items() %}
+                <div class="mt-7 p-6 relative z-[1] rounded-2xl text-white {{ paquete.color }}">
+                  <div class="max-w-[168px]">
+                    <div class="widget-title">{{ paquete['nombre'] }}</div>
+                    <div class="text-xs font-normal">
+                      {{ paquete['descripcion'] }}
+                    </div>
+                  </div>
+                  <div class="mt-6 mb-14">
+                    <button class="btn bg-white hover:bg-opacity-80 text-slate-900 btn-sm">
+                      Mejorar
+                    </button>
+                  </div>
+
+                  <img src="{{ url_for('static', filename='assets/images/svg/line.svg') }}" alt class="absolute left-0 bottom-0 w-full z-[-1]">
+                  <!-- Imagen para el modo claro -->
+                  <img src="{{ url_for('static', filename='assets/images/svg/shield-check-negro.svg') }}" 
+                  alt="Logo Negro" 
+                  style="width:100px;" 
+                  class="absolute ltr:right-5 rtl:left-5 -bottom-4 z-[-1] dark:hidden">
+
+                  <!-- Imagen para el modo oscuro -->
+                  <img src="{{ url_for('static', filename='assets/images/svg/shield-check-blanco.svg') }}" 
+                  alt="Logo Blanco" 
+                  style="width:100px;" 
+                  class="absolute ltr:right-5 rtl:left-5 -bottom-4 z-[-1] hidden dark:block">
+                </div>
+                {% endfor %}
+
+              </div>
+
+              <!-- ULTIMO PAQUETE -->
+              {% if ultimo_paquete is not none %}
+                <div class="grid md:grid-cols-1 sm:grid-cols-1 grid-cols-1 gap-5">
+                  <div class="mt-7 p-6 relative z-[1] rounded-2xl text-white {{ ultimo_paquete.color }}">
+                    <div class="max-w-[168px]">
+                      <div class="widget-title">{{ ultimo_paquete['nombre'] }}</div>
+                      <div class="text-xs font-normal">
+                        {{ ultimo_paquete['descripcion'] }}
+                      </div>
+                    </div>
+                    <div class="mt-6 mb-14">
+                      <button class="btn bg-white hover:bg-opacity-80 text-slate-900 btn-sm">
+                        Mejorar
+                      </button>
+                    </div>
+                    <img src="{{ url_for('static', filename='assets/images/svg/line.svg') }}" alt class="absolute left-0 bottom-0 w-full z-[-1]">
+                    <!-- Imagen para el modo claro -->
+                    <img src="{{ url_for('static', filename='assets/images/svg/shield-check-negro.svg') }}" 
+                    alt="Logo Negro" 
+                    style="width:100px;" 
+                    class="absolute ltr:right-5 rtl:left-5 -bottom-4 z-[-1] dark:hidden">
+
+                    <!-- Imagen para el modo oscuro -->
+                    <img src="{{ url_for('static', filename='assets/images/svg/shield-check-blanco.svg') }}" 
+                    alt="Logo Blanco" 
+                    style="width:100px;" 
+                    class="absolute ltr:right-5 rtl:left-5 -bottom-4 z-[-1] hidden dark:block">
+                  </div>
+                </div>
+              {% endif %}
+
+              <div class=" relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
+                <div class="absolute inline-block bg-white dark:bg-slate-800 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 dark:text-slate-400font-normal ">
+                  O continua con
+                </div>
+              </div>
+              <div class="max-w-[242px] mx-auto mt-8 w-full">
+
+                <!-- BEGIN: Social Log in Area -->
+                <ul class="flex">
+                  <li class="flex-1">
+                    <a href="#" class="inline-flex h-10 w-10 bg-[#1C9CEB] text-white text-2xl flex-col items-center justify-center rounded-full">
+                      <img src="{{ url_for('static', filename='assets/images/icon/tw.svg') }}" alt>
+                    </a>
+                  </li>
+                  <li class="flex-1">
+                    <a href="#" class="inline-flex h-10 w-10 bg-[#395599] text-white text-2xl flex-col items-center justify-center rounded-full">
+                      <img src="{{ url_for('static', filename='assets/images/icon/fb.svg') }}" alt>
+                    </a>
+                  </li>
+                  <li class="flex-1">
+                    <a href="#" class="inline-flex h-10 w-10 bg-[#0A63BC] text-white text-2xl flex-col items-center justify-center rounded-full">
+                      <img src="{{ url_for('static', filename='assets/images/icon/in.svg') }}" alt>
+                    </a>
+                  </li>
+                  <li class="flex-1">
+                    <a href="#" class="inline-flex h-10 w-10 bg-[#EA4335] text-white text-2xl flex-col items-center justify-center rounded-full">
+                      <img src="{{ url_for('static', filename='assets/images/icon/gp.svg') }}" alt>
+                    </a>
+                  </li>
+                </ul>
+                <!-- END: Social Log In Area -->
+              </div>
+            </div>
+            <div class="auth-footer text-center">
+              Copyright 2024, SSafeZone Todos los Derechos Reservados.
+            </div>
+          </div>
+        </div>
+        <div class="left-column bg-cover bg-no-repeat bg-center relative" style="background-image: url(static/assets/images/all-img/smart-home-tablet.jpg);">
+          <!-- Botón en la esquina superior derecha -->
+          <a href="{{ url_for('auth.login') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10">
+              Iniciar sesión
+          </a>
+      
+          <div class="flex flex-col h-full justify-center">
+              <div class="flex-1 flex flex-col justify-center items-center">
+                  <!-- Logo u otro contenido -->
+              </div>
+              <div>
+                  <div class="black-500-title max-w-[525px] mx-auto pb-20 text-center">
+                      Impulsa tu hogar con
+                      <span class="text-white font-bold">Samsung SafeZone</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+      </div>
+    </div>
+
+    <!-- scripts -->
+    <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+  </body>
+</html>

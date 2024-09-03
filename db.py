@@ -57,14 +57,14 @@ def calcular_precio_agua(consumo_litros):
     precio_total = (consumo_litros / 1000) * precio_agua
     return tarifa, precio_agua, precio_total
 
-def generate_codigos_acceso(num_codigos, periodos):
+def generate_codigos_acceso(num_codigos, periodos, paquetes):
     codigos_acceso = []
     
     def generar_codigo():
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=4)) + '-' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=3))
     
-    def generar_paquete():
-        return random.choice(['Básico', 'Premium', 'Deluxe'])
+    def generar_paquete_id():
+        return random.choice(paquetes)['id']
     
     def generar_disponible(index):
         return index >= num_codigos // 2
@@ -84,28 +84,28 @@ def generate_codigos_acceso(num_codigos, periodos):
             fin = inicio + timedelta(days=365)  # Aproximadamente 1 año
         return inicio.strftime('%Y-%m-%d'), fin.strftime('%Y-%m-%d')
     
-    def calcular_precio(paquete, tipo_suscripcion):
+    def calcular_precio(paquete_id, tipo_suscripcion):
         precios = {
-            'Básico': {'semestral': 50, 'anual': 90},
-            'Premium': {'semestral': 80, 'anual': 150},
-            'Deluxe': {'semestral': 100, 'anual': 190},
+            1: {'semestral': 50, 'anual': 90},
+            2: {'semestral': 80, 'anual': 150},
+            3: {'semestral': 100, 'anual': 190},
         }
-        return precios[paquete][tipo_suscripcion]
+        return precios[paquete_id][tipo_suscripcion]
     
     for i in range(num_codigos):  # Generar 100 códigos de acceso
         codigo = generar_codigo()
-        paquete = generar_paquete()
+        paquete_id = generar_paquete_id()
         disponible = generar_disponible(i)
         periodo = obtener_periodo_aleatorio()
         periodo_id = periodo['id']
         inicio_periodo = periodo['inicio']
         tipo_suscripcion = generar_tipo_suscripcion()
         inicio, fin = calcular_fechas(inicio_periodo, tipo_suscripcion)
-        precio = calcular_precio(paquete, tipo_suscripcion)
+        precio = calcular_precio(paquete_id, tipo_suscripcion)
         
         codigos_acceso.append({
             'codigo': codigo,
-            'paquete': paquete,
+            'paquete_id': paquete_id,
             'disponible': 0,
             'periodo_id': periodo_id,
             'tipo_suscripcion': tipo_suscripcion,
@@ -443,13 +443,19 @@ def seed_database():
         'San Luis Potosí', 'Sinaloa', 'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán', 
         'Zacatecas'
     ]
+    
+    paquetes = [
+        {'nombre': 'Básico', 'descripcion': 'Paquete básico'},
+        {'nombre': 'Premium', 'descripcion': 'Paquete premium'},
+        {'nombre': 'Deluxe', 'descripcion': 'Paquete deluxe'}
+    ]
 
     codigos = [
-        {'codigo': 'CODE-1AB', 'paquete': 'Básico', 'disponible': False, 'periodo_id': 19, 'tipo_suscripcion': 'anual', 'inicio': '2024-07-01', 'fin': '2025-07-01', 'precio': 90.0},
-        {'codigo': 'CODE-2BC', 'paquete': 'Básico', 'disponible': False, 'periodo_id': 19, 'tipo_suscripcion': 'semestral', 'inicio': '2024-07-01', 'fin': '2024-12-30', 'precio': 50.0},
-        {'codigo': 'CODE-3CD', 'paquete': 'Premium', 'disponible': False, 'periodo_id': 18, 'tipo_suscripcion': 'anual', 'inicio': '2024-06-01', 'fin': '2025-06-01','precio': 150.0},
-        {'codigo': 'CODE-4DE', 'paquete': 'Premium', 'disponible': False, 'periodo_id': 18, 'tipo_suscripcion': 'semestral', 'inicio': '2024-06-01', 'fin': '2024-11-30', 'precio': 80.0},
-        {'codigo': 'CODE-5EF', 'paquete': 'Deluxe', 'disponible': False, 'periodo_id': 17, 'tipo_suscripcion': 'anual', 'inicio': '2024-05-01', 'fin': '2025-05-01', 'precio': 190.0}
+        {'codigo': 'CODE-1AB', 'paquete_id': 1, 'disponible': False, 'periodo_id': 19, 'tipo_suscripcion': 'anual', 'inicio': '2024-07-01', 'fin': '2025-07-01', 'precio': 90.0},
+        {'codigo': 'CODE-2BC', 'paquete_id': 1, 'disponible': False, 'periodo_id': 19, 'tipo_suscripcion': 'semestral', 'inicio': '2024-07-01', 'fin': '2024-12-30', 'precio': 50.0},
+        {'codigo': 'CODE-3CD', 'paquete_id': 2, 'disponible': False, 'periodo_id': 18, 'tipo_suscripcion': 'anual', 'inicio': '2024-06-01', 'fin': '2025-06-01','precio': 150.0},
+        {'codigo': 'CODE-4DE', 'paquete_id': 2, 'disponible': False, 'periodo_id': 18, 'tipo_suscripcion': 'semestral', 'inicio': '2024-06-01', 'fin': '2024-11-30', 'precio': 80.0},
+        {'codigo': 'CODE-5EF', 'paquete_id': 3, 'disponible': False, 'periodo_id': 17, 'tipo_suscripcion': 'anual', 'inicio': '2024-05-01', 'fin': '2025-05-01', 'precio': 190.0}
     ]
     
     hogares = [
@@ -668,11 +674,18 @@ def seed_database():
                 (estado,)
             )
             
+        for paquete in paquetes:
+            c.execute(
+                '''INSERT INTO paquetes (nombre, descripcion)
+                VALUES (%s, %s)''',
+                (paquete['nombre'], paquete['descripcion'])
+            )
+            
         for codigo in codigos:
             c.execute(
-                '''INSERT INTO codigos_acceso (codigo, paquete, disponible, periodo_id, tipo_suscripcion, inicio, fin, precio)
+                '''INSERT INTO codigos_acceso (codigo, paquete_id, disponible, periodo_id, tipo_suscripcion, inicio, fin, precio)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
-                (codigo['codigo'], codigo['paquete'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'], codigo['precio'])
+                (codigo['codigo'], codigo['paquete_id'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'], codigo['precio'])
             )
         
         for hogar in hogares:
@@ -734,14 +747,18 @@ def seed_database():
         c.execute("SELECT * FROM periodos")
         periodosCommit = c.fetchall()
         
+        # Seleccionar periodos desde la base de datos con sus IDs
+        c.execute("SELECT * FROM paquetes")
+        paquetesCommit = c.fetchall()
+        
         # Generar y insertar códigos de acceso
         num_codigos = 10  # Número de códigos de acceso a generar
-        codigos_acceso = generate_codigos_acceso(num_codigos, periodosCommit)
+        codigos_acceso = generate_codigos_acceso(num_codigos, periodosCommit, paquetesCommit)
         for codigo in codigos_acceso:
             c.execute(
-                '''INSERT INTO codigos_acceso (codigo, paquete, disponible, periodo_id, tipo_suscripcion, inicio, fin, precio)
+                '''INSERT INTO codigos_acceso (codigo, paquete_id, disponible, periodo_id, tipo_suscripcion, inicio, fin, precio)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
-                (codigo['codigo'], codigo['paquete'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'], codigo['precio'])
+                (codigo['codigo'], codigo['paquete_id'], codigo['disponible'], codigo['periodo_id'], codigo['tipo_suscripcion'], codigo['inicio'], codigo['fin'], codigo['precio'])
             )
             codigo['id'] = c.lastrowid
         

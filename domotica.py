@@ -199,8 +199,9 @@ def get_codigo_acceso_por_hogar():
         hogar_id = g.user['hogar_id']
         
         query = """
-        SELECT ca.paquete
+        SELECT p.nombre AS paquete
         FROM codigos_acceso ca
+        JOIN paquetes p ON ca.paquete_id = p.id
         JOIN users u ON u.codigo_acceso = ca.id
         WHERE u.hogar_id = %s
         """
@@ -285,7 +286,10 @@ def get_consumo_periodo_energia(hogar_id, periodo_id, columna):
         c.execute(query, (hogar_id, periodo_id))
         resultado = c.fetchone()
         
-        return resultado[columna], resultado['inicio'] if resultado else (None, None)
+        if resultado:
+            return resultado[columna], resultado['inicio']
+        else:
+            return None, None
     finally:
         close_db()
         
@@ -303,7 +307,10 @@ def get_consumo_periodo_agua(hogar_id, periodo_id, columna):
         c.execute(query, (hogar_id, periodo_id))
         resultado = c.fetchone()
         
-        return resultado[columna], resultado['inicio'] if resultado else (None, None)
+        if resultado:
+            return resultado[columna], resultado['inicio']
+        else:
+            return None, None
     finally:
         close_db()
 
@@ -311,7 +318,7 @@ def get_consumo_periodo_agua(hogar_id, periodo_id, columna):
 def calcular_cambio_porcentual(consumo_anterior, consumo_actual):
     if consumo_anterior == 0:
         return 100 if consumo_actual > 0 else 0
-    cambio_porcentual = ((consumo_actual - consumo_anterior) / consumo_anterior) * 100
+    cambio_porcentual = abs(((consumo_actual - consumo_anterior) / consumo_anterior) * 100)
     return round(cambio_porcentual, 2)
 
 # Integración para obtener y calcular los consumos
@@ -320,10 +327,15 @@ def get_calcular_cambio_energia(hogar_id, columna):
     try:
         ultimo_periodo = get_ultimo_periodo_energia(hogar_id)
         if ultimo_periodo is None:
-            return None, None, None, None  # No hay datos disponibles
+            return None, None, None  # No hay datos disponibles
 
         consumo_actual, inicio_actual = get_consumo_periodo_energia(hogar_id, ultimo_periodo, columna)
-        consumo_anterior, inicio_anterior = get_consumo_periodo_energia(hogar_id, ultimo_periodo - 1, columna) if ultimo_periodo > 1 else (None, None)
+        
+        # Validar si el periodo anterior existe
+        if ultimo_periodo > 1:
+            consumo_anterior, inicio_anterior = get_consumo_periodo_energia(hogar_id, ultimo_periodo - 1, columna)
+        else:
+            consumo_anterior, inicio_anterior = None, None
 
         cambio_porcentual = calcular_cambio_porcentual(consumo_anterior, consumo_actual) if consumo_anterior is not None else None
 
@@ -337,11 +349,16 @@ def get_calcular_cambio_agua(hogar_id, columna):
     try:
         ultimo_periodo = get_ultimo_periodo_agua(hogar_id)
         if ultimo_periodo is None:
-            return None, None, None, None  # No hay datos disponibles
+            return None, None, None  # No hay datos disponibles
 
         consumo_actual, inicio_actual = get_consumo_periodo_agua(hogar_id, ultimo_periodo, columna)
-        consumo_anterior, inicio_anterior = get_consumo_periodo_agua(hogar_id, ultimo_periodo - 1, columna) if ultimo_periodo > 1 else (None, None)
-
+        
+        # Validar si el periodo anterior existe
+        if ultimo_periodo > 1:
+            consumo_anterior, inicio_anterior = get_consumo_periodo_agua(hogar_id, ultimo_periodo - 1, columna) if ultimo_periodo > 1 else (None, None)
+        else:
+            consumo_anterior, inicio_anterior = None, None
+            
         cambio_porcentual = calcular_cambio_porcentual(consumo_anterior, consumo_actual) if consumo_anterior is not None else None
 
         return consumo_actual, cambio_porcentual, inicio_anterior
@@ -404,6 +421,13 @@ def user_domotica():
             
     # Obtener último periodo y cambios porcentuales de energía para kWh
     consumo_actual_kwh, cambio_porcentual_kwh, inicio_anterior_kwh = get_calcular_cambio_energia(hogar_id, 'consumo_kwh')
+    
+    # Verificar si no hay datos disponibles
+    if consumo_actual_kwh is None and cambio_porcentual_kwh is None and inicio_anterior_kwh is None:
+        flash('No hay datos disponibles para el último periodo de consumo de energía.', 'error')
+    else:
+        # Aquí puedes manejar los valores de consumo_actual_kwh, cambio_porcentual_kwh, inicio_anterior_kwh
+        pass
             
     # GRAFICA LINE - CONSUMO DE ENERGIA (MXN)
     datos_grafica_energia_mxn, diferencia_porcentual_energia_mxn = get_consumo_energia('precio_total')
@@ -444,6 +468,13 @@ def user_domotica():
             
     # Obtener último periodo y cambios porcentuales de agua para litros
     consumo_actual_litros, cambio_porcentual_litros, inicio_anterior_litros = get_calcular_cambio_agua(hogar_id, 'consumo_litros')
+    
+    # Verificar si no hay datos disponibles
+    if consumo_actual_litros is None and cambio_porcentual_litros is None and inicio_anterior_litros is None:
+        flash('No hay datos disponibles para el último periodo de consumo de agua.', 'error')
+    else:
+        # Aquí puedes manejar los valores de consumo_actual_kwh, cambio_porcentual_kwh, inicio_anterior_kwh
+        pass
             
     # GRAFICA LINE - CONSUMO DE AGUA (MXN)
     datos_grafica_agua_mxn, diferencia_porcentual_agua_mxn = get_consumo_agua('precio_total')
@@ -487,6 +518,7 @@ def user_domotica():
         consumo_energia_mxn_2024=consumo_energia_mxn_2024,
         consumo_actual_energia_mxn=consumo_actual_energia_mxn,
         cambio_porcentual_energia_mxn=cambio_porcentual_energia_mxn,
+        inicio_anterior_kwh=inicio_anterior_kwh,
         inicio_anterior_kwh_formateado=inicio_anterior_kwh_formateado,
         inicio_anterior_energia_mxn_formateado=inicio_anterior_energia_mxn_formateado,
         diferencia_porcentual_kwh=diferencia_porcentual_kwh,
@@ -500,6 +532,7 @@ def user_domotica():
         consumo_agua_mxn_2024=consumo_agua_mxn_2024,
         consumo_actual_agua_mxn=consumo_actual_agua_mxn,
         cambio_porcentual_agua_mxn=cambio_porcentual_agua_mxn,
+        inicio_anterior_litros=inicio_anterior_litros,
         inicio_anterior_litros_formateado=inicio_anterior_litros_formateado,
         inicio_anterior_agua_mxn_formateado=inicio_anterior_agua_mxn_formateado,
         diferencia_porcentual_litros=diferencia_porcentual_litros,

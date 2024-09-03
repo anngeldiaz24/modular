@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block content %}
+<div class="card">
+  <div class="card-header">
+      <h4 class="card-title">Estadísticas</h4>
+  </div>
+</div>
 
 <div class="transition-all duration-150 container-fluid mt-3" id="page_layout">
     <div id="content_layout">
@@ -30,7 +35,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] {% if card_ventas and card_ventas.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_ventas.porcentaje_cambio }}%</span>
+                                        <span class="block mb-[2px] {% if card_ventas and card_ventas.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_ventas.porcentaje_cambio | abs }}%</span>
                                         <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_venta_formateada | capitalize}})</span>
                                     </div>
                                 </div>
@@ -51,7 +56,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] {% if card_ingresos and card_ingresos.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_ingresos.porcentaje_cambio }}%</span>
+                                        <span class="block mb-[2px] {% if card_ingresos and card_ingresos.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_ingresos.porcentaje_cambio | abs }}%</span>
                                         <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_ingresos_formateada | capitalize}})</span>
                                     </div>
                                 </div>
@@ -89,7 +94,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] {% if card_usuarios and card_usuarios.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_usuarios.porcentaje_cambio }}%</span>
+                                        <span class="block mb-[2px] {% if card_usuarios and card_usuarios.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_usuarios.porcentaje_cambio | abs }}%</span>
                                         <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_usuarios_formateada | capitalize}})</span>
                                     </div>
                                 </div>
@@ -245,6 +250,16 @@
 
     /* GRAFICA STACK BAR - VENTAS POR MES (TIPO DE PAQUETE) */
     const ventasPaquete2023 = {{ ventasPaquete2023 | tojson | safe }};
+    const series = [];
+
+    for (const paquete in ventasPaquete2023) {
+      if (ventasPaquete2023.hasOwnProperty(paquete)) {
+          series.push({
+              name: paquete,
+              data: ventasPaquete2023[paquete]
+          });
+      }
+    }
     const apexChartVentasPaquete2023Options = {
         chart: {
             height: 410,
@@ -254,20 +269,7 @@
               show: false,
             },
           },
-          series: [
-            {
-              name: "Básico",
-              data: ventasPaquete2023.Básico,
-            },
-            {
-              name: "Premium",
-              data: ventasPaquete2023.Premium,
-            },
-            {
-              name: "Deluxe",
-              data: ventasPaquete2023.Deluxe,
-            },
-          ],
+          series: series,
           plotOptions: {
             bar: {
               horizontal: false,

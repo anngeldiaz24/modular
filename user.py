@@ -8,17 +8,17 @@ from .db import get_db
 from .raspberry import funciones
 import logging
 import datetime
-import cv2 
+import cv2
 import threading
-from .db import get_db
 import requests
 import re 
 from babel.dates import format_date
 from dotenv import load_dotenv
-from datetime import datetime
+# from datetime import datetime
 import os
 from werkzeug.security import generate_password_hash
 from mysql.connector import Error as MySQLError
+import random
 
 # Configurar el logging para este módulo
 logging.basicConfig(level=logging.DEBUG)
@@ -110,6 +110,7 @@ def get_photo(filename):
 @login_required
 @user_role_required
 def home():
+    from datetime import datetime
     db, c = get_db()
     current_hour = datetime.now().hour
     
@@ -133,6 +134,10 @@ def home():
     # Obtener la información del código de acceso del hogar del usuario
     c.execute('SELECT * FROM codigos_acceso WHERE id = %s', (hogar_usuario['id'],))
     codigo_acceso = c.fetchone()
+    
+    if not codigo_acceso:
+        flash('Código de acceso no encontrado', 'error')
+        codigo_acceso = {}
     
     if codigo_acceso:
         inicio = format_date(codigo_acceso['inicio'], format='long', locale='es') if codigo_acceso['inicio'] else "N/A"
@@ -174,6 +179,7 @@ def user_index():
 @user_role_required
 @bp.route('/welcome', methods=['GET', 'POST'])
 def user_welcome():
+    import datetime
     db, c = get_db()
     
     paquete = None
@@ -181,8 +187,14 @@ def user_welcome():
     tamanios = ['pequeño', 'mediano', 'grande']
 
     try:
-        # Obtener el paquete del código de acceso utilizado por el owner
-        c.execute('SELECT ca.paquete FROM codigos_acceso ca JOIN users u ON u.codigo_acceso = ca.id WHERE u.id = %s', (g.user['id'],))
+        # Obtener el paquete del código de acceso utilizando el paquete_id
+        c.execute('''
+            SELECT p.nombre AS paquete 
+            FROM codigos_acceso ca
+            JOIN paquetes p ON ca.paquete_id = p.id
+            JOIN users u ON u.codigo_acceso = ca.id
+            WHERE u.id = %s
+        ''', (g.user['id'],))
         paquete = c.fetchone()
     except Exception as e:
         flash(f"Ocurrió un error al obtener el paquete del código de acceso: {e}", 'error')
@@ -234,6 +246,12 @@ def user_welcome():
 
                 # Actualizar la tabla users con el hogar_id
                 c.execute('UPDATE users SET hogar_id = %s WHERE id = %s', (hogar_id, g.user['id']))
+                
+                # Insertar en la tabla dispositivos
+                tipos_dispositivo = ['celular', 'computadora', 'tablet']
+                estados_dispositivo = ['conectado', 'desconectado']
+                c.execute('INSERT INTO dispositivos (hogar_id, user_id, tipo, estado) VALUES (%s, %s, %s, %s)',
+                    (hogar_id, g.user['id'], random.choice(tipos_dispositivo), random.choice(estados_dispositivo)))
                 db.commit()
 
                 flash('¡Bienvenido a SSafeZone!', 'success')
@@ -250,6 +268,7 @@ def user_welcome():
 @bp.route('/miembros-hogar')
 @login_required
 def miembros_hogar():
+    from datetime import datetime
     db, c = get_db()
     hogar_id = g.user['hogar_id']
 
@@ -316,6 +335,13 @@ def crear_miembro():
                     "INSERT INTO users (nombre, apellidos, email, telefono, password, rol, acepto_terminos, hogar_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                     (nombre, apellidos, email, telefono, hashed_password, rol, acepto_terminos, hogar_id)
                 )
+                # Obtener el ID del usuario recién creado
+                user_id = c.lastrowid
+                # Insertar en la tabla dispositivos
+                tipos_dispositivo = ['celular', 'computadora', 'tablet']
+                estados_dispositivo = ['conectado', 'desconectado']
+                c.execute('INSERT INTO dispositivos (hogar_id, user_id, tipo, estado) VALUES (%s, %s, %s, %s)',
+                    (hogar_id, user_id, random.choice(tipos_dispositivo), random.choice(estados_dispositivo)))
                 db.commit()
                 flash('¡Miembro añadido existosamente!', 'success')
                 return redirect(url_for('user.miembros_hogar'))
@@ -336,11 +362,24 @@ def eliminar_miembro(id):
 
     if miembro is None:
         abort(404, f"Miembro {id} no encontrado.")
+        
+    try:
+        # Elimina los dispositivos asociados al usuario
+        c.execute('DELETE FROM dispositivos WHERE user_id = %s', (id,))
+        
+        # Elimina los registros de eventos asociados al usuario
+        c.execute('DELETE FROM registros_eventos WHERE usuario_id = %s', (id,))
+        
+        # Elimina el usuario
+        c.execute('DELETE FROM users WHERE id = %s', (id,))
     
-    c.reset()
-    c.execute('DELETE FROM users WHERE id = %s', (id,))
-    db.commit()
-    flash('Miembro eliminado exitosamente.', 'success')
+        c.reset()
+        db.commit()
+        flash('Miembro eliminado exitosamente.', 'success')
+    except Exception as e:
+        db.rollback()
+        flash(f"Ocurrió un error al eliminar el miembro: {e}", 'error')
+        
     return redirect(url_for('user.miembros_hogar'))
 
 @bp.route('/miembro/<int:id>/edit', methods=['POST'])
@@ -432,7 +471,12 @@ def mi_cuenta():
     # Obtener el paquete del código de acceso
     paquete = 'N/A'
     if hogar['codigo_acceso']:
-        c.execute('SELECT paquete FROM codigos_acceso WHERE id = %s', (hogar['codigo_acceso'],))
+        c.execute('''
+            SELECT p.nombre as paquete
+            FROM codigos_acceso ca
+            JOIN paquetes p ON ca.paquete_id = p.id
+            WHERE ca.id = %s
+        ''', (hogar['codigo_acceso'],))
         codigo_acceso = c.fetchone()
         paquete = codigo_acceso['paquete'] if codigo_acceso else 'N/A'
 
