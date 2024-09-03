@@ -1,0 +1,192 @@
+{% extends 'layouts/layout-dashboard-admin.html' %}
+
+{% block header %}
+    {% block title %}Paquetes{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="card-title">Paquetes</h4>
+        <a href="#" type="button" class="btn btn-primary" data-bs-target="#crearModalPaquete" data-bs-toggle="modal">
+            <iconify-icon icon="bx:archive" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"  width="1.2em" height="1.2em"></iconify-icon>Nuevo paquete</a>
+    </div>
+</div>
+
+<div class="space-y-5 mt-3">
+    <div class="card">
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="data-table">
+                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                                <tr>
+                                    <th scope="col" class="table-th">ID</th>
+                                    <th scope="col" class="table-th">Paquete</th>
+                                    <th scope="col" class="table-th">Descripción</th>
+                                    <th scope="col" class="table-th">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                {% for paquete_id, paquete in paquetes.items() %}
+                                <tr class="table-row">
+                                    <td class="table-td text-center">{{ paquete_id }}</td>
+                                    <td class="table-td text-center">
+                                        <div class="inline-block px-3 min-w-[90px] mx-auto py-1 rounded-full bg-opacity-25 {{ paquete.color }}">
+                                            {{ paquete.nombre }}
+                                        </div>
+                                    </td>
+                                    <td class="table-td text-center">{{ paquete.descripcion }}</td>
+                                    <td class="table-td">
+                                        <div class="relative">
+                                            <div class="dropdown relative">
+                                                <button class="text-xl text-center block w-full" type="button" id="tableDropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                                </button>
+                                                <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-10 float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white edit-btn" data-bs-toggle="modal" 
+                                                        data-bs-target="#editModalPaquete" data-id="{{ paquete_id }}" data-nombre="{{ paquete.nombre }}" data-descripcion="{{ paquete.descripcion }}">
+                                                        <iconify-icon icon="material-symbols:edit-outline" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>Editar</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white delete-btn" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModalPaquete" data-id="{{ paquete_id }}">
+                                                        <iconify-icon icon="ph:trash" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>Eliminar</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de creación -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="crearModalPaquete" tabindex="-1" aria-labelledby="crearModalLabelPaquete" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-2/4">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current mx-4 sm:mx-auto">
+            <div class="modal-header px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                <h5 class="modal-title" id="crearModalLabelPaquete"><iconify-icon class="mr-2 mt-5" icon="bx:archive" width="1.3em" height="1.3em"></iconify-icon>Crear paquete</h5>
+                <span>Se añadirá un paquete y se verá reflejado en las ofertas al público en general</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="crearPaqueteForm" method="post">
+                    <div class="mb-3">
+                        <label for="crearNombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="crearNombre" name="nombre" placeholder="Ingresa el nombre del paquete" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="crearDescripcion" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" id="crearDescripcion" name="descripcion" placeholder="Ingresa la descripción del paquete" required>
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary text-right" id="agregar-paquete-btn">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin modal de creación -->
+
+<!-- Modal de edición -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editModalPaquete" tabindex="-1" aria-labelledby="editModalLabelPaquete" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-1/4">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current mx-4 sm:mx-auto">
+            <div class="modal-header px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                <h5 class="modal-title" id="editModalLabelPaquete">Editar Paquete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="editPaqueteForm" method="post">
+                    <div class="mb-3">
+                        <label for="editNombre" class="form-label">Nombre del paquete</label>
+                        <input type="text" class="form-control" id="editNombre" name="nombre">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescripcion" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" id="editDescripcion" name="descripcion">
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary text-right">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin modal de edición -->
+
+<!-- Modal eliminar -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="deleteModalPaquete" tabindex="-1" aria-labelledby="deleteModalLabelPaquete" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-1/4 mx-4 sm:mx-auto">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-header px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                <h5 class="modal-title" id="deleteModalLabelPaquete">Eliminar Paquete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center">
+                    <p class="text-lg font-semibold mb-3">¿Estás seguro de eliminar el paquete?</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Esta acción es irreversible.</p>
+                </div>
+                <div class="text-right">
+                    <form id="deletePaqueteForm" method="post">
+                        <button type="submit" class="btn btn-danger" id="delete-btn">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin modal eliminar -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                let paqueteId = this.getAttribute('data-id');
+                let nombre = this.getAttribute('data-nombre');
+                let descripcion = this.getAttribute('data-descripcion');
+
+                document.getElementById('editNombre').value = nombre;
+
+                let descripcionSelect = document.getElementById('editDescripcion');
+                descripcionSelect.value = descripcion;
+
+                document.getElementById('editPaqueteForm').action = '/paquete/' + paqueteId + '/edit';
+
+            });
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            let paqueteId = this.getAttribute('data-id');
+            document.getElementById('deletePaqueteForm').action = '/paquete/' + paqueteId + '/delete';
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('agregar-paquete-btn').addEventListener('click', function() {
+            let nombre = document.getElementById('crearNombre').value;
+            let descripcion = document.getElementById('crearDescripcion').value;
+
+            document.getElementById('crearPaqueteForm').action = '/crear-paquete';
+        });
+    });
+
+</script>
+
+
+{% endblock %}

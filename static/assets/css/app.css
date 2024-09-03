@@ -8176,6 +8176,13 @@ blockquote{
   display: none;
 }
 
+.semiDark body .semiDark_logo_samsung{
+  display: block;
+}
+.semiDark body .white_logo_samsung, .semiDark .dark_logo_samsung{
+  display: none;
+}
+
 .simplebar-scrollbar:before{
   --tw-bg-opacity: 1;
   background-color: rgb(148 163 184 / var(--tw-bg-opacity));
@@ -10826,7 +10833,6 @@ ul.custom-list ul li{
   font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 400;
-  text-transform: capitalize;
   --tw-text-opacity: 1;
   color: rgb(71 85 105 / var(--tw-text-opacity));
 }
@@ -11267,6 +11273,14 @@ ul.custom-list ul li{
 }
 
 .dark .dark_logo{
+  display: none;
+}
+
+.light .white_logo_samsung{
+  display: none;
+}
+
+.dark .dark_logo_samsung{
   display: none;
 }
 

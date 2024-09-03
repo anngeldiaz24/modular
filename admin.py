@@ -3,6 +3,7 @@ from flask import (
 )
 import requests
 import os
+import random
 from datetime import datetime
 from dotenv import load_dotenv
 from babel.dates import format_date
@@ -31,8 +32,6 @@ def get_ultimo_periodo_ventas():
         
         c.execute(query)
         resultado = c.fetchone()
-        
-        print(f"ultimo periodo: {resultado}")
     
         return resultado['ultimo_periodo_id'] if resultado else None
     finally:
@@ -68,7 +67,6 @@ def get_consumo_ventas():
     
         c.execute(query_ultimos_periodos)
         ultimos_periodos = c.fetchall()
-        print(f"Ultimos periodos: {ultimos_periodos}")
         
         if len(ultimos_periodos) < 2:
             diferencia_porcentual = None  # No hay suficientes datos para calcular la diferencia porcentual
@@ -283,7 +281,7 @@ def get_estatus_hogares():
         return estatus_tipos, estatus_cantidades
     finally:
         close_db()
-        
+             
 def get_ventas_mensuales_por_paquete2023():
     db, c = get_db()
     
@@ -291,29 +289,29 @@ def get_ventas_mensuales_por_paquete2023():
         query = """
         SELECT
             MONTH(p.inicio) as mes,
-            c.paquete,
+            paq.nombre as paquete,
             COUNT(c.id) as total
         FROM
             codigos_acceso c
         JOIN
             periodos p ON c.periodo_id = p.id
+        JOIN
+            paquetes paq ON c.paquete_id = paq.id
         WHERE
             YEAR(p.inicio) = 2023
         GROUP BY
-            MONTH(p.inicio), c.paquete
+            MONTH(p.inicio), paq.nombre
         ORDER BY
-            MONTH(p.inicio), c.paquete
+            MONTH(p.inicio), paq.nombre
         """
         
         c.execute(query)
         resultados = c.fetchall()
 
         # Inicializar diccionario para almacenar los datos
-        ventas = {
-            'Básico': [0] * 12,
-            'Premium': [0] * 12,
-            'Deluxe': [0] * 12
-        }
+        paquetes = [row['paquete'] for row in resultados]
+        paquetes_unicos = list(set(paquetes))
+        ventas = {paquete: [0] * 12 for paquete in paquetes_unicos}
 
         for resultado in resultados:
             mes = resultado['mes'] - 1  # ajustar para el índice de la lista
@@ -499,13 +497,15 @@ def get_hogares():
                 h.id AS hogar_id, h.codigo_postal, h.calle, h.numero_exterior, h.numero_interior, 
                 h.colonia, h.municipio, h.estado, h.informacion_adicional, h.estatus,
                 u.id AS user_id, u.nombre, u.apellidos,
-                ca.paquete
+                p.nombre AS paquete
             FROM 
                 hogares h
             LEFT JOIN 
                 users u ON h.id = u.hogar_id
             LEFT JOIN
                 codigos_acceso ca ON u.codigo_acceso = ca.id
+            LEFT JOIN
+                paquetes p ON ca.paquete_id = p.id
         ''')
         data = c.fetchall()
 
@@ -542,12 +542,12 @@ def admin_hogares():
 @admin_role_required
 def editar_hogar(id):
     if request.method == 'POST':
-        paquete = request.form['paquete']
+        paquete_nombre = request.form['paquete']
         estatus = request.form['estatus']
                 
         error = None
 
-        if not paquete:
+        if not paquete_nombre:
             error = 'El paquete es requerido.'
         elif not estatus:
             error = 'El estatus es requerido.'
@@ -556,10 +556,21 @@ def editar_hogar(id):
             try:
                 db, c = get_db()
                 
+                # Obtener el ID del paquete basado en el nombre
+                c.execute('SELECT id FROM paquetes WHERE nombre = %s', (paquete_nombre,))
+                paquete = c.fetchone()
+
+                if paquete is None:
+                    error = 'El paquete seleccionado no es válido.'
+                    flash(error, 'error')
+                    return redirect(url_for('admin.admin_hogares'))
+
+                paquete_id = paquete['id']
+                
                 # Obtener información del hogar y el código de acceso
                 c.execute('''
                     SELECT 
-                        ca.id AS codigo_acceso_id, ca.paquete, h.id AS hogar_id
+                        ca.id AS codigo_acceso_id, ca.paquete_id, h.id AS hogar_id
                     FROM 
                         hogares h
                     LEFT JOIN 
@@ -573,10 +584,12 @@ def editar_hogar(id):
             
                 if hogar is None:
                     abort(404, f"Hogar id {id} no encontrado.")
-
+                  
+                # Se asegura de completar la lectura de los resultados antes de hacer la siguiente consulta  
                 c.reset()
-                # Actualizar el paquete en la tabla de códigos de acceso
-                c.execute('UPDATE codigos_acceso SET paquete = %s WHERE id = %s', (paquete, hogar['codigo_acceso_id']))
+
+                # Actualizar el paquete_id en la tabla de códigos de acceso
+                c.execute('UPDATE codigos_acceso SET paquete_id = %s WHERE id = %s', (paquete_id, hogar['codigo_acceso_id']))
                 # Actualizar el estatus en la tabla de hogares
                 c.execute('UPDATE hogares SET estatus = %s WHERE id = %s', (estatus, id))
 
@@ -588,6 +601,7 @@ def editar_hogar(id):
 
             except Exception as e:
                 db.rollback()
+                flash(f"Ocurrió un error: {e}", 'error')
 
         else:
             flash(error, 'error')
@@ -604,9 +618,185 @@ def eliminar_hogar(id):
 
     if hogar is None:
         abort(404, f"Hogar id {id} no encontrado.")
+        
+    try:
+        # Elimina los registros del consumo de agua asociados al hogar
+        c.execute('DELETE FROM consumo_agua WHERE hogar_id = %s', (id, ))
+        
+        # Elimina los registros del consumo de energía asociados al hogar
+        c.execute('DELETE FROM consumo_energia WHERE hogar_id = %s', (id, ))
+        
+        # Elimina los dispositivos asociados al hogar
+        c.execute('DELETE FROM dispositivos WHERE hogar_id = %s', (id, ))
+        
+        # Elimina los registros de eventos asociados al hogar
+        c.execute('DELETE FROM registros_eventos WHERE hogar_id = %s', (id, ))
     
-    c.reset()
-    c.execute('DELETE FROM hogares WHERE id = %s', (id,))
-    db.commit()
-    flash('Hogar y sus miembros han sido eliminados correctamente.', 'success')
+        # Elimina el hogar
+        c.execute('DELETE FROM hogares WHERE id = %s', (id,))
+        
+        c.reset()
+        db.commit()
+        flash('Hogar y sus miembros han sido eliminados correctamente.', 'success')
+    except Exception as e:
+        db.rollback()
+        flash(f"Ocurrió un error al eliminar el hogar: {e}", 'error')
+        
     return redirect(url_for('admin.admin_hogares'))
+
+def get_paquetes():
+    db, c = get_db()
+    
+    try:
+        c.execute('''
+            SELECT 
+                id, nombre, descripcion
+            FROM 
+                paquetes
+        ''')
+        data = c.fetchall()
+
+        paquetes = {}
+        for row in data:
+            paquetes[row['id']] = {
+                'nombre': row['nombre'],
+                'descripcion': row['descripcion']
+            }
+    except Exception as e:
+        flash(f"Ocurrió un error: {e}", 'error')
+        paquetes = {}
+
+    return paquetes
+
+@bp.route('/paquetes')
+@login_required
+@admin_role_required
+def admin_paquetes():
+    paquetes = get_paquetes()
+    
+    # Define una lista de colores
+    colores = [
+        'text-primary-500 bg-blue-500', 'text-success-500 bg-green-500', 'text-warning-500 bg-warning-500', 
+        'text-red-500 bg-red-500', 'text-info-500 bg-info-500'
+    ]
+    
+    # Asigna un color basado en el ID del paquete
+    color_count = len(colores)
+    for i, (paquete_id, paquete) in enumerate(paquetes.items()):
+        paquete['color'] = colores[i % color_count]
+        
+    return render_template('admin/paquetes-view.html', user=g.user, paquetes=paquetes)
+
+@bp.route('/crear-paquete', methods=['POST'])
+@login_required
+@admin_role_required
+def crear_paquete():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        descripcion = request.form['descripcion']
+
+        db, c = get_db()
+        error = None
+
+        # Validaciones
+        if not isinstance(nombre, str) or not nombre:
+            error = 'El nombre es requerido.'
+        elif not isinstance(descripcion, str) or not descripcion or len(descripcion) < 3:
+            error = 'La descripcion es requerida y debe ser una cadena de al menos 3 caracteres.'
+
+        if error is None:
+            try:
+                c.execute(
+                    "INSERT INTO paquetes (nombre, descripcion) VALUES (%s, %s)",
+                    (nombre, descripcion)
+                )
+                db.commit()
+                flash('Paquete añadido existosamente!', 'success')
+                return redirect(url_for('admin.admin_paquetes'))
+            except Exception as e:
+                db.rollback()
+                error = str(e)
+                flash(error, 'error')
+        else:
+            flash(error, 'error')
+    return redirect(url_for('admin.admin_paquetes'))
+
+@bp.route('/paquete/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_role_required
+def editar_paquete(id):
+    if request.method == 'POST':
+        paquete_nombre = request.form['nombre']
+        descripcion = request.form['descripcion']
+        
+                
+        error = None
+
+        if not paquete_nombre:
+            error = 'El nombre del paquete es requerido.'
+        elif not descripcion:
+            error = 'La descripcion es requerida.'
+
+        if error is None:
+            try:
+                db, c = get_db()
+                
+                # Obtener el paquete basado en el ID
+                c.execute('SELECT id FROM paquetes WHERE id = %s', (id,))
+                paquete = c.fetchone()
+
+                if paquete is None:
+                    error = 'El paquete seleccionado no es válido.'
+                    flash(error, 'error')
+                    return redirect(url_for('admin.admin_paquetes'))
+
+                # Se asegura de completar la lectura de los resultados antes de hacer la siguiente consulta  
+                c.reset()
+
+                # Actualizar el nombre y la descripción del paquete
+                c.execute('UPDATE paquetes SET nombre = %s, descripcion = %s WHERE id = %s', (paquete_nombre, descripcion, id))
+
+                db.commit()
+
+                flash('¡Paquete actualizado correctamente!', 'success')
+
+                return redirect(url_for('admin.admin_paquetes'))
+
+            except Exception as e:
+                db.rollback()
+                flash(f"Ocurrió un error: {e}", 'error')
+
+        else:
+            flash(error, 'error')
+
+    return redirect(url_for('admin.admin_paquetes'))
+
+@bp.route('/paquete/<int:id>/delete', methods=['POST'])
+@login_required
+@admin_role_required
+def eliminar_paquete(id):
+    db, c = get_db()
+    c.execute('SELECT * FROM paquetes WHERE id = %s', (id,))
+    paquete = c.fetchone()
+
+    if paquete is None:
+        abort(404, f"Paquete id {id} no encontrado.")
+        
+    try:
+        # Actualizar los códigos de acceso para desvincularlos del paquete que se va a eliminar
+        # Aquí puedes establecer paquete_id a NULL o a un paquete_id predeterminado
+        paquete_predeterminado_id = None  # O el ID de un paquete predeterminado
+
+        c.execute('UPDATE codigos_acceso SET paquete_id = %s WHERE paquete_id = %s', (paquete_predeterminado_id, id))
+    
+        # Elimina el paquete
+        c.execute('DELETE FROM paquetes WHERE id = %s', (id,))
+        
+        c.reset()
+        db.commit()
+        flash('El paquete ha sido eliminado correctamente.', 'success')
+    except Exception as e:
+        db.rollback()
+        flash(f"Ocurrió un error al eliminar el paquete: {e}", 'error')
+        
+    return redirect(url_for('admin.admin_paquetes'))

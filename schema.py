@@ -1,5 +1,6 @@
 instructions = [
     'SET FOREIGN_KEY_CHECKS=0;',
+    'DROP TABLE IF EXISTS paquetes;',
     'DROP TABLE IF EXISTS codigos_acceso;',
     'DROP TABLE IF EXISTS hogares;',
     'DROP TABLE IF EXISTS users;',
@@ -21,17 +22,26 @@ instructions = [
         );
     """,
     """
+        -- Creación de la tabla paquetes
+        CREATE TABLE paquetes (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(255) NOT NULL,
+            descripcion VARCHAR(255) NULL
+        );
+    """,
+    """
         -- Creación de la tabla codigos_acceso
         CREATE TABLE codigos_acceso (
             id INT(10) AUTO_INCREMENT PRIMARY KEY,
             codigo VARCHAR(10) NOT NULL,
-            paquete VARCHAR(100) NOT NULL,
+            paquete_id INT NULL,
             disponible BOOLEAN,
             periodo_id INT NULL,
             tipo_suscripcion ENUM('semestral', 'anual') NULL,
             inicio DATE NULL,
             fin DATE NULL,
             precio DECIMAL (10, 2) NULL,
+            FOREIGN KEY (paquete_id) REFERENCES paquetes(id),
             FOREIGN KEY (periodo_id) REFERENCES periodos(id)
         );
     """,
