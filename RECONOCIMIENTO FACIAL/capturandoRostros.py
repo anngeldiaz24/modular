@@ -2,7 +2,7 @@ import cv2
 import os
 import imutils
 
-personName = 'elida'
+personName = 'lalo'
 dataPath = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data' #Cambia a la ruta donde hayas almacenado Data
 personPath = dataPath + '/' + personName
 
@@ -11,7 +11,7 @@ if not os.path.exists(personPath):
 	os.makedirs(personPath)
 
 #cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
-cap = cv2.VideoCapture('elida-prueba.mp4')
+cap = cv2.VideoCapture('lalo-prueba.mp4')
 
 faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades+'haarcascade_frontalface_default.xml')
 count = 0

@@ -7,7 +7,7 @@ cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 # Configuración para guardar el video en formato .mp4
 frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
-output = cv2.VideoWriter('elida-prueba.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (frame_width, frame_height))
+output = cv2.VideoWriter('lalo-prueba.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (frame_width, frame_height))
 
 start_time = time.time()  # Iniciar el tiempo
 
