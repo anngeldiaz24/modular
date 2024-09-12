@@ -167,7 +167,8 @@ def home():
                             codigo_acceso=codigo_acceso,
                             inicio=inicio,
                             fin=fin,
-                            fecha_actual=fecha_actual)
+                            fecha_actual=fecha_actual,
+                            hogar_usuario=hogar_usuario)
 
 @bp.route('/hogar')
 @login_required

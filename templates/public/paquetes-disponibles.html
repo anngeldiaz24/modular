@@ -59,8 +59,13 @@
                     </div>
                   </div>
                   <div class="mt-6 mb-14">
-                    <button class="btn bg-white hover:bg-opacity-80 text-slate-900 btn-sm">
-                      Mejorar
+                    <button 
+                      class="obtener-suscripcion-btn btn bg-white hover:bg-opacity-80 text-slate-900 btn-sm"
+                      data-paquete-nombre="{{ paquete['nombre'] }}"
+                      data-bs-toggle="modal"
+                      data-bs-target="#obtenerModal"
+                    >
+                      Obtener
                     </button>
                   </div>
 
@@ -92,8 +97,11 @@
                       </div>
                     </div>
                     <div class="mt-6 mb-14">
-                      <button class="btn bg-white hover:bg-opacity-80 text-slate-900 btn-sm">
-                        Mejorar
+                      <button 
+                        class="obtener-ultima-suscripcion-btn btn bg-white hover:bg-opacity-80 text-slate-900 btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#obtenerUltimaSuscripcionModal">
+                          Obtener
                       </button>
                     </div>
                     <img src="{{ url_for('static', filename='assets/images/svg/line.svg') }}" alt class="absolute left-0 bottom-0 w-full z-[-1]">
@@ -112,38 +120,8 @@
                 </div>
               {% endif %}
 
-              <div class=" relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                <div class="absolute inline-block bg-white dark:bg-slate-800 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 dark:text-slate-400font-normal ">
-                  O continua con
-                </div>
-              </div>
-              <div class="max-w-[242px] mx-auto mt-8 w-full">
-
-                <!-- BEGIN: Social Log in Area -->
-                <ul class="flex">
-                  <li class="flex-1">
-                    <a href="#" class="inline-flex h-10 w-10 bg-[#1C9CEB] text-white text-2xl flex-col items-center justify-center rounded-full">
-                      <img src="{{ url_for('static', filename='assets/images/icon/tw.svg') }}" alt>
-                    </a>
-                  </li>
-                  <li class="flex-1">
-                    <a href="#" class="inline-flex h-10 w-10 bg-[#395599] text-white text-2xl flex-col items-center justify-center rounded-full">
-                      <img src="{{ url_for('static', filename='assets/images/icon/fb.svg') }}" alt>
-                    </a>
-                  </li>
-                  <li class="flex-1">
-                    <a href="#" class="inline-flex h-10 w-10 bg-[#0A63BC] text-white text-2xl flex-col items-center justify-center rounded-full">
-                      <img src="{{ url_for('static', filename='assets/images/icon/in.svg') }}" alt>
-                    </a>
-                  </li>
-                  <li class="flex-1">
-                    <a href="#" class="inline-flex h-10 w-10 bg-[#EA4335] text-white text-2xl flex-col items-center justify-center rounded-full">
-                      <img src="{{ url_for('static', filename='assets/images/icon/gp.svg') }}" alt>
-                    </a>
-                  </li>
-                </ul>
-                <!-- END: Social Log In Area -->
-              </div>
+              <div class=" relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6"></div>
+              <div class="max-w-[242px] mx-auto mt-8 w-full"></div>
             </div>
             <div class="auth-footer text-center">
               Copyright 2024, SSafeZone Todos los Derechos Reservados.
@@ -172,9 +150,138 @@
       </div>
     </div>
 
+    <!-- Modal obtener paquete -->
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="obtenerModal" tabindex="-1" aria-labelledby="default_modal" aria-hidden="true">
+      <div class="modal-dialog relative w-auto pointer-events-none">
+          <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+              <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
+                  <!-- Modal header -->
+                  <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600" style="background-color:#0F172A">
+                      <h3 class="text-xl font-medium text-white dark:text-white">
+                          Obtener suscripción a SSafeNet
+                      </h3>
+                      <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+                          <svg aria-hidden="true" class="w-5 h-5" fill="#ffffff" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                          </svg>
+                          <span class="sr-only">Close modal</span>
+                      </button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="p-6 space-y-4">
+                      <h6 class="text-base text-slate-900 dark:text-white leading-6" id="modalPaqueteNombre">
+                          <!-- Aquí se insertará el nombre del paquete desde JavaScript -->
+                      </h6>
+                      <p class="text-base text-slate-600 dark:text-slate-400 leading-6" id="modalPaqueteDescripcion">
+                          <!-- Aquí se insertará la descripción del paquete desde JavaScript -->
+                      </p>
+                  </div>
+                  <!-- Modal footer -->
+                  <div class="flex items-center justify-end p-6 space-x-2 border-t border-slate-200 rounded-b dark:border-slate-600">
+                      <button id="confirmarBtn" type="button" class="btn btn-dark rounded inline-flex justify-center text-white">Enviar correo</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    <!-- Fin Modal obtener paquete -->
+
+    <!-- Modal obtener ultimo paquete -->
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="obtenerUltimaSuscripcionModal" tabindex="-1" aria-labelledby="default_modal" aria-hidden="true">
+      <div class="modal-dialog relative w-auto pointer-events-none">
+          <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+              <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
+                  <!-- Modal header -->
+                  <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600" style="background-color:#0F172A">
+                  <h3 class="text-xl font-medium text-white dark:text-white">
+                      Obtener suscripción a SSafeNet
+                  </h3>
+                  <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+                      <svg aria-hidden="true" class="w-5 h-5" fill="#ffffff" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                      </svg>
+                      <span class="sr-only">Close modal</span>
+                  </button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="p-6 space-y-4">
+                  <h6 class="text-base text-slate-900 dark:text-white leading-6">
+                      Paquete {{ ultimo_paquete['nombre'] }}
+                  </h6>
+                  <p class="text-base text-slate-600 dark:text-slate-400 leading-6">
+                    Estás a punto de obtener la suscripción al paquete <strong>{{ ultimo_paquete['nombre'] }}</strong> de SSafeNet. 
+                    Este paquete te permitirá acceder a todas las funcionalidades exclusivas y actualizaciones del sistema. 
+                    Para completar tu solicitud y recibir más detalles sobre la adquisición, por favor envía un correo a <a href="mailto:safezonesamsung@gmail.com" class="hover:underline"><strong>safezonesamsung@gmail.com</strong></a>. 
+                    Nuestro equipo te proporcionará toda la información necesaria para proceder con la compra.
+                  </p>
+                  </div>
+                  <!-- Modal footer -->
+                  <div class="flex items-center justify-end p-6 space-x-2 border-t border-slate-200 rounded-b dark:border-slate-600">
+                      <form id="obtenerUltimaSuscripcionBtn" method="post">
+                          <button id="confirmarUltimaBtn" type="button" class="btn btn-dark rounded inline-flex justify-center text-white">Enviar correo</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    <!-- Fin Modal obtener ultimo paquete -->
+
     <!-- scripts -->
     <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/rt-plugins.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+
+    <!-- Modal obtener paquete -->
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+          const obtenerSuscripcionBtns = document.querySelectorAll('.obtener-suscripcion-btn');
+          const modalPaqueteNombre = document.getElementById('modalPaqueteNombre');
+          const modalPaqueteDescripcion = document.getElementById('modalPaqueteDescripcion');
+          const confirmarBtn = document.getElementById('confirmarBtn');
+  
+          obtenerSuscripcionBtns.forEach(btn => {
+              btn.addEventListener('click', function() {
+                  const paqueteNombre = this.getAttribute('data-paquete-nombre');
+                  const email = 'safezonesamsung@gmail.com';
+                  const subject = encodeURIComponent('Solicitud de suscripción al paquete ' + paqueteNombre);
+                  const body = encodeURIComponent('Hola,\n\nEstoy interesado en obtener más información sobre el paquete ' + paqueteNombre + ' de SSafeNet.\n\nGracias.');
+                  const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+  
+                  // Insertar datos en el modal
+                  modalPaqueteNombre.textContent = 'Paquete ' + paqueteNombre;
+                  modalPaqueteDescripcion.innerHTML = `
+                      Estás a punto de obtener la suscripción al paquete <strong>${paqueteNombre}</strong> de SSafeNet. 
+                      Este paquete te permitirá acceder a todas las funcionalidades exclusivas y actualizaciones del sistema. 
+                      Para completar tu solicitud y recibir más detalles sobre la adquisición, por favor envía un correo a <a href="mailto:${email}" class="hover:underline"><strong>${email}</strong></a>. 
+                      Nuestro equipo te proporcionará toda la información necesaria para proceder con la compra.
+                  `;
+
+                  // Limpiar event listener anterior si existe
+                  confirmarBtn.onclick = null;
+  
+                  // Configurar el botón de enviar correo
+                  confirmarBtn.onclick = function() {
+                      window.location.href = mailtoLink;
+                  };
+              });
+          });
+      });
+    </script>
+
+    <!-- Modal obtener último paquete -->
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+          const confirmarBtn = document.getElementById('confirmarUltimaBtn');
+          confirmarBtn.addEventListener('click', function() {
+              const paqueteNombre = "{{ ultimo_paquete['nombre'] }}";
+              const email = 'safezonesamsung@gmail.com';
+              const subject = encodeURIComponent('Solicitud de suscripción al paquete ' + paqueteNombre);
+              const body = encodeURIComponent('Hola,\n\nEstoy interesado en obtener más información sobre el paquete ' + paqueteNombre + ' de SSafeNet.\n\nGracias.');
+              const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+              window.location.href = mailtoLink;
+          });
+      });
+    </script>
   </body>
 </html>

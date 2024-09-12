@@ -78,7 +78,15 @@
             <button type="submit" class="btn btn-dark block w-full text-center">Iniciar sesión</button>
           </form>
           <!-- END: Login Form -->
-          <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 2xl:mt-12 mt-6 uppercase text-sm text-center">¿Aún no tienes cuenta?
+          
+          <div class="text-center">
+            <button>
+              <a href="{{ url_for('public.paquetes_disponibles') }}" class="btn btn-sm btn-outline-primary mt-4 inline-block">
+                Consultar paquetes SSafeNet
+              </a>
+            </button>
+          </div>
+          <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 2xl:mt-6 mt-6 uppercase text-sm text-center">¿Aún no tienes cuenta?
             <a href="{{ url_for('auth.register') }}" class="text-slate-900 dark:text-white font-medium hover:underline">
               Registrate
             </a>
