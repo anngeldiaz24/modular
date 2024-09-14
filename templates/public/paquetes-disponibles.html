@@ -30,14 +30,38 @@
                   <img src="static/assets/images/logo/samsung-8.svg" alt class="mb-10 dark_logo_samsung semiDark_logo_samsung" style="width:250px;">
                   <img src="static/assets/images/logo/samsung-8-white.svg" alt class="mb-10 white_logo_samsung" style="width:250px;">
                 </a>
-                <!-- Botón para modo claro (pantallas pequeñas) -->
-                <a href="{{ url_for('auth.login') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10 dark:hidden">
-                  Iniciar sesión
-                </a>
-                <!-- Botón para modo oscuro (pantallas pequeñas) -->
-                <a href="{{ url_for('auth.login') }}" class="absolute btn-light top-6 right-2 m-5 text-black px-6 py-2 rounded z-10 hidden dark:block">
-                  Iniciar sesión
-                </a>
+                <!-- Botones dependiendo del rol del usuario -->
+
+                <!-- Botón para volver al dashboard de User -->
+                {% if user_role == 'Owner' or user_role == 'User' %}
+                  <!-- Botón para modo claro (pantallas pequeñas) -->
+                  <a href="{{ url_for('user.home') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10 dark:hidden">
+                    Volver al dashboard
+                  </a>
+                  <!-- Botón para modo oscuro (pantallas pequeñas) -->
+                  <a href="{{ url_for('user.home') }}" class="absolute btn-light top-6 right-2 m-5 text-black px-6 py-2 rounded z-10 hidden dark:block">
+                    Volver al dashboard
+                  </a>
+                <!-- Botón para volver al dashboard de Admin -->
+                {% elif user_role == 'Admin' %}
+                  <!-- Botón para modo claro (pantallas pequeñas) -->
+                  <a href="{{ url_for('admin.admin_index') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10 dark:hidden">
+                    Volver al dashboard
+                  </a>
+                  <!-- Botón para modo oscuro (pantallas pequeñas) -->
+                  <a href="{{ url_for('admin.admin_index') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10 hidden dark:block">
+                    Volver al dashboard
+                  </a>
+                {% else %}
+                  <!-- Botón para modo claro (pantallas pequeñas) -->
+                  <a href="{{ url_for('auth.login') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10 dark:hidden">
+                    Iniciar sesión
+                  </a>
+                  <!-- Botón para modo oscuro (pantallas pequeñas) -->
+                  <a href="{{ url_for('auth.login') }}" class="absolute btn-light top-6 right-2 m-5 text-black px-6 py-2 rounded z-10 hidden dark:block">
+                    Iniciar sesión
+                  </a>
+                {% endif %}
               </div>
 
               <div class="text-center 2xl:mb-10 mb-4">
@@ -129,10 +153,22 @@
           </div>
         </div>
         <div class="left-column bg-cover bg-no-repeat bg-center relative" style="background-image: url(static/assets/images/all-img/smart-home-tablet.jpg);">
-          <!-- Botón en la esquina superior derecha -->
-          <a href="{{ url_for('auth.login') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10">
+          <!-- Botón en la esquina superior derecha dependiendo del rol del usuario -->
+
+          <!-- Botón para volver al dashboard de User -->
+          {% if user_role == 'Owner' or user_role == 'User' %}
+            <a href="{{ url_for('user.home') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10">
+              Volver al dashboard
+            </a>
+          {% elif user_role == 'Admin' %}
+            <a href="{{ url_for('admin.admin_index') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10">
+              Volver al dashboard
+            </a>
+          {% else %}
+            <a href="{{ url_for('auth.login') }}" class="absolute btn-dark top-6 right-2 m-5 text-white px-6 py-2 rounded z-10">
               Iniciar sesión
-          </a>
+            </a>
+          {% endif %}
       
           <div class="flex flex-col h-full justify-center">
               <div class="flex-1 flex flex-col justify-center items-center">
