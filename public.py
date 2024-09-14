@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, url_for, request,
+    Blueprint, flash, g, redirect, render_template, url_for, request, session,
 )
 import requests
 import os
@@ -59,4 +59,8 @@ def paquetes_disponibles():
         ultimo_paquete_id = list(paquetes.keys())[-1]
         ultimo_paquete = paquetes.pop(ultimo_paquete_id)
         
-    return render_template('public/paquetes-disponibles.html', paquetes=paquetes, ultimo_paquete=ultimo_paquete)
+    user_role = None
+    if 'user_id' in session:
+        user_role = g.user['rol']
+        
+    return render_template('public/paquetes-disponibles.html', paquetes=paquetes, ultimo_paquete=ultimo_paquete, user_role=user_role)

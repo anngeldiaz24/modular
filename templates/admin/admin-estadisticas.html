@@ -25,20 +25,60 @@
                                     <img src="{{ url_for('static', filename='assets/images/all-img/shade-1.png') }}" draggable="false" class="w-full h-full object-contain">
                                 </div>
                                 <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Ventas - paquetes (más reciente)</span>
-                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">{{ card_ventas.consumo_actual }} paquetes</span>
+                                {% if card_ventas.ventas_actuales is none %}
+                                <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                  0 paquetes
+                                </span>
                                 <div class="flex space-x-2 rtl:space-x-reverse">
-                                    <div class="flex-none text-xl {% if card_ventas and card_ventas.positivo %}text-green-600{% else %}text-red-500{% endif %}">
-                                        {% if card_ventas and card_ventas.positivo %}
-                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
-                                        {% else %}
-                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
-                                        {% endif %}
-                                    </div>
-                                    <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] {% if card_ventas and card_ventas.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_ventas.porcentaje_cambio | abs }}%</span>
-                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_venta_formateada | capitalize}})</span>
-                                    </div>
+                                  <div class="flex-1 text-sm">
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                      Aún no existen datos suficientes
+                                    </span>
+                                  </div>
                                 </div>
+                              {% elif card_ventas.ventas_anteriores is none %}
+                                  <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                    {% if card_ventas['ventas_actuales'] == 1 %}
+                                      1 paquete
+                                    {% else %}
+                                      {{ card_ventas['ventas_actuales'] }} paquetes
+                                    {% endif %}
+                                  </span>
+                                  <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 text-sm">
+                                      <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                        No existe un registro del periodo anterior
+                                      </span>
+                                    </div>
+                                  </div>
+                              {% else %}
+                                <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                  {% if card_ventas['ventas_actuales'] == 1 %}
+                                    1 paquete
+                                  {% else %}
+                                    {{ card_ventas['ventas_actuales'] }} paquetes
+                                  {% endif %}
+                                </span>
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                  <div class="flex-none text-xl {% if card_ventas.positivo %}text-green-600{% elif card_ventas.porcentaje_cambio == 0.00 %}text-warning-500{% else %}text-red-500{% endif %}">
+                                    {% if card_ventas.positivo %}
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    {% elif card_ventas.porcentaje_cambio == 0.00 %}
+                                        <iconify-icon icon="heroicons:arrow-path"></iconify-icon>
+                                    {% else %}
+                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>     
+                                    {% endif %}
+                                  </div>
+                                  <div class="flex-1 text-sm">
+                                    <span class="block mb-[2px] {% if card_ventas.positivo %}text-green-600{% elif card_ventas.porcentaje_cambio == 0.00 %}text-warning-500{% else %}text-red-500{% endif %}">
+                                      {{ card_ventas.porcentaje_cambio | abs }}%
+                                    </span>
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                      Desde el último mes ({{ fecha_venta_formateada | capitalize }})
+                                    </span>
+                                  </div>
+                                </div>
+                              {% endif %}
                             </div>
 
                             <div class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1]">
@@ -46,58 +86,174 @@
                                     <img src="{{ url_for('static', filename='assets/images/all-img/shade-2.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
                                 </div>
                                 <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Ingresos - MXN (más reciente)</span>
-                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">${{ card_ingresos.ingreso_actual }}</span>
+                                {% if card_ingresos.ingresos_actuales is none %}
+                                <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                  $0.00
+                                </span>
                                 <div class="flex space-x-2 rtl:space-x-reverse">
-                                    <div class="flex-none text-xl {% if card_ingresos and card_ingresos.positivo %}text-green-600{% else %}text-red-500{% endif %}">
-                                        {% if card_ingresos and card_ingresos.positivo %}
-                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
-                                        {% else %}
-                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
-                                        {% endif %}
-                                    </div>
-                                    <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] {% if card_ingresos and card_ingresos.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_ingresos.porcentaje_cambio | abs }}%</span>
-                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_ingresos_formateada | capitalize}})</span>
-                                    </div>
+                                  <div class="flex-1 text-sm">
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                      Aún no existen datos suficientes
+                                    </span>
+                                  </div>
                                 </div>
+                              {% elif card_ingresos.ingresos_anteriores is none %}
+                                  <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                    ${{ card_ingresos.ingresos_actuales }}
+                                  </span>
+                                  <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 text-sm">
+                                      <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                        No existe un registro del periodo anterior
+                                      </span>
+                                    </div>
+                                  </div>
+                              {% else %}
+                                <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                  ${{ card_ingresos.ingresos_actuales }}
+                                </span>
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                  <div class="flex-none text-xl {% if card_ingresos.positivo %}text-green-600{% elif card_ingresos.porcentaje_cambio == 0.00 %}text-warning-500{% else %}text-red-500{% endif %}">
+                                    {% if card_ingresos.positivo %}
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    {% elif card_ingresos.porcentaje_cambio == 0.00 %}
+                                        <iconify-icon icon="heroicons:arrow-path"></iconify-icon>
+                                    {% else %}
+                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>     
+                                    {% endif %}
+                                  </div>
+                                  <div class="flex-1 text-sm">
+                                    <span class="block mb-[2px] {% if card_ingresos.positivo %}text-green-600{% elif card_ingresos.porcentaje_cambio == 0.00 %}text-warning-500{% else %}text-red-500{% endif %}">
+                                      {{ card_ingresos.porcentaje_cambio | abs }}%
+                                    </span>
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                      Desde el último mes ({{ fecha_ingresos_formateada | capitalize }})
+                                    </span>
+                                  </div>
+                                </div>
+                              {% endif %}
                             </div>
 
                             <div class="bg-primary-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1]">
-                                <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
-                                    <img src="{{ url_for('static', filename='assets/images/all-img/shade-3.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
-                                </div>
-                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Cancelaciones</span>
-                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">15%</span>
+                              <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
+                                  <img src="{{ url_for('static', filename='assets/images/all-img/shade-3.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
+                              </div>
+                              <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Cancelaciones (más reciente)</span>
+                              {% if card_cancelaciones.cancelaciones_actuales is none %}
+                                <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                  0 cuentas
+                                </span>
                                 <div class="flex space-x-2 rtl:space-x-reverse">
-                                    <div class="flex-none text-xl text-danger-500">
-                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
-                                    </div>
-                                    <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] text-danger-500">1.67%</span>
-                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">From last week</span>
-                                    </div>
+                                  <div class="flex-1 text-sm">
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                      Aún no existen datos suficientes
+                                    </span>
+                                  </div>
                                 </div>
+                              {% elif card_cancelaciones.cancelaciones_anteriores is none %}
+                                  <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                    {% if card_cancelaciones['cancelaciones_actuales'] == 1 %}
+                                      1 cuenta
+                                    {% else %}
+                                      {{ card_cancelaciones['cancelaciones_actuales'] }} cuentas
+                                    {% endif %}
+                                  </span>
+                                  <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 text-sm">
+                                      <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                        No existe un registro del periodo anterior
+                                      </span>
+                                    </div>
+                                  </div>
+                              {% else %}
+                                <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                  {% if card_cancelaciones['cancelaciones_actuales'] == 1 %}
+                                    1 cuenta
+                                  {% else %}
+                                    {{ card_cancelaciones['cancelaciones_actuales'] }} cuentas
+                                  {% endif %}
+                                </span>
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                  <div class="flex-none text-xl {% if card_cancelaciones.positivo %}text-red-500{% elif card_cancelaciones.porcentaje_cambio == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                    {% if card_cancelaciones.positivo %}
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    {% elif card_cancelaciones.porcentaje_cambio == 0.00 %}
+                                        <iconify-icon icon="heroicons:arrow-path"></iconify-icon>
+                                    {% else %}
+                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>     
+                                    {% endif %}
+                                  </div>
+                                  <div class="flex-1 text-sm">
+                                    <span class="block mb-[2px] {% if card_cancelaciones.positivo %}text-red-500{% elif card_cancelaciones.porcentaje_cambio == 0.00 %}text-warning-500{% else %}text-green-600{% endif %}">
+                                      {{ card_cancelaciones.porcentaje_cambio | abs }}%
+                                    </span>
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                      Desde el último mes ({{ fecha_cancelaciones_formateada | capitalize }})
+                                    </span>
+                                  </div>
+                                </div>
+                              {% endif %}
                             </div>
 
                             <div class="bg-success-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-25 relative z-[1]">
                                 <div class="overlay absolute left-0 top-0 w-full h-full z-[-1]">
                                     <img src="{{ url_for('static', filename='assets/images/all-img/shade-4.png') }}" alt="" draggable="false" class="w-full h-full object-contain">
                                 </div>
-                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Nuevos usuarios (más recientes)</span>
-                                <span class="block mb- text-2xl text-slate-900 dark:text-white font-medium mb-6">{{ card_usuarios.nuevos_usuarios_actual }} usuarios</span>
+                                <span class="block mb-6 text-sm text-slate-900 dark:text-white font-medium">Nuevos usuarios (más reciente)</span>
+                                {% if card_usuarios.usuarios_actuales is none %}
+                                <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                  0 usuarios
+                                </span>
                                 <div class="flex space-x-2 rtl:space-x-reverse">
-                                    <div class="flex-none text-xl {% if card_usuarios and card_usuarios.positivo %}text-green-600{% else %}text-red-500{% endif %}">
-                                        {% if card_usuarios and card_usuarios.positivo %}
-                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
-                                        {% else %}
-                                            <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>
-                                        {% endif %}
-                                    </div>
-                                    <div class="flex-1 text-sm">
-                                        <span class="block mb-[2px] {% if card_usuarios and card_usuarios.positivo %}text-green-600{% else %}text-red-500{% endif %}">{{ card_usuarios.porcentaje_cambio | abs }}%</span>
-                                        <span class="block mb-1 text-slate-600 dark:text-slate-300">Desde el último mes ({{fecha_usuarios_formateada | capitalize}})</span>
-                                    </div>
+                                  <div class="flex-1 text-sm">
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                      Aún no existen datos suficientes
+                                    </span>
+                                  </div>
                                 </div>
+                              {% elif card_usuarios.usuarios_anteriores is none %}
+                                  <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                    {% if card_usuarios['usuarios_actuales'] == 1 %}
+                                      1 usuario
+                                    {% else %}
+                                      {{ card_usuarios['usuarios_actuales'] }} usuarios
+                                    {% endif %}
+                                  </span>
+                                  <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 text-sm">
+                                      <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                        No existe un registro del periodo anterior
+                                      </span>
+                                    </div>
+                                  </div>
+                              {% else %}
+                                <span class="block text-2xl text-slate-900 dark:text-white font-medium mb-6">
+                                  {% if card_usuarios['usuarios_actuales'] == 1 %}
+                                    1 usuario
+                                  {% else %}
+                                    {{ card_usuarios['usuarios_actuales'] }} usuarios
+                                  {% endif %}
+                                </span>
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                  <div class="flex-none text-xl {% if card_usuarios.positivo %}text-green-600{% elif card_usuarios.porcentaje_cambio == 0.00 %}text-warning-500{% else %}text-red-500{% endif %}">
+                                    {% if card_usuarios.positivo %}
+                                        <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
+                                    {% elif card_usuarios.porcentaje_cambio == 0.00 %}
+                                        <iconify-icon icon="heroicons:arrow-path"></iconify-icon>
+                                    {% else %}
+                                        <iconify-icon icon="heroicons:arrow-trending-down"></iconify-icon>     
+                                    {% endif %}
+                                  </div>
+                                  <div class="flex-1 text-sm">
+                                    <span class="block mb-[2px] {% if card_usuarios.positivo %}text-green-600{% elif card_usuarios.porcentaje_cambio == 0.00 %}text-warning-500{% else %}text-red-500{% endif %}">
+                                      {{ card_usuarios.porcentaje_cambio | abs }}%
+                                    </span>
+                                    <span class="block mb-1 text-slate-600 dark:text-slate-300">
+                                      Desde el último mes ({{ fecha_usuarios_formateada | capitalize }})
+                                    </span>
+                                  </div>
+                                </div>
+                              {% endif %}
                             </div>
                             <!-- END: Group Chart4 -->
                         </div>

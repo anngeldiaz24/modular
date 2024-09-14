@@ -39,21 +39,21 @@ def get_ultimo_periodo_ventas():
         
 def get_consumo_ventas():
     db, c = get_db()
-    
+
     try: 
-        query = f"""
+        # Consulta para obtener los consumos por periodo
+        query = """
         SELECT periodo_id
         FROM codigos_acceso
         WHERE disponible = 0
         ORDER BY periodo_id
         """
         c.execute(query)
-        # Obtiene los resultados de la consulta
         datos = c.fetchall()
-        
+
         # Convierte los resultados a un formato de lista de diccionarios
         datos_grafica = [{'periodo_id': dato['periodo_id']} for dato in datos]
-        
+
         # Consulta para obtener los consumos de los dos últimos periodos
         query_ultimos_periodos = """
         SELECT COUNT(ca.periodo_id) as consumo, ca.periodo_id, p.inicio
@@ -64,33 +64,45 @@ def get_consumo_ventas():
         ORDER BY ca.periodo_id DESC
         LIMIT 2
         """
-    
         c.execute(query_ultimos_periodos)
         ultimos_periodos = c.fetchall()
-        
-        if len(ultimos_periodos) < 2:
-            diferencia_porcentual = None  # No hay suficientes datos para calcular la diferencia porcentual
+
+        # Caso 1: No hay datos disponibles
+        if len(ultimos_periodos) == 0:
+            return datos_grafica, {'ventas_actuales': None}
+
+        # Caso 2: Solo hay un periodo disponible
+        elif len(ultimos_periodos) == 1:
+            ventas_actuales = ultimos_periodos[0]['consumo']
+            return datos_grafica, {
+                'ventas_actuales': ventas_actuales,
+                'ventas_anteriores': None,
+                'porcentaje_cambio': 0.00,
+                'positivo': False,
+                'inicio': ultimos_periodos[0]['inicio']  # Fecha del único periodo disponible
+            }
+
+        # Caso 3: Hay al menos dos periodos disponibles
         else:
-            consumo_actual = ultimos_periodos[0]['consumo']
-            consumo_anterior = ultimos_periodos[1]['consumo']
-            diferencia = consumo_actual - consumo_anterior
-            porcentaje_cambio = (diferencia / consumo_anterior) * 100
-            diferencia_porcentual = {
-                'consumo_actual': consumo_actual,
-                'consumo_anterior': consumo_anterior,
+            ventas_actuales = ultimos_periodos[0]['consumo']
+            ventas_anteriores = ultimos_periodos[1]['consumo']
+            diferencia = ventas_actuales - ventas_anteriores
+            porcentaje_cambio = (diferencia / ventas_anteriores) * 100
+
+            return datos_grafica, {
+                'ventas_actuales': ventas_actuales,
+                'ventas_anteriores': ventas_anteriores,
                 'porcentaje_cambio': round(porcentaje_cambio, 2),
                 'positivo': porcentaje_cambio > 0,
-                'inicio': ultimos_periodos[1]['inicio']
+                'inicio': ultimos_periodos[1]['inicio']  # Fecha del periodo anterior
             }
-        
-        return datos_grafica, diferencia_porcentual
     finally:
         close_db()
         
 def get_ingreso_ventas():
     db, c = get_db()
-    
-    try: 
+
+    try:
         # Consulta para obtener los ingresos por periodo
         query = """
         SELECT ca.periodo_id, SUM(ca.precio) as ingreso, p.inicio
@@ -101,12 +113,11 @@ def get_ingreso_ventas():
         ORDER BY ca.periodo_id
         """
         c.execute(query)
-        # Obtiene los resultados de la consulta
         datos = c.fetchall()
-        
+
         # Convierte los resultados a un formato de lista de diccionarios para la gráfica
         datos_grafica = [{'periodo_id': dato['periodo_id'], 'ingreso': dato['ingreso']} for dato in datos]
-        
+
         # Consulta para obtener los ingresos de los dos últimos periodos
         query_ultimos_periodos = """
         SELECT SUM(ca.precio) as ingreso, ca.periodo_id, p.inicio
@@ -117,20 +128,98 @@ def get_ingreso_ventas():
         ORDER BY ca.periodo_id DESC
         LIMIT 2
         """
+        c.execute(query_ultimos_periodos)
+        ultimos_periodos = c.fetchall()
+
+        # Caso 1: No hay datos disponibles
+        if len(ultimos_periodos) == 0:
+            return datos_grafica, {'ingresos_actuales': None}
+
+        # Caso 2: Solo hay un periodo disponible
+        elif len(ultimos_periodos) == 1:
+            ingresos_actual = ultimos_periodos[0]['ingreso']
+            return datos_grafica, {
+                'ingresos_actuales': ingresos_actual,
+                'ingresos_anteriores': None,
+                'porcentaje_cambio': 0.00,
+                'positivo': False,
+                'inicio': ultimos_periodos[0]['inicio']  # Fecha del único periodo disponible
+            }
+
+        # Caso 3: Hay al menos dos periodos disponibles
+        else:
+            ingresos_actual = ultimos_periodos[0]['ingreso']
+            ingresos_anterior = ultimos_periodos[1]['ingreso']
+            diferencia = ingresos_actual - ingresos_anterior
+            porcentaje_cambio = (diferencia / ingresos_anterior) * 100
+
+            return datos_grafica, {
+                'ingresos_actuales': ingresos_actual,
+                'ingresos_anteriores': ingresos_anterior,
+                'porcentaje_cambio': round(porcentaje_cambio, 2),
+                'positivo': porcentaje_cambio > 0,
+                'inicio': ultimos_periodos[1]['inicio']  # Fecha del periodo anterior
+            }
+
+    finally:
+        close_db(db)
+        
+def get_total_cancelaciones():
+    db, c = get_db()
+    
+    try: 
+        # Consulta para obtener los hogares cancelados con su periodo_id
+        query = f"""
+        SELECT DISTINCT u.periodo_id
+        FROM hogares h
+        JOIN users u ON h.id = u.hogar_id
+        WHERE h.estatus = 'cancelado'
+        ORDER BY u.periodo_id
+        """
+        c.execute(query)
+        # Obtiene los resultados de la consulta
+        datos = c.fetchall()
+        
+        # Convierte los resultados a un formato de lista de diccionarios
+        datos_grafica = [{'periodo_id': dato['periodo_id']} for dato in datos]
+        
+        # Consulta para obtener las cancelaciones de los dos últimos periodos
+        query_ultimos_periodos = """
+        SELECT COUNT(DISTINCT h.id) as cancelaciones, u.periodo_id, p.inicio
+        FROM hogares h
+        JOIN users u ON h.id = u.hogar_id
+        JOIN periodos p ON u.periodo_id = p.id
+        WHERE h.estatus = 'cancelado'
+        GROUP BY u.periodo_id, p.inicio
+        ORDER BY u.periodo_id DESC
+        LIMIT 2
+        """
     
         c.execute(query_ultimos_periodos)
         ultimos_periodos = c.fetchall()
         
-        if len(ultimos_periodos) < 2:
-            diferencia_porcentual = None  # No hay suficientes datos para calcular la diferencia porcentual
+        # Si no hay datos
+        if len(ultimos_periodos) == 0:
+            return datos_grafica, {'cancelaciones_actuales': None}
+        
+        elif len(ultimos_periodos) == 1:
+            cancelaciones_actuales = ultimos_periodos[0]['cancelaciones']
+            return datos_grafica, {
+                'cancelaciones_actuales': cancelaciones_actuales,
+                'cancelaciones_anteriores': None,
+                'porcentaje_cambio': 0.00,
+                'positivo': False,
+                'inicio': ultimos_periodos[0]['inicio']
+            }
+        
         else:
-            ingreso_actual = ultimos_periodos[0]['ingreso']
-            ingreso_anterior = ultimos_periodos[1]['ingreso']
-            diferencia = ingreso_actual - ingreso_anterior
-            porcentaje_cambio = (diferencia / ingreso_anterior) * 100
+            cancelaciones_actuales = ultimos_periodos[0]['cancelaciones']
+            cancelaciones_anteriores = ultimos_periodos[1]['cancelaciones']
+            diferencia = cancelaciones_actuales - cancelaciones_anteriores
+            porcentaje_cambio = (diferencia / cancelaciones_anteriores) * 100 if cancelaciones_anteriores else 0.00
             diferencia_porcentual = {
-                'ingreso_actual': ingreso_actual,
-                'ingreso_anterior': ingreso_anterior,
+                'cancelaciones_actuales': cancelaciones_actuales,
+                'cancelaciones_anteriores': cancelaciones_anteriores,
                 'porcentaje_cambio': round(porcentaje_cambio, 2),
                 'positivo': porcentaje_cambio > 0,
                 'inicio': ultimos_periodos[1]['inicio']
@@ -138,12 +227,12 @@ def get_ingreso_ventas():
         
         return datos_grafica, diferencia_porcentual
     finally:
-        close_db(db)
+        close_db()
         
 def get_nuevos_usuarios():
     db, c = get_db()
-    
-    try: 
+
+    try:
         # Consulta para obtener los nuevos usuarios por periodo
         query = """
         SELECT u.periodo_id, COUNT(u.id) as nuevos_usuarios, p.inicio
@@ -153,12 +242,11 @@ def get_nuevos_usuarios():
         ORDER BY u.periodo_id
         """
         c.execute(query)
-        # Obtiene los resultados de la consulta
         datos = c.fetchall()
-        
+
         # Convierte los resultados a un formato de lista de diccionarios para la gráfica
         datos_grafica = [{'periodo_id': dato['periodo_id'], 'nuevos_usuarios': dato['nuevos_usuarios']} for dato in datos]
-        
+
         # Consulta para obtener los nuevos usuarios de los dos últimos periodos
         query_ultimos_periodos = """
         SELECT COUNT(u.id) as nuevos_usuarios, u.periodo_id, p.inicio
@@ -168,26 +256,39 @@ def get_nuevos_usuarios():
         ORDER BY u.periodo_id DESC
         LIMIT 2
         """
-    
         c.execute(query_ultimos_periodos)
         ultimos_periodos = c.fetchall()
-        
-        if len(ultimos_periodos) < 2:
-            diferencia_porcentual = None  # No hay suficientes datos para calcular la diferencia porcentual
+
+        # Caso 1: No hay datos disponibles
+        if len(ultimos_periodos) == 0:
+            return datos_grafica, {'usuarios_actuales': None}
+
+        # Caso 2: Solo hay un periodo disponible
+        elif len(ultimos_periodos) == 1:
+            usuarios_actual = ultimos_periodos[0]['nuevos_usuarios']
+            return datos_grafica, {
+                'usuarios_actuales': usuarios_actual,
+                'usuarios_anteriores': None,
+                'porcentaje_cambio': 0.00,
+                'positivo': False,
+                'inicio': ultimos_periodos[0]['inicio']  # Fecha del único periodo disponible
+            }
+
+        # Caso 3: Hay al menos dos periodos disponibles
         else:
-            nuevos_usuarios_actual = ultimos_periodos[0]['nuevos_usuarios']
-            nuevos_usuarios_anterior = ultimos_periodos[1]['nuevos_usuarios']
-            diferencia = nuevos_usuarios_actual - nuevos_usuarios_anterior
-            porcentaje_cambio = (diferencia / nuevos_usuarios_anterior) * 100
-            diferencia_porcentual = {
-                'nuevos_usuarios_actual': nuevos_usuarios_actual,
-                'nuevos_usuarios_anterior': nuevos_usuarios_anterior,
+            usuarios_actual = ultimos_periodos[0]['nuevos_usuarios']
+            usuarios_anterior = ultimos_periodos[1]['nuevos_usuarios']
+            diferencia = usuarios_actual - usuarios_anterior
+            porcentaje_cambio = (diferencia / usuarios_anterior) * 100
+
+            return datos_grafica, {
+                'usuarios_actuales': usuarios_actual,
+                'usuarios_anteriores': usuarios_anterior,
                 'porcentaje_cambio': round(porcentaje_cambio, 2),
                 'positivo': porcentaje_cambio > 0,
-                'inicio': ultimos_periodos[1]['inicio']
+                'inicio': ultimos_periodos[1]['inicio']  # Fecha del periodo anterior
             }
-            
-        return datos_grafica, diferencia_porcentual
+
     finally:
         close_db(db)
         
@@ -421,6 +522,40 @@ def admin_index():
         google_maps_api_key=google_maps_api_key,
         estados_mayores=estados_mayores
     )
+    
+def validar_card(card_data, tipo_card):
+    """
+    Función para validar los datos de una card (ventas, ingresos, cancelaciones) y retornar mensajes de error.
+    
+    Args:
+        card_data (dict): Diccionario con los datos de la card.
+        tipo_card (str): Tipo de card, para usar en los mensajes de error.
+        
+    Returns:
+        tuple: fecha_formateada, inicio_anterior, mensaje_error (si aplica)
+    """
+    fecha_formateada = 'N/A'
+    inicio_anterior = None
+    mensaje_error = None
+
+    # Verificar si card_data tiene datos
+    if card_data:
+        # Obtener la fecha del periodo anterior (si existe)
+        fecha = card_data.get('inicio', None)
+        fecha_formateada = formatear_fecha(fecha) if fecha else 'N/A'
+        inicio_anterior = card_data.get('inicio')
+        
+    # Construir dinámicamente los nombres de los campos a validar, basados en el tipo de card
+    campo_actuales = f"{tipo_card}_actuales"
+    campo_anteriores = f"{tipo_card}_anteriores"
+
+    # Validaciones de cancelaciones actuales y anteriores
+    if card_data.get(campo_actuales) is None:
+        mensaje_error = f'No hay datos disponibles para el último periodo de {tipo_card}.'
+    elif card_data.get(campo_anteriores) is None:
+        mensaje_error = f'No existe un registro del periodo anterior para {tipo_card}.'
+
+    return fecha_formateada, inicio_anterior, mensaje_error
 
 @bp.route('/admin-estadisticas')
 @login_required
@@ -428,21 +563,29 @@ def admin_index():
 def admin_estadisticas():
     # CARD VENTAS
     datos_grafica_ventas, card_ventas = get_consumo_ventas()
-    fecha_venta = card_ventas['inicio']
+    fecha_venta_formateada, inicio_anterior_ventas, mensaje_error_ventas = validar_card(card_ventas, "ventas")
 
-    fecha_venta_formateada = formatear_fecha(fecha_venta)
+    if mensaje_error_ventas:
+        flash(mensaje_error_ventas, 'error')
     
     # CARD INGRESOS
     datos_grafica_ingresos, card_ingresos = get_ingreso_ventas()
-    fecha_ingresos = card_ingresos['inicio']
+    fecha_ingresos_formateada, inicio_anterior_ingresos, mensaje_error_ingresos = validar_card(card_ingresos, "ingresos")
+
+    if mensaje_error_ingresos:
+        flash(mensaje_error_ingresos, 'error')
     
-    fecha_ingresos_formateada = formatear_fecha(fecha_ingresos)
+    # CARD CANCELACIONES
+    datos_grafica_cancelaciones, card_cancelaciones = get_total_cancelaciones()
+    fecha_cancelaciones_formateada, inicio_anterior_cancelaciones, mensaje_error_cancelaciones = validar_card(card_cancelaciones, "cancelaciones")
+    if mensaje_error_cancelaciones:
+        flash(mensaje_error_cancelaciones, 'error')
     
-    # CARD USUSARIOS
+    # CARD USUARIOS
     datos_grafica_usuarios, card_usuarios = get_nuevos_usuarios()
-    fecha_usuarios = card_usuarios['inicio']
-    
-    fecha_usuarios_formateada = formatear_fecha(fecha_usuarios)
+    fecha_usuarios_formateada, inicio_anterior_usuarios, mensaje_error_usuarios = validar_card(card_usuarios, "usuarios")
+    if mensaje_error_usuarios:
+        flash(mensaje_error_usuarios, 'error')
 
     # TOTAL DE HOGARES
     total_hogares = get_cantidad_hogares()
@@ -472,6 +615,9 @@ def admin_estadisticas():
         # CARD INGRESOS
         card_ingresos=card_ingresos,
         fecha_ingresos_formateada=fecha_ingresos_formateada,
+        # CARD CANCELACIONES
+        card_cancelaciones=card_cancelaciones,
+        fecha_cancelaciones_formateada=fecha_cancelaciones_formateada,
         # CARD USUARIOS
         card_usuarios=card_usuarios,
         fecha_usuarios_formateada=fecha_usuarios_formateada,
