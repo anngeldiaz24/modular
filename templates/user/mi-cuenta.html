@@ -34,20 +34,17 @@
                 </div>
             </div>
         </div>
-        {% if user.rol == 'Owner' %}
+        
         <div class="text-left mt-4 md:mt-0">
             <a href="#" 
-                class="cancelar-suscripcion-btn inline-flex items-center justify-center text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" 
-                data-bs-toggle="modal" 
-                data-bs-target="#cancelarSuscripcionModal" 
-                data-hogar="{{ hogar_id }}">
+                class="w-full lg:w-auto inline-flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500" 
+                >
                 <span class="flex items-center">
-                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="material-symbols:cancel-outline"></iconify-icon>
-                    <span>Cancelar suscripción</span>
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bx-face"></iconify-icon>
+                    <span>Añadir reconocimiento facial</span>
                 </span>
             </a>
         </div>
-        {% endif %}
     </div>
     <div class="grid grid-cols-12 gap-6 mt-6">
         <div class="lg:col-span-4 col-span-12">
@@ -99,6 +96,20 @@
                             </div>
                         </li>
                     </ul>
+                    {% if user.rol == 'Owner' %}
+                        <div class="text-left mt-4 md:mt-0">
+                            <a href="#" 
+                                class="cancelar-suscripcion-btn inline-flex w-full mt-4 items-center justify-center text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#cancelarSuscripcionModal" 
+                                data-hogar="{{ hogar_id }}">
+                                <span class="flex items-center">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="material-symbols:cancel-outline"></iconify-icon>
+                                    <span>Cancelar suscripción</span>
+                                </span>
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
