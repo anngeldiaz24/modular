@@ -1,6 +1,6 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, url_for, request, session,
-    send_from_directory, current_app
+    send_from_directory, current_app, Response
 )
 from werkzeug.exceptions import abort
 from .auth import login_required, user_role_required
@@ -11,7 +11,9 @@ import datetime
 import cv2
 import threading
 import requests
+import time
 import re 
+import unicodedata
 from babel.dates import format_date
 from dotenv import load_dotenv
 # from datetime import datetime
@@ -583,4 +585,87 @@ def llamar_policia():
     funciones.llamarPolicia()
     logger.info('Saliendo de Llamar policia llamado')
     return redirect(url_for('user.user_index'))
+
+
+def quitar_acentos(texto):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+@bp.route('/grabar-video', methods=['POST'])
+@login_required
+@user_role_required
+def grabar_video():
+    hogar_id = g.user['hogar_id']
+
+    # Eliminar acentos del nombre y apellidos
+    nombre_sin_acentos = quitar_acentos(g.user['nombre'])
+    apellidos_sin_acentos = quitar_acentos(g.user['apellidos'])
+
+    usuario_nombre = f"{nombre_sin_acentos}_{apellidos_sin_acentos}".replace(" ", "_").lower()
+
+    videos_dir = os.path.join(current_app.root_path, 'static', 'videos', f'hogar_{hogar_id}')
+    if not os.path.exists(videos_dir):
+        os.makedirs(videos_dir)
+
+    video_path = os.path.join(videos_dir, f'{usuario_nombre}.mp4')
+
+    cap = cv2.VideoCapture(0)
+
+    if not cap.isOpened():
+        flash('Error al acceder a la cámara', 'error')
+        return redirect(url_for('user.mi_cuenta'))
+
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    if frame_width == 0 or frame_height == 0:
+        flash('No se pudo obtener el tamaño de los frames. Asegúrate de que la cámara esté conectada correctamente.', 'error')
+        return redirect(url_for('user.mi_cuenta'))
+
+    output = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (frame_width, frame_height))
+
+    start_time = time.time()
     
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        output.write(frame)
+
+        if time.time() - start_time > 20:
+            print("Grabación completada.")
+            break
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    output.release()
+    cv2.destroyAllWindows()
+
+    flash('Rostro guardado con éxito','success')
+    return redirect(url_for('user.mi_cuenta'))
+
+def generate():
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
+    face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    while True:
+        ret, frame = cap.read();
+        if ret:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_detector.detectMultiScale(gray, 1.3, 5)
+            for(x, y, w, h) in faces:
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0,255, 0), 2)
+                (flag, encodedImage) = cv2.imencode(".jpg", frame)
+                if not flag:
+                    continue
+                yield(b'---frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+
+@bp.route('/video-feed')
+@login_required
+@user_role_required
+def video_feed():
+    return Response(generate(), mimetype = "multipart/x-mixed-replace; boundary=frame")

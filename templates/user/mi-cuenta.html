@@ -38,7 +38,7 @@
         <div class="text-left mt-4 md:mt-0">
             <a href="#" 
                 class="w-full lg:w-auto inline-flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500" 
-                >
+                data-bs-toggle="modal" data-bs-target="#pre-save-face">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bx-face"></iconify-icon>
                     <span>Añadir reconocimiento facial</span>
@@ -126,7 +126,7 @@
     </div>
 </div>
 
-<!-- Modal eliminar -->
+<!-- Modal cancelar -->
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="cancelarSuscripcionModal" tabindex="-1" aria-labelledby="default_modal" aria-hidden="true">
     <div class="modal-dialog relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
@@ -163,11 +163,77 @@
         </div>
     </div>
 </div>
-<!-- Fin modal eliminar -->
+<!-- Fin modal cancelar -->
+
+<!-- Modal pre-save face -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="pre-save-face" tabindex="-1" aria-labelledby="preSaveFaceLabel" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-1/4 mx-4 sm:mx-auto">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-body p-4">
+                <div class="text-center">
+                    <p class="text-lg font-semibold mb-3 dark:text-slate-400">Agrega tu rostro para acceder fácilmente al sistema</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Sigue los siguientes pasos para completar el proceso:</p>
+                    <ol class="text-left text-sm text-gray-600 dark:text-gray-400 m-5">
+                        <li>1. El sistema grabará un video de tu rostro.</li>
+                        <li>2. Asegúrate de no tener objetos que cubran tu rostro (gafas, mascarillas, etc.).</li>
+                        <li>3. Mantén una postura fija y evita moverte durante la grabación.</li>
+                    </ol>
+                </div>
+                <div class="text-right">
+                    <a href="#" 
+                        class="btn btn-success" 
+                        data-bs-toggle="modal" data-bs-target="#video-face">
+                        <span>Continuar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin pre-save face -->
+
+<!-- Modal video-face -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="video-face" tabindex="-1" aria-labelledby="preSaveFaceLabel" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-1/5 mx-4 sm:mx-auto">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-body p-4">
+                <div class="text-center">
+                    <p class="text-lg font-semibold mb-3 dark:text-slate-400">Graba tu rostro</p>
+                    <div class="relative lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2">
+                        <div class="container">
+                            <img src="{{ url_for('user.video_feed') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-left mt-4 md:mt-0">
+                    <form action="{{ url_for('user.grabar_video') }}" method="post">
+                        <button type="submit" class="btn-success inline-flex w-full mt-4 items-center justify-center text-white focus:outline-none font-medium text-sm px-5 py-2.5 text-center">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="fluent:scan-camera-48-regular"></iconify-icon>Grabar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin modal video-face -->
+
+<style>
+    .container{
+        margin:0;
+        padding:0;
+        width:100%,
+        height:100vh;
+        background-color: #E2D8F8;
+        color: black;
+        text-align: center;
+    }
+</style>
 
 <!-- Incluir el script de Google Maps -->
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
 <script>
+
     document.addEventListener('DOMContentLoaded', (event) => {
         const cancelarBtn = document.querySelector('.cancelar-suscripcion-btn');
         if (cancelarBtn) {
