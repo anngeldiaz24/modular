@@ -647,14 +647,14 @@ def grabar_video():
     cv2.destroyAllWindows()
     
 
-    """ db, c = get_db()
+    db, c = get_db()
 
     try:
-        c.execute(
+        c.execute(""" 
             UPDATE users
             SET rostro_guardado = 1
             WHERE id = %s
-        , (g.user['id'],))
+        """, (g.user['id'],))
         db.commit()
         close_db()
         
@@ -662,7 +662,7 @@ def grabar_video():
         db.rollback()
         error = str(e)
         flash(f"Error al actualizar: {error}", 'error')
-        return redirect(url_for('user.mi_cuenta')) """
+        return redirect(url_for('user.mi_cuenta')) 
 
 
     flash('Rostro guardado con éxito','success')
