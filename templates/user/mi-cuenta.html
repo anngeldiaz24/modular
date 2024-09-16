@@ -36,12 +36,13 @@
         </div>
         
         <div class="text-left mt-4 md:mt-0">
-            <a href="#" 
-                class="w-full lg:w-auto inline-flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500" 
-                data-bs-toggle="modal" data-bs-target="#pre-save-face">
+            <a href="#"
+                class="w-full lg:w-auto inline-flex items-center justify-center text-white {% if user.rostro_guardado == 1 %}bg-gray-400 cursor-not-allowed{% else %}bg-blue-700 hover:bg-blue-800 focus:ring-blue-500{% endif %} focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500" 
+                data-bs-toggle="modal" data-bs-target="#pre-save-face"
+                {% if user.rostro_guardado == 1 %}disabled{% endif %}>
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bx-face"></iconify-icon>
-                    <span>Añadir reconocimiento facial</span>
+                    <span>{% if user.rostro_guardado == 1 %}Rostro capturado{% else %}Añadir reconocimiento facial{% endif %}</span>
                 </span>
             </a>
         </div>

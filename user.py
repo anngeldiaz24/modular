@@ -4,7 +4,7 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 from .auth import login_required, user_role_required
-from .db import get_db
+from .db import get_db, close_db
 from .raspberry import funciones
 import logging
 import datetime
@@ -645,6 +645,25 @@ def grabar_video():
     cap.release()
     output.release()
     cv2.destroyAllWindows()
+    
+
+    """ db, c = get_db()
+
+    try:
+        c.execute(
+            UPDATE users
+            SET rostro_guardado = 1
+            WHERE id = %s
+        , (g.user['id'],))
+        db.commit()
+        close_db()
+        
+    except Exception as e:
+        db.rollback()
+        error = str(e)
+        flash(f"Error al actualizar: {error}", 'error')
+        return redirect(url_for('user.mi_cuenta')) """
+
 
     flash('Rostro guardado con éxito','success')
     return redirect(url_for('user.mi_cuenta'))
@@ -653,7 +672,7 @@ def generate():
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
     face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     while True:
-        ret, frame = cap.read();
+        ret, frame = cap.read()
         if ret:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_detector.detectMultiScale(gray, 1.3, 5)

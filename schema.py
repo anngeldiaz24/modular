@@ -77,7 +77,8 @@ instructions = [
             periodo_id INT(10) NULL,
             FOREIGN KEY (codigo_acceso) REFERENCES codigos_acceso(id),
             FOREIGN KEY (hogar_id) REFERENCES hogares(id) ON DELETE CASCADE,
-            FOREIGN KEY (periodo_id) REFERENCES periodos(id)
+            FOREIGN KEY (periodo_id) REFERENCES periodos(id),
+            rostro_guardado BOOLEAN DEFAULT 0
         );
     """,
     """
