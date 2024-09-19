@@ -586,6 +586,32 @@ def llamar_policia():
     logger.info('Saliendo de Llamar policia llamado')
     return redirect(url_for('user.user_index'))
 
+@bp.route('/mostrar-video-face-modal')
+@login_required
+@user_role_required
+def mostrar_video_face_modal():
+    return render_template('user/video_face_modal.html')
+
+@bp.route('/actualizar-rostro', methods=['POST'])
+@login_required
+@user_role_required
+def actualizar_rostro_registrado():
+    db, c = get_db()
+    try:
+        c.execute(""" 
+            UPDATE users
+            SET rostro_guardado = 1
+            WHERE id = %s
+        """, (g.user['id'],))
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        flash(f"Error al actualizar: {str(e)}", 'error')
+        return redirect(url_for('user.mi_cuenta'))
+    finally:
+        close_db()
+        
+    return Response(status=204) 
 
 def quitar_acentos(texto):
     return ''.join(
@@ -646,27 +672,8 @@ def grabar_video():
     output.release()
     cv2.destroyAllWindows()
     
-
-    db, c = get_db()
-
-    try:
-        c.execute(""" 
-            UPDATE users
-            SET rostro_guardado = 1
-            WHERE id = %s
-        """, (g.user['id'],))
-        db.commit()
-        close_db()
-        
-    except Exception as e:
-        db.rollback()
-        error = str(e)
-        flash(f"Error al actualizar: {error}", 'error')
-        return redirect(url_for('user.mi_cuenta')) 
-
-
     flash('Rostro guardado con éxito','success')
-    return redirect(url_for('user.mi_cuenta'))
+    return redirect(url_for('user.home'))
 
 def generate():
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
