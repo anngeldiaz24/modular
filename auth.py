@@ -6,13 +6,14 @@ import datetime
 import re 
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask import (
-    Blueprint, flash, g, render_template, request, url_for, session, redirect, abort
+    Blueprint, flash, g, render_template, request, url_for, session, redirect, abort, jsonify, Response
 )
 
 from mysql.connector import Error as MySQLError
 from werkzeug.security import check_password_hash, generate_password_hash
+import cv2
 
-from .db import get_db
+from .db import get_db, close_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -270,3 +271,47 @@ def logout():
     session.clear()
     return redirect(url_for('auth.login'))
 
+@bp.route('/buscar-correo-electronico', methods=['POST'])
+def buscar_correo_electronico():
+    db, c = get_db()
+    try:
+        # Obtener el correo del formulario
+        correo_electronico = request.json.get('correoElectronico')
+
+        # Buscar el correo en la base de datos
+        query = "SELECT * FROM users WHERE email = %s"
+        c.execute(query, (correo_electronico,))
+        usuario = c.fetchone()
+        
+        if usuario:
+            # Si el usuario existe, puedes redirigir o abrir otro modal
+            return jsonify({'existe': True})
+        else:
+            # Si el usuario no existe, devolver un mensaje de error
+            return jsonify({'existe': False, 'error': 'No se encontró un usuario con este correo electrónico.'})
+    except Exception as e:
+        # Manejar errores y devolver un mensaje de error genérico
+        print(f"Error al buscar el correo: {e}")
+        return jsonify({'existe': False, 'error': 'Hubo un problema al procesar tu solicitud. Inténtalo de nuevo más tarde.'}), 500
+    
+    finally:
+        close_db()
+        
+def generate():
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
+    face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_detector.detectMultiScale(gray, 1.3, 5)
+            for(x, y, w, h) in faces:
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0,255, 0), 2)
+                (flag, encodedImage) = cv2.imencode(".jpg", frame)
+                if not flag:
+                    continue
+                yield(b'---frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+
+@bp.route('/video-feed')
+def video_feed():
+    return Response(generate(), mimetype = "multipart/x-mixed-replace; boundary=frame")
