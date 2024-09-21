@@ -9,8 +9,8 @@ from .raspberry import funciones
 import logging
 import datetime
 import cv2
-import threading
 import requests
+import imutils
 import time
 import re 
 import unicodedata
@@ -619,6 +619,52 @@ def quitar_acentos(texto):
         if unicodedata.category(c) != 'Mn'
     )
 
+
+def procesar_video_para_rostros(video_path, usuario_nombre, hogar_id):
+    # Ruta donde se guardarán las imágenes de los rostros, organizadas por hogar_id y usuario
+    data_path = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data'
+    hogar_path = os.path.join(data_path, f'hogar_{hogar_id}')
+    person_path = os.path.join(hogar_path, usuario_nombre)
+
+    # Crear las carpetas si no existen
+    if not os.path.exists(hogar_path):
+        print(f'Carpeta creada para hogar {hogar_id}: ', hogar_path)
+        os.makedirs(hogar_path)
+
+    if not os.path.exists(person_path):
+        print(f'Carpeta creada para usuario {usuario_nombre}: ', person_path)
+        os.makedirs(person_path)
+
+    # Procesar el video
+    cap = cv2.VideoCapture(video_path)
+    faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    count = 0
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        frame = cv2.resize(frame, (640, int(frame.shape[0] * 640 / frame.shape[1])))
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        auxFrame = frame.copy()
+
+        faces = faceClassif.detectMultiScale(gray, 1.3, 5)
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            rostro = auxFrame[y:y + h, x:x + w]
+            rostro = cv2.resize(rostro, (150, 150), interpolation=cv2.INTER_CUBIC)
+            cv2.imwrite(os.path.join(person_path, f'rostro_{count}.jpg'), rostro)
+            count += 1
+
+        if cv2.waitKey(1) == 27 or count >= 300:  # Si presionan ESC o se capturan 300 rostros
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+
 @bp.route('/grabar-video', methods=['POST'])
 @login_required
 @user_role_required
@@ -631,6 +677,7 @@ def grabar_video():
 
     usuario_nombre = f"{nombre_sin_acentos}_{apellidos_sin_acentos}".replace(" ", "_").lower()
 
+    # Directorio donde se guardarán los videos
     videos_dir = os.path.join(current_app.root_path, 'static', 'videos', f'hogar_{hogar_id}')
     if not os.path.exists(videos_dir):
         os.makedirs(videos_dir)
@@ -661,7 +708,7 @@ def grabar_video():
 
         output.write(frame)
 
-        if time.time() - start_time > 20:
+        if time.time() - start_time > 20:  # Grabar 20 segundos
             print("Grabación completada.")
             break
 
@@ -671,8 +718,11 @@ def grabar_video():
     cap.release()
     output.release()
     cv2.destroyAllWindows()
-    
-    flash('Rostro guardado con éxito','success')
+
+    # Procesar el video para extraer rostros y guardarlos en la carpeta correspondiente
+    procesar_video_para_rostros(video_path, usuario_nombre, hogar_id)
+
+    flash('Rostro guardado con éxito', 'success')
     return redirect(url_for('user.home'))
 
 def generate():
