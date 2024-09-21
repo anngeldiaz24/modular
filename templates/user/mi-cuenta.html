@@ -38,7 +38,7 @@
         <div class="text-left mt-4 md:mt-0">
             <a href="#"
                 class="w-full lg:w-auto inline-flex items-center justify-center text-white {% if user.rostro_guardado == 1 %}bg-gray-400 cursor-not-allowed{% else %}bg-blue-700 hover:bg-blue-800 focus:ring-blue-500{% endif %} focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500" 
-                data-bs-toggle="modal" data-bs-target="#pre-save-face"
+                data-bs-toggle="modal" data-bs-target="#preSaveFaceModal"
                 {% if user.rostro_guardado == 1 %}disabled{% endif %}>
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bx-face"></iconify-icon>
@@ -167,7 +167,7 @@
 <!-- Fin modal cancelar -->
 
 <!-- Modal pre-save face -->
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="pre-save-face" tabindex="-1" aria-labelledby="preSaveFaceLabel" aria-hidden="true">
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="preSaveFaceModal" tabindex="-1" aria-labelledby="preSaveFaceLabel" aria-hidden="true">
     <div class="modal-dialog relative w-auto pointer-events-none top-1/4 mx-4 sm:mx-auto">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body p-4">
@@ -188,8 +188,8 @@
                     </a>
                 </div>-->
                 <div class="text-right">
-                    <form action="{{ url_for('user.actualizar_rostro_registrado') }}" method="post">
-                        <button type="submit" data-bs-toggle="modal" data-bs-target="#video-face" class="btn-success inline-flex w-full mt-4 items-center justify-center text-white focus:outline-none font-medium text-sm px-5 py-2.5 text-center">
+                    <form id="videoFaceForm" action="{{ url_for('user.actualizar_rostro_registrado') }}" method="post">
+                        <button type="submit" class="btn-success inline-flex w-full mt-4 items-center justify-center text-white focus:outline-none font-medium text-sm px-5 py-2.5 text-center">
                             Continuar
                         </button>
                     </form>
@@ -201,7 +201,7 @@
 <!-- Fin pre-save face -->
 
 <!-- Modal video-face -->
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="video-face" tabindex="-1" aria-labelledby="preSaveFaceLabel" aria-hidden="true">
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="videoFaceModal" tabindex="-1" aria-labelledby="preSaveFaceLabel" aria-hidden="true">
     <div class="modal-dialog relative w-auto pointer-events-none top-1/5 mx-4 sm:mx-auto">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body p-4">
@@ -209,7 +209,7 @@
                     <p class="text-lg font-semibold mb-3 dark:text-slate-400">Graba tu rostro</p>
                     <div class="relative lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2">
                         <div class="container">
-                            <img src="{{ url_for('user.video_feed') }}">
+                            <img id="videoFeedUser" src="">
                         </div>
                     </div>
                 </div>
@@ -219,6 +219,11 @@
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="fluent:scan-camera-48-regular"></iconify-icon>Grabar
                         </button>
                     </form>
+                    <a href="{{ url_for('user.mi_cuenta') }}"
+                        class="btn btn-danger inline-flex w-full mt-4 items-center justify-center text-white focus:outline-none font-medium text-sm px-5 py-2.5 text-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="material-symbols:cancel-outline"></iconify-icon>
+                        <span>Terminar proceso</span>
+                  </a>
                 </div>
             </div>
         </div>
@@ -277,5 +282,23 @@
     }
     
     window.onload = initMap;
+</script>
+
+<script>
+    document.getElementById('videoFaceForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Evitar el comportamiento por defecto del formulario
+    
+        // Ocultar el modal manualmente quitando clases relacionadas a modales
+        const modal = document.getElementById('preSaveFaceModal');
+        modal.classList.remove('fade', 'show');
+        modal.style.display = 'none'; // Esconder el modal
+
+        // Mostrar el video face encontrado
+        const modalUsuarioEncontrado = document.getElementById('videoFaceModal');
+        modalUsuarioEncontrado.classList.add('fade', 'show');
+        modalUsuarioEncontrado.style.display = 'block'; // Mostrar el modal
+        const videoFeed= document.getElementById('videoFeedUser');
+        videoFeed.src = "{{ url_for('user.video_feed') }}";
+    });
 </script>
 {% endblock %}

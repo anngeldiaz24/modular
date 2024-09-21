@@ -1,6 +1,6 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, url_for, request, session,
-    send_from_directory, current_app, Response
+    send_from_directory, current_app, Response, jsonify
 )
 from werkzeug.exceptions import abort
 from .auth import login_required, user_role_required
