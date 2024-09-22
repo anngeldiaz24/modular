@@ -586,31 +586,10 @@ def llamar_policia():
     logger.info('Saliendo de Llamar policia llamado')
     return redirect(url_for('user.user_index'))
 
-@bp.route('/mostrar-video-face-modal')
-@login_required
-@user_role_required
-def mostrar_video_face_modal():
-    return render_template('user/video_face_modal.html')
-
 @bp.route('/actualizar-rostro', methods=['POST'])
 @login_required
 @user_role_required
-def actualizar_rostro_registrado():
-    db, c = get_db()
-    try:
-        c.execute(""" 
-            UPDATE users
-            SET rostro_guardado = 1
-            WHERE id = %s
-        """, (g.user['id'],))
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        flash(f"Error al actualizar: {str(e)}", 'error')
-        return redirect(url_for('user.mi_cuenta'))
-    finally:
-        close_db()
-        
+def actualizar_rostro_registrado():    
     return Response(status=204) 
 
 def quitar_acentos(texto):
@@ -618,7 +597,6 @@ def quitar_acentos(texto):
         c for c in unicodedata.normalize('NFD', texto)
         if unicodedata.category(c) != 'Mn'
     )
-
 
 def procesar_video_para_rostros(video_path, usuario_nombre, hogar_id):
     # Ruta donde se guardarán las imágenes de los rostros, organizadas por hogar_id y usuario
@@ -725,23 +703,66 @@ def grabar_video():
     flash('Rostro guardado con éxito', 'success')
     return redirect(url_for('user.home'))
 
-def generate():
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
-    face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    while True:
-        ret, frame = cap.read()
-        if ret:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = face_detector.detectMultiScale(gray, 1.3, 5)
-            for(x, y, w, h) in faces:
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0,255, 0), 2)
-                (flag, encodedImage) = cv2.imencode(".jpg", frame)
-                if not flag:
-                    continue
-                yield(b'---frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
-@bp.route('/video-feed')
+def actualizar_rostro_guardado(usuario_id):
+    """Función que actualiza el campo rostro_guardado en la base de datos."""
+    db, c = get_db()
+    try:
+        c.execute(""" 
+            UPDATE users
+            SET rostro_guardado = 1
+            WHERE id = %s
+        """, (usuario_id,))
+        db.commit()
+        return True, None
+    except Exception as e:
+        db.rollback()
+        return False, str(e)
+    finally:
+        close_db()
+
+
+@bp.route('/guardar-video', methods=['POST'])
 @login_required
 @user_role_required
-def video_feed():
-    return Response(generate(), mimetype = "multipart/x-mixed-replace; boundary=frame")
+def guardar_video():
+    if 'video' not in request.files:
+        return jsonify({'message': 'No se recibió ningún video.'}), 400
+
+    video_file = request.files['video']
+    
+    # Obtener el ID del hogar y el nombre del usuario
+    hogar_id = g.user['hogar_id']
+    
+    # Eliminar acentos del nombre y apellidos
+    nombre_sin_acentos = quitar_acentos(g.user['nombre'])
+    apellidos_sin_acentos = quitar_acentos(g.user['apellidos'])
+    usuario_nombre = f"{nombre_sin_acentos}_{apellidos_sin_acentos}".replace(" ", "_").lower()
+
+    # Define la ruta raíz del proyecto
+    root_path = os.path.dirname(os.path.abspath(__file__))
+
+    # Ruta de la carpeta donde se guardará el video en la raíz del proyecto
+    dir_path = os.path.join(root_path, 'static', 'videos', f'hogar_{hogar_id}')
+
+    # Crear la carpeta 'hogar_id' si no existe
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
+    # Guardar el video en formato WebM con el nombre del usuario
+    webm_path = os.path.join(dir_path, f'{usuario_nombre}.webm')
+    video_file.save(webm_path)
+    
+    # Procesar el video para extraer rostros y guardarlos en la carpeta correspondiente
+    procesar_video_para_rostros(webm_path, usuario_nombre, hogar_id)
+    
+    # Actualizar el estado del rostro guardado en la base de datos
+    actualizado, error = actualizar_rostro_guardado(g.user['id'])
+    
+    if not actualizado:
+        flash(f"Error al actualizar: {error}", 'error')
+        return redirect(url_for('user.mi_cuenta'))
+
+    flash('Rostro guardado con éxito', 'success')
+
+    return jsonify({'message': 'Video guardado y rostro guardado con éxito.', 'redirect_url': url_for('user.mi_cuenta')})

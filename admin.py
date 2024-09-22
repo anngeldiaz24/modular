@@ -1,10 +1,11 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, url_for, request,
+    Blueprint, flash, g, redirect, render_template, url_for, request, jsonify,
     current_app
 )
 import requests
 import os
 import random
+import subprocess
 from datetime import datetime
 import imutils
 import numpy as np
@@ -997,3 +998,4 @@ def crear_modelo():
 
     flash('Rostros procesados con éxito.', 'success')
     return redirect(url_for('admin.admin_hogares'))
+

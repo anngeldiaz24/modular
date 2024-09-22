@@ -36,7 +36,7 @@ while True:
         rostro = cv2.resize(rostro, (150, 150), interpolation=cv2.INTER_CUBIC)
         result = face_recognizer.predict(rostro)
 
-        if result[1] < 78:  # Ajusta el umbral según tu modelo
+        if result[1] < 60:  # Ajusta el umbral según tu modelo
             user_name = user_dict.get(result[0], "Desconocido")
             cv2.putText(frame, user_name, (x, y - 25), 2, 1.1, (0, 255, 0), 1, cv2.LINE_AA)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
