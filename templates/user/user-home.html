@@ -19,11 +19,11 @@
             <iframe src="http://192.168.100.28:81/stream" allowfullscreen></iframe>
         </div> -->
         <div class="lg:col-span-3 col-span-12 card p-6 order-2 lg:order-1">
-            <a href="/user-dashboard/encender-luces-domesticas" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+            <a href="{{ url_for('user.encender_luces_domesticas') }}" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="mdi:lights" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Encender luces</span>
             </a>
-            <a href="/user-dashboard/apagar-luces-domesticas" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+            <a href="{{ url_for('user.apagar_luces_domesticas') }}" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="mdi:lights-outline" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Apagar luces</span>
             </a>
@@ -36,11 +36,11 @@
                     <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
                 </button>
                 <div id="blockDropdown" class="hidden absolute z-10 bg-white rounded-lg shadow w-full mt-2">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 1</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 2</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 3</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 4</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Bloquear todos los accesos</a>
+                    <a href="{{ url_for('user.bloquear_puerta_uno') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 1</a>
+                    <a href="{{ url_for('user.bloquear_puerta_dos') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 2</a>
+                    <a href="{{ url_for('user.bloquear_puerta_tres') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 3</a>
+                    <a href="{{ url_for('user.bloquear_puerta_cuatro') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 4</a>
+                    <a href="{{ url_for('user.bloquear_puertas') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Bloquear todos los accesos</a>
                 </div>
             </div>
             <div class="relative mb-2">
@@ -52,18 +52,18 @@
                     <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
                 </button>
                 <div id="unlockDropdown" class="hidden absolute z-10 bg-white rounded-lg shadow w-full mt-2">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 1</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 2</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 3</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 4</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Desbloquear todos los accesos</a>
+                    <a href="{{ url_for('user.desbloquear_puerta_uno') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 1</a>
+                    <a href="{{ url_for('user.desbloquear_puerta_dos') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 2</a>
+                    <a href="{{ url_for('user.desbloquear_puerta_tres') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 3</a>
+                    <a href="{{ url_for('user.desbloquear_puerta_cuatro') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 4</a>
+                    <a href="{{ url_for('user.desbloquear_puertas') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Desbloquear todos los accesos</a>
                 </div>
             </div>
-            <a href="/user-dashboard/activar-alarma" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+            <a href="{{ url_for('user.activar_alarma') }}" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="icon-park-solid:alarm" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Activar alarma</span>
             </a>
-            <a href="/user-dashboard/desactivar-alarma" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+            <a href="{{ url_for('user.desactivar_alarma') }}" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="icon-park-outline:alarm" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Desactivar alarma</span>
             </a>
