@@ -36,12 +36,13 @@
         </div>
         
         <div class="text-left mt-4 md:mt-0">
-            <a href="#" 
-                class="w-full lg:w-auto inline-flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500" 
-                >
+            <a href="#"
+                class="w-full lg:w-auto inline-flex items-center justify-center text-white {% if user.rostro_guardado == 1 %}bg-gray-400 cursor-not-allowed{% else %}bg-blue-700 hover:bg-blue-800 focus:ring-blue-500{% endif %} focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500" 
+                data-bs-toggle="modal" data-bs-target="#preSaveFaceModal"
+                {% if user.rostro_guardado == 1 %}disabled{% endif %}>
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bx-face"></iconify-icon>
-                    <span>Añadir reconocimiento facial</span>
+                    <span>{% if user.rostro_guardado == 1 %}Rostro capturado{% else %}Añadir reconocimiento facial{% endif %}</span>
                 </span>
             </a>
         </div>
@@ -126,7 +127,7 @@
     </div>
 </div>
 
-<!-- Modal eliminar -->
+<!-- Modal cancelar -->
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="cancelarSuscripcionModal" tabindex="-1" aria-labelledby="default_modal" aria-hidden="true">
     <div class="modal-dialog relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
@@ -163,7 +164,107 @@
         </div>
     </div>
 </div>
-<!-- Fin modal eliminar -->
+<!-- Fin modal cancelar -->
+
+<!-- Modal pre-save face -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="preSaveFaceModal" tabindex="-1" aria-labelledby="preSaveFaceLabel" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-1/4 mx-4 sm:mx-auto">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-body p-4">
+                <div class="text-center">
+                    <p class="text-lg font-semibold mb-3 dark:text-slate-400">Agrega tu rostro para acceder fácilmente al sistema</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Sigue los siguientes pasos para completar el proceso:</p>
+                    <ol class="text-left text-sm text-gray-600 dark:text-gray-400 m-5">
+                        <li>1. El sistema grabará un video de tu rostro.</li>
+                        <li>2. Asegúrate de no tener objetos que cubran tu rostro (gafas, mascarillas, etc.).</li>
+                        <li>3. Mantén una postura fija, posiciona tu rostro sobre la figura y evita moverte durante la grabación.</li>
+                    </ol>
+                </div>
+                <div class="text-right">
+                    <form id="videoFaceForm" action="{{ url_for('user.actualizar_rostro_registrado') }}" method="post">
+                        <button type="submit" class="btn-success inline-flex w-full mt-4 items-center justify-center text-white focus:outline-none font-medium text-sm px-5 py-2.5 text-center">
+                            Continuar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin pre-save face -->
+
+<!-- Modal video-face -->
+
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="videoFaceModal" tabindex="-1" aria-labelledby="preSaveFaceLabel" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-1/5 mx-4 sm:mx-auto">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-body p-4">
+                <div class="text-center">
+                    <p class="text-lg font-semibold mb-3 dark:text-slate-400">Captura tu rostro</p>
+                    <div class="relative lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2">
+                        <div id="video-container">
+                            <video id="video" autoplay></video>
+                            <div id="overlay">
+                                <div class="oval"></div>
+                                <div id="recordingMessage" class="recording-message">Grabando...</div>
+                            </div>
+                        </div>
+                        <button id="startBtn" class="btn btn-primary">Grabar Video</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin modal video-face -->
+
+<style>
+    #video {
+        width: 100%;
+        height: 100%;
+        border: 2px solid black;
+    }
+
+    #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* Permite hacer clic solo en el botón */
+    }
+
+    #startBtn {
+        margin-top: 20px;
+    }
+
+    /* Ajustado para un rectángulo centrado */
+    .oval {
+        position: absolute;
+        border: 3px solid white;
+        border-radius: 10px; 
+        width: 160px;
+        height: 220px; 
+        left: 50%;
+        top: 40%;
+        transform: translate(-50%, -50%);
+    }
+
+    .recording-message {
+        display: none;
+        position: absolute;
+        bottom: 95%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        color: green;
+        font-weight: bold;
+    }
+
+    .recording {
+        display: block;
+    }
+</style>
 
 <!-- Incluir el script de Google Maps -->
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
@@ -203,5 +304,81 @@
     }
     
     window.onload = initMap;
+</script>
+
+<script>
+    document.getElementById('videoFaceForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Evitar el comportamiento por defecto del formulario
+    
+        // Ocultar el modal manualmente quitando clases relacionadas a modales
+        const modal = document.getElementById('preSaveFaceModal');
+        modal.classList.remove('fade', 'show');
+        modal.style.display = 'none'; // Esconder el modal
+
+        // Mostrar el video face encontrado
+        const modalUsuarioEncontrado = document.getElementById('videoFaceModal');
+        modalUsuarioEncontrado.classList.add('fade', 'show');
+        modalUsuarioEncontrado.style.display = 'block'; // Mostrar el modal
+        const videoFeed= document.getElementById('videoFeedUser');
+    });
+
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    const video = document.getElementById('video');
+    const startBtn = document.getElementById('startBtn');
+    const recordingMessage = document.getElementById('recordingMessage');
+
+    // Acceder a la cámara
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                recordedChunks = [];
+
+                // Enviar el video al servidor
+                const formData = new FormData();
+                formData.append('video', blob, 'grabacion.webm');
+
+                fetch('/guardar-video', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    //alert(data.message);
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            };
+        });
+
+    // Iniciar la grabación por 20 segundos
+    startBtn.addEventListener('click', () => {
+        if (mediaRecorder.state === 'inactive') {
+            mediaRecorder.start();
+            startBtn.disabled = true; // Deshabilitar el botón mientras graba
+            recordingMessage.classList.add('recording'); // Mostrar el mensaje de grabación
+
+            setTimeout(() => {
+                mediaRecorder.stop();
+                startBtn.disabled = false; // Habilitar el botón después de la grabación
+                recordingMessage.classList.remove('recording'); // Ocultar el mensaje de grabación
+            }, 20000); // 20 segundos
+        }
+    });
+
 </script>
 {% endblock %}
