@@ -31,10 +31,50 @@ def bloquearPuertas():
     print("bloquearPuertas funcionando")
     logger.debug("bloquearPuertas funcionando")
     
+# Cerrar el servo uno
+def bloquearPuertaUno():
+    print("bloquearPuertaUno funcionando")
+    logger.debug("bloquearPuertaUno funcionando")
+    
+# Cerrar el servo dos
+def bloquearPuertaDos():
+    print("bloquearPuertaDos funcionando")
+    logger.debug("bloquearPuertaDos funcionando")
+    
+# Cerrar el servo tres
+def bloquearPuertaTres():
+    print("bloquearPuertaTres funcionando")
+    logger.debug("bloquearPuertaTres funcionando")
+    
+# Cerrar el servo cuatro
+def bloquearPuertaCuatro():
+    print("bloquearPuertaCuatro funcionando")
+    logger.debug("bloquearPuertaCuatro funcionando")
+    
 # Abrir el servo (posición a 0 grados) 
 def desbloquearPuertas():
     print("desbloquearPuertas funcionando")
     logger.debug("desbloquearPuertas funcionando")
+    
+# Abrir el servo uno
+def desbloquearPuertaUno():
+    print("desbloquearPuertaUno funcionando")
+    logger.debug("desbloquearPuertaUno funcionando")
+    
+# Abrir el servo dos
+def desbloquearPuertaDos():
+    print("desbloquearPuertaDos funcionando")
+    logger.debug("desbloquearPuertaDos funcionando")
+    
+# Abrir el servo tres
+def desbloquearPuertaTres():
+    print("desbloquearPuertaTres funcionando")
+    logger.debug("desbloquearPuertaTres funcionando")
+    
+# Abrir el servo cuatro
+def desbloquearPuertaCuatro():
+    print("desbloquearPuertaCuatro funcionando")
+    logger.debug("desbloquearPuertaCuatro funcionando")
     
 # Enlace para llamar a la policía local (911)
 def llamarPolicia():

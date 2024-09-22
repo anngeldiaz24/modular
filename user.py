@@ -566,6 +566,38 @@ def bloquear_puertas():
     funciones.bloquearPuertas()
     logger.info('Saliendo de Bloquear puertas llamado')
     return redirect(url_for('user.user_index'))
+
+@bp.route('/bloquear-puerta-uno')
+@login_required
+def bloquear_puerta_uno():
+    logger.info('Entrando a Bloquear puerta uno llamado')
+    funciones.bloquearPuertaUno()
+    logger.info('Saliendo de Bloquear puerta uno llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/bloquear-puerta-dos')
+@login_required
+def bloquear_puerta_dos():
+    logger.info('Entrando a Bloquear puerta dos llamado')
+    funciones.bloquearPuertaDos()
+    logger.info('Saliendo de Bloquear puerta dos llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/bloquear-puerta-tres')
+@login_required
+def bloquear_puerta_tres():
+    logger.info('Entrando a Bloquear puerta tres llamado')
+    funciones.bloquearPuertaTres()
+    logger.info('Saliendo de Bloquear puerta tres llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/bloquear-puerta-cuatro')
+@login_required
+def bloquear_puerta_cuatro():
+    logger.info('Entrando a Bloquear puerta cuatro llamado')
+    funciones.bloquearPuertaCuatro()
+    logger.info('Saliendo de Bloquear puerta cuatro llamado')
+    return redirect(url_for('user.user_index'))
     
 @bp.route('/desbloquear-puertas')
 @login_required
@@ -573,6 +605,38 @@ def desbloquear_puertas():
     logger.info('Entrando a Desbloquear puertas llamado')
     funciones.desbloquearPuertas()
     logger.info('Saliendo de Desbloquear puertas llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desbloquear-puerta-uno')
+@login_required
+def desbloquear_puerta_uno():
+    logger.info('Entrando a Desbloquear puerta uno llamado')
+    funciones.desbloquearPuertaUno()
+    logger.info('Saliendo de Desbloquear puerta uno llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desbloquear-puerta-dos')
+@login_required
+def desbloquear_puerta_dos():
+    logger.info('Entrando a Desbloquear puerta dos llamado')
+    funciones.desbloquearPuertaDos()
+    logger.info('Saliendo de Desbloquear puerta dos llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desbloquear-puerta-tres')
+@login_required
+def desbloquear_puerta_tres():
+    logger.info('Entrando a Desbloquear puerta tres llamado')
+    funciones.desbloquearPuertaTres()
+    logger.info('Saliendo de Desbloquear puerta tres llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desbloquear-puerta-cuatro')
+@login_required
+def desbloquear_puerta_cuatro():
+    logger.info('Entrando a Desbloquear puerta cuatro llamado')
+    funciones.desbloquearPuertaCuatro()
+    logger.info('Saliendo de Desbloquear puerta cuatro llamado')
     return redirect(url_for('user.user_index'))
 
 @bp.route('/llamar-policia')
