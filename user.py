@@ -36,6 +36,7 @@ camera_ip = os.getenv('CAMERA_IP', 'http://192.168.100.28')  # Cambia esto por l
 capture_url = f"{camera_ip}/capture"
 
 def capture_photo(hogar_id):
+    from datetime import datetime
     try:
         # Realiza la solicitud GET al endpoint de captura
         response = requests.get(capture_url, stream=True)
