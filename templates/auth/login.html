@@ -141,28 +141,71 @@
               <div class="text-center">
                   <p class="text-lg font-semibold mb-3 dark:text-slate-400">Graba tu rostro</p>
                   <div class="relative lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2">
-                      <div class="container">
-                          <img id="videoFeed" src="" alt="Video Feed">
-                      </div>
-                  </div>
-              </div>
-              <div class="text-left mt-4 md:mt-0">
-                  <form method="post">
-                      <button type="submit" class="btn-success inline-flex w-full mt-4 items-center justify-center text-white focus:outline-none font-medium text-sm px-5 py-2.5 text-center">
-                          <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="fluent:scan-camera-48-regular"></iconify-icon>Ingresar
-                      </button>
-                  </form>
-                  <a href="{{ url_for('auth.login') }}"
-                    class="btn btn-danger inline-flex w-full mt-4 items-center justify-center text-white focus:outline-none font-medium text-sm px-5 py-2.5 text-center">
-                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="material-symbols:cancel-outline"></iconify-icon>
-                    <span>Terminar proceso</span>
-                  </a>
+                    <div id="video-container">
+                        <video id="video" autoplay></video>
+                        <div id="overlay">
+                            <div class="oval"></div>
+                            <div id="recordingMessage" class="recording-message">Grabando...</div>
+                        </div>
+                    </div>
+                    <button id="startBtn" class="btn btn-primary">Grabar Video</button>
+                </div>
               </div>
           </div>
       </div>
   </div>
 </div>
 <!-- Fin modal video-face -->
+
+
+  <style>
+    #video {
+        width: 100%;
+        height: 100%;
+        border: 2px solid black;
+    }
+
+    #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* Permite hacer clic solo en el botón */
+    }
+
+    #startBtn {
+        margin-top: 20px;
+    }
+
+    /* Ajustado para un rectángulo centrado */
+    .oval {
+        position: absolute;
+        border: 3px solid white;
+        border-radius: 10px; 
+        width: 160px;
+        height: 220px; 
+        left: 50%;
+        top: 40%;
+        transform: translate(-50%, -50%);
+    }
+
+    .recording-message {
+        display: none;
+        position: absolute;
+        bottom: 95%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        color: green;
+        font-weight: bold;
+    }
+
+    .recording {
+        display: block;
+    }
+  </style>
+
 
   <!-- scripts -->
   <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
@@ -183,50 +226,119 @@
   </script>
   <script>
     document.getElementById('buscarCorreoForm').addEventListener('submit', function(event) {
-      event.preventDefault();  // Evitar el comportamiento por defecto del formulario
-  
-      // Obtener el valor del correo electrónico
-      var correoElectronico = document.getElementById('correoElectronico').value;
-  
-      // Realizar la solicitud AJAX
-      fetch('{{ url_for("auth.buscar_correo_electronico") }}', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ correoElectronico: correoElectronico })
-      })
-      .then(response => response.json())
-      .then(data => {
-          const errorMessage = document.getElementById('errorMessage');
-          
-          if (data.existe) {
-            console.log("EXISTE")
-            // Ocultar el modal manualmente quitando clases relacionadas a modales
-            const modal = document.getElementById('iniciarSesionModal');
-            modal.classList.remove('fade', 'show');
-            modal.style.display = 'none'; // Esconder el modal
+        event.preventDefault();  // Evitar el comportamiento por defecto del formulario
 
-            // Mostrar el modal de usuario encontrado
-            const modalUsuarioEncontrado = document.getElementById('usuarioEncontradoModal');
-            modalUsuarioEncontrado.classList.add('fade', 'show');
-            modalUsuarioEncontrado.style.display = 'block'; // Mostrar el modal
+        // Obtener el valor del correo electrónico
+        var correoElectronico = document.getElementById('correoElectronico').value;
 
-            const videoFeed= document.getElementById('videoFeed');
-            videoFeed.src = "{{ url_for('auth.video_feed') }}";
+        // Realizar la solicitud AJAX
+        fetch('{{ url_for("auth.buscar_correo_electronico") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ correoElectronico: correoElectronico })
+        })
+        .then(response => {
+            // Verificar si la respuesta es válida
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error('Error: ' + response.status + ' ' + text);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            const errorMessage = document.getElementById('errorMessage');
 
-            
-          } else {
-            console.log("NO EXISTE")
-              // Mostrar mensaje de error y agregar la clase dark:text-white
-              errorMessage.textContent = data.error || 'Error inesperado';
-              errorMessage.classList.add('dark:text-white');
-          }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-      });
-  });
-  </script>
+            if (data.existe) {
+                console.log("EXISTE");
+                
+                // Ocultar el modal manualmente quitando clases relacionadas a modales
+                const modal = document.getElementById('iniciarSesionModal');
+                modal.classList.remove('fade', 'show');
+                modal.style.display = 'none'; // Esconder el modal
+
+                // Mostrar el modal de usuario encontrado
+                const modalUsuarioEncontrado = document.getElementById('usuarioEncontradoModal');
+                modalUsuarioEncontrado.classList.add('fade', 'show');
+                modalUsuarioEncontrado.style.display = 'block'; // Mostrar el modal
+
+                // Definir mediaRecorder y recordedChunks fuera del bloque
+                let mediaRecorder;
+                let recordedChunks = [];
+
+                const video = document.getElementById('video');
+                const startBtn = document.getElementById('startBtn');
+                const recordingMessage = document.getElementById('recordingMessage');
+
+                // Acceder a la cámara
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        video.srcObject = stream;
+
+                        mediaRecorder = new MediaRecorder(stream);
+
+                        mediaRecorder.ondataavailable = event => {
+                            if (event.data.size > 0) {
+                                recordedChunks.push(event.data);
+                            }
+                        };
+
+                        mediaRecorder.onstop = () => {
+                            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                            recordedChunks = [];
+
+                            // Enviar el video al servidor
+                            const formData = new FormData();
+                            formData.append('video', blob, 'grabacion.webm');
+
+                            fetch('{{ url_for("auth.login_faceid") }}', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.message) {
+                                    alert(data.message);  // Mostrar mensaje de éxito
+                                } else if (data.error) {
+                                    alert(data.error);  // Mostrar mensaje de error
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                        };
+
+                        // Iniciar la grabación por 20 segundos
+                        startBtn.onclick = () => {
+                            if (mediaRecorder.state === 'inactive') {
+                                mediaRecorder.start();
+                                startBtn.disabled = true; // Deshabilitar el botón mientras graba
+                                recordingMessage.classList.add('recording'); // Mostrar el mensaje de grabación
+
+                                setTimeout(() => {
+                                    mediaRecorder.stop();
+                                    startBtn.disabled = false; // Habilitar el botón después de la grabación
+                                    recordingMessage.classList.remove('recording'); // Ocultar el mensaje de grabación
+                                }, 20000); // 20 segundos
+                            }
+                        };
+                    })
+                    .catch(error => {
+                        console.error('Error al acceder a la cámara:', error);
+                    });
+
+            } else {
+                console.log("NO EXISTE");
+                // Mostrar mensaje de error y agregar la clase dark:text-white
+                errorMessage.textContent = data.error || 'Error inesperado';
+                errorMessage.classList.add('dark:text-white');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
 </body>
 </html>

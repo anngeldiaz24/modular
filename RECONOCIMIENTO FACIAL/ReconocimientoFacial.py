@@ -1,7 +1,7 @@
 import cv2
 import os
 
-dataPath = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data'  # Cambia a la ruta donde hayas almacenado Data
+dataPath = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data' 
 model_path = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data\\Modelo\\modeloLBPHFace.xml'
 
 face_recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -19,7 +19,8 @@ for hogar_id in os.listdir(dataPath):
             user_dict[label] = usuario
             label += 1
 
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+#cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture('Video.mp4')
 faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 while True:
