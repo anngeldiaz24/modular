@@ -364,6 +364,7 @@ def login_faceid():
         return jsonify({'message': 'No se recibió ningún video.'}), 400
 
     video_file = request.files['video']
+    email = request.form['correoElectronico']  # El email se recibe desde el formulario
     
     # Define la ruta raíz del proyecto
     root_path = os.path.dirname(os.path.abspath(__file__))
@@ -382,28 +383,55 @@ def login_faceid():
 
     # Guardar el video con el nombre temporal
     video_file.save(webm_path)
-
-    return jsonify({'message': 'Video guardado exitosamente.', 'filename': temp_filename}), 200
-
     
-        
-""" def generate():
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
-    face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    while True:
-        ret, frame = cap.read()
-        if ret:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = face_detector.detectMultiScale(gray, 1.3, 5)
-            for(x, y, w, h) in faces:
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0,255, 0), 2)
-                (flag, encodedImage) = cv2.imencode(".jpg", frame)
-                if not flag:
-                    continue
-                yield(b'---frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+    # Reconocer el rostro en el video guardado
+    recognized_user = reconocer_rostro_en_video(webm_path)
+    
+    # Si el usuario es reconocido
+    if recognized_user:
+        try:
+            # Eliminar el archivo temporal
+            os.remove(webm_path)
+            
+            # Conectar a la base de datos
+            db, c = get_db()
+            error = None
+            
+            # Consulta para obtener los detalles del usuario y su hogar
+            c.execute("""
+                SELECT u.*, h.estatus
+                FROM users u
+                LEFT JOIN hogares h ON u.hogar_id = h.id
+                WHERE u.email = %s
+            """, (email,))
+            user = c.fetchone()
+            
+            if user is None:
+                return jsonify({'message': 'Usuario no encontrado.'}), 404
 
-@bp.route('/video-feed')
-def video_feed():
-    return Response(generate(), mimetype = "multipart/x-mixed-replace; boundary=frame")
-"""
+            # Limpiar sesión y establecer user_id
+            session.clear()
+            session['user_id'] = user['id']
+            
+            # Retornar la información del usuario y redirigir según su rol o estado del hogar
+            if user['rol'] == 'Admin':
+                return jsonify({'message': 'Usuario reconocido. Redirigiendo a Admin.', 'redirect_url': url_for('admin.admin_index')}), 200
+            else:
+                if user['hogar_id'] is None:
+                    return jsonify({'message': 'Usuario reconocido. Redirigiendo a Bienvenida.', 'redirect_url': url_for('user.user_welcome')}), 200
+                else:
+                    flash(f'¡Bienvenido, {user["nombre"]}!', 'success')
+                    return jsonify({'message': 'Usuario reconocido. Redirigiendo a Home.', 'redirect_url': url_for('user.home')}), 200
 
+        except OSError as e:
+            print(f"Error al eliminar el archivo: {e}")
+            return jsonify({'message': 'Error al procesar el video.'}), 500
+    
+    # Si el usuario no es reconocido, eliminar el archivo y devolver error
+    try:
+        os.remove(webm_path)
+        print("Video temporal eliminado debido a fallo en el reconocimiento.")
+    except OSError as e:
+        print(f"Error al eliminar el archivo: {e}")
+
+    return jsonify({'message': 'Rostro no reconocido, video eliminado.'}), 400

@@ -19,8 +19,8 @@ for hogar_id in os.listdir(dataPath):
             user_dict[label] = usuario
             label += 1
 
-#cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-cap = cv2.VideoCapture('Video.mp4')
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+#cap = cv2.VideoCapture('Video.mp4')
 faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 while True:

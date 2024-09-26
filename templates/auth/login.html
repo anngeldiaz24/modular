@@ -292,6 +292,7 @@
                             // Enviar el video al servidor
                             const formData = new FormData();
                             formData.append('video', blob, 'grabacion.webm');
+                            formData.append('correoElectronico', correoElectronico);
 
                             fetch('{{ url_for("auth.login_faceid") }}', {
                                 method: 'POST',
@@ -303,6 +304,8 @@
                                     alert(data.message);  // Mostrar mensaje de éxito
                                 } else if (data.error) {
                                     alert(data.error);  // Mostrar mensaje de error
+                                }if (data.redirect_url) {
+                                    window.location.href = data.redirect_url;
                                 }
                             })
                             .catch(error => console.error('Error:', error));
