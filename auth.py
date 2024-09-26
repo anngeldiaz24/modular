@@ -414,14 +414,8 @@ def login_faceid():
             session['user_id'] = user['id']
             
             # Retornar la información del usuario y redirigir según su rol o estado del hogar
-            if user['rol'] == 'Admin':
-                return jsonify({'message': 'Usuario reconocido. Redirigiendo a Admin.', 'redirect_url': url_for('admin.admin_index')}), 200
-            else:
-                if user['hogar_id'] is None:
-                    return jsonify({'message': 'Usuario reconocido. Redirigiendo a Bienvenida.', 'redirect_url': url_for('user.user_welcome')}), 200
-                else:
-                    flash(f'¡Bienvenido, {user["nombre"]}!', 'success')
-                    return jsonify({'message': 'Usuario reconocido. Redirigiendo a Home.', 'redirect_url': url_for('user.home')}), 200
+            flash(f'¡Bienvenido, {user["nombre"]}!', 'success')
+            return jsonify({'redirect_url': url_for('user.home')}), 200
 
         except OSError as e:
             print(f"Error al eliminar el archivo: {e}")
