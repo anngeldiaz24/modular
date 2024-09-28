@@ -666,7 +666,8 @@ def quitar_acentos(texto):
 
 def procesar_video_para_rostros(video_path, usuario_nombre, hogar_id):
     # Ruta donde se guardarán las imágenes de los rostros, organizadas por hogar_id y usuario
-    data_path = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data'
+    PATH = os.getenv('DATA_PATH')
+    data_path = data_path = os.path.join(PATH, 'Data')
     hogar_path = os.path.join(data_path, f'hogar_{hogar_id}')
     person_path = os.path.join(hogar_path, usuario_nombre)
 

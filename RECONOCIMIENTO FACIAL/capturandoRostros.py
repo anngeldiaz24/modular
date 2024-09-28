@@ -1,9 +1,15 @@
 import cv2
 import os
 import imutils
+from dotenv import load_dotenv
+
+# Cargar las variables desde el archivo .env
+load_dotenv()
+
+PATH = os.getenv('DATA_PATH')
 
 personName = 'elias_diaz'
-dataPath = 'C:\\Users\\Angel Diaz\\Desktop\\Modular' #Cambia a la ruta donde hayas almacenado Data
+dataPath = PATH #Cambia a la ruta donde hayas almacenado Data
 personPath = dataPath + '/' + personName
 
 if not os.path.exists(personPath):

@@ -1,8 +1,13 @@
 import cv2
 import os
 import numpy as np
+from dotenv import load_dotenv
 
-dataPath = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data' #Cambia a la ruta donde hayas almacenado Data
+# Cargar las variables desde el archivo .env
+load_dotenv()
+
+PATH = os.getenv('DATA_PATH')
+dataPath = dataPath = os.path.join(PATH, 'Data') #Cambia a la ruta donde hayas almacenado Data
 peopleList = os.listdir(dataPath)
 print('Lista de personas: ', peopleList)
 

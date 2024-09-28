@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 import datetime
 import re 
 import os
+from dotenv import load_dotenv
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask import (
     Blueprint, flash, g, render_template, request, url_for, session, redirect, abort, jsonify, Response
@@ -17,6 +18,8 @@ import cv2
 from .db import get_db, close_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+# Cargar las variables desde el archivo .env
+load_dotenv()
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -300,8 +303,9 @@ def buscar_correo_electronico():
         
 def cargar_modelo_y_datos():
     # Ruta de los modelos y datos
-    dataPath = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data' 
-    model_path = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data\\Modelo\\modeloLBPHFace.xml'
+    PATH = os.getenv('DATA_PATH')
+    dataPath = os.path.join(PATH, 'Data')
+    model_path = os.path.join(PATH, 'Data', 'Modelo', 'modeloLBPHFace.xml')
 
     # Cargar el modelo de reconocimiento facial
     face_recognizer = cv2.face.LBPHFaceRecognizer_create()

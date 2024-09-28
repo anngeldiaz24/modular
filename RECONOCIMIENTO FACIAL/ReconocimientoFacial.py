@@ -1,8 +1,13 @@
 import cv2
 import os
+from dotenv import load_dotenv
 
-dataPath = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data' 
-model_path = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data\\Modelo\\modeloLBPHFace.xml'
+# Cargar las variables desde el archivo .env
+load_dotenv()
+
+PATH = os.getenv('DATA_PATH')
+dataPath = os.path.join(PATH, 'Data') 
+model_path = os.path.join(PATH, 'Data', 'Modelo', 'modeloLBPHFace.xml')
 
 face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 face_recognizer.read(model_path)

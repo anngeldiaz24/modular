@@ -956,7 +956,8 @@ def eliminar_paquete(id):
 @login_required
 @admin_role_required
 def crear_modelo():
-    dataPath = 'C:\\Users\\Angel Diaz\\Desktop\\Modular\\Data'  # Cambia a la ruta donde hayas almacenado Data
+    PATH = os.getenv('DATA_PATH')
+    dataPath = os.path.join(PATH, 'Data')
     hogaresList = os.listdir(dataPath)
     print('Lista de hogares: ', hogaresList)
 
