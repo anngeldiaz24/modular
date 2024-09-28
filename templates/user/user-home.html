@@ -27,7 +27,7 @@
                 <iconify-icon icon="mdi:lights-outline" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Apagar luces</span>
             </a>
-            <div class="relative mb-2">
+            <div class="mb-2">
                 <button onclick="toggleDropdown('blockDropdown')" class="btn flex items-center justify-between btn-outline-dark rounded-[25px] w-full">
                     <div class="flex items-center">
                         <iconify-icon icon="material-symbols:lock" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
@@ -35,7 +35,7 @@
                     </div>
                     <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
                 </button>
-                <div id="blockDropdown" class="hidden absolute z-10 bg-white rounded-lg shadow w-full mt-2">
+                <div id="blockDropdown" class="hidden z-10 bg-white rounded-lg shadow w-full mt-2">
                     <a href="{{ url_for('user.bloquear_puerta_uno') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 1</a>
                     <a href="{{ url_for('user.bloquear_puerta_dos') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 2</a>
                     <a href="{{ url_for('user.bloquear_puerta_tres') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 3</a>
@@ -43,7 +43,7 @@
                     <a href="{{ url_for('user.bloquear_puertas') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Bloquear todos los accesos</a>
                 </div>
             </div>
-            <div class="relative mb-2">
+            <div class="mb-2">
                 <button onclick="toggleDropdown('unlockDropdown')" class="btn flex items-center justify-between btn-outline-dark rounded-[25px] w-full">
                     <div class="flex items-center">
                         <iconify-icon icon="mdi:unlocked-outline" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
@@ -51,7 +51,7 @@
                     </div>
                     <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
                 </button>
-                <div id="unlockDropdown" class="hidden absolute z-10 bg-white rounded-lg shadow w-full mt-2">
+                <div id="unlockDropdown" class="hidden z-10 bg-white rounded-lg shadow w-full mt-2">
                     <a href="{{ url_for('user.desbloquear_puerta_uno') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 1</a>
                     <a href="{{ url_for('user.desbloquear_puerta_dos') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 2</a>
                     <a href="{{ url_for('user.desbloquear_puerta_tres') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Puerta 3</a>
