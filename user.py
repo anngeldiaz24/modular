@@ -32,7 +32,7 @@ bp = Blueprint('user', __name__)
 load_dotenv()
 
 # URL del endpoint de captura en el ESP32 (configurable con variables de entorno)
-camera_ip = os.getenv('CAMERA_IP', 'http://192.168.100.28')  # Cambia esto por la IP de tu ESP32 si no usas variables de entorno
+camera_ip = os.getenv('CAMERA_IP') 
 capture_url = f"{camera_ip}/capture"
 
 def capture_photo(hogar_id):
@@ -178,7 +178,11 @@ def home():
 @login_required
 @user_role_required
 def user_index():
-    return render_template('user/user-home.html', user=g.user, role=g.user['rol'])
+    # Obtener la IP y el puerto desde el archivo .env
+    stream_host = os.getenv('CAMERA_IP_VISTA')
+    # Concatenar con la ruta de transmisión
+    stream_url = f"http://{stream_host}/stream"
+    return render_template('user/user-home.html', user=g.user, role=g.user['rol'], stream_url=stream_url)
 
 @login_required
 @user_role_required

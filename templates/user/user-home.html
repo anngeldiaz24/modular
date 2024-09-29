@@ -16,7 +16,7 @@
             <video id="camera" class="w-full" style="max-height: 500px;" autoplay playsinline></video>
         </div> -->
         <div class="lg:col-span-9 col-span-12 card p-6 order-1 lg:order-2 iframe-container">
-            <iframe src="http://192.168.100.28:81/stream" allowfullscreen></iframe>
+            <iframe src="{{ stream_url }}" allowfullscreen></iframe>
         </div>
         <div class="lg:col-span-3 col-span-12 card p-6 order-2 lg:order-1">
             <a href="{{ url_for('user.encender_luces_domesticas') }}" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
