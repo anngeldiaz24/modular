@@ -390,6 +390,7 @@ def login_faceid():
     
     # Reconocer el rostro en el video guardado
     recognized_user = reconocer_rostro_en_video(webm_path)
+    print(recognized_user)
     
     # Si el usuario es reconocido
     if recognized_user:
