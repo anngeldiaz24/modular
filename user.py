@@ -834,6 +834,6 @@ def guardar_video():
         flash(f"Error al actualizar: {error}", 'error')
         return redirect(url_for('user.mi_cuenta'))
 
-    flash('Rostro guardado con éxito', 'success')
+    flash('Rostro guardado con éxito. El inicio con reconocimiento estará dispónible después de 24 horas.', 'success')
 
     return jsonify({'message': 'Video guardado y rostro guardado con éxito.', 'redirect_url': url_for('user.mi_cuenta')})
