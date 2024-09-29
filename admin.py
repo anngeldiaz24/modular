@@ -1,10 +1,15 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, url_for, request,
+    Blueprint, flash, g, redirect, render_template, url_for, request, jsonify,
+    current_app
 )
 import requests
 import os
 import random
+import subprocess
 from datetime import datetime
+import imutils
+import numpy as np
+import cv2
 from dotenv import load_dotenv
 from babel.dates import format_date
 from werkzeug.exceptions import abort
@@ -946,3 +951,52 @@ def eliminar_paquete(id):
         flash(f"Ocurrió un error al eliminar el paquete: {e}", 'error')
         
     return redirect(url_for('admin.admin_paquetes'))
+
+@bp.route('/procesar-rostros', methods=['POST'])
+@login_required
+@admin_role_required
+def crear_modelo():
+    PATH = os.getenv('DATA_PATH')
+    dataPath = os.path.join(PATH, 'Data')
+    hogaresList = os.listdir(dataPath)
+    print('Lista de hogares: ', hogaresList)
+
+    labels = []
+    facesData = []
+    label = 0
+
+    # Procesar imágenes por hogar y usuario
+    for hogar_id in hogaresList:
+        hogar_path = os.path.join(dataPath, hogar_id)
+
+        if os.path.isdir(hogar_path):
+            print(f'Procesando hogar: {hogar_id}')
+            for usuario in os.listdir(hogar_path):
+                personPath = os.path.join(hogar_path, usuario)
+                print(f'Leyendo las imágenes de {usuario} en {hogar_id}')
+
+                if os.path.isdir(personPath):  # Verificar que sea un directorio
+                    for fileName in os.listdir(personPath):
+                        print(f'Rostros: {usuario}/{fileName}')
+                        labels.append(label)
+                        facesData.append(cv2.imread(os.path.join(personPath, fileName), 0))
+
+                    label += 1  # Aumentar la etiqueta después de cada usuario
+
+    # Crear y entrenar el reconocedor de rostros
+    face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+
+    print("Entrenando...")
+    face_recognizer.train(facesData, np.array(labels))
+
+    # Almacenando el modelo obtenido
+    model_path = os.path.join(dataPath, 'Modelo', 'modeloLBPHFace.xml')
+    if not os.path.exists(os.path.dirname(model_path)):
+        os.makedirs(os.path.dirname(model_path))
+        
+    face_recognizer.write(model_path)
+    print("Modelo almacenado en: ", model_path)
+
+    flash('Rostros procesados con éxito.', 'success')
+    return redirect(url_for('admin.admin_hogares'))
+

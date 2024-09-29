@@ -413,7 +413,7 @@
                             <div class="flex-none ltr:mr-3 rtl:ml-3">
                               <div class="h-8 w-8 bg-white rounded-full">
                                 <img
-                                  src="/static/assets/images/all-img/user.png"
+                                  src="{{ url_for('static', filename='assets/images/svg/notify-siren.svg') }}"
                                   alt="user"
                                   class="border-white block w-full h-full object-cover rounded-full border">
                               </div>
@@ -429,7 +429,7 @@
                               </div>
                               <div
                                 class="text-slate-400 dark:text-slate-400 text-xs mt-1">
-                                hace 5 minutos
+                                hace 3 minutos
                               </div>
                             </div>
                           </div>
@@ -440,21 +440,22 @@
                             class="flex ltr:text-left rtl:text-right relative">
                             <div class="flex-none ltr:mr-3 rtl:ml-3">
                               <div class="h-8 w-8 bg-white rounded-full">
-                                <img src="/assets/images/all-img/user2.png"
+                                <img src="{{ url_for('static', filename='assets/images/svg/notify-emoji.svg') }}"
                                   alt="user"
                                   class="border-transparent block w-full h-full object-cover rounded-full border">
                               </div>
                             </div>
                             <div class="flex-1">
                               <a href="#"
-                                class="text-slate-600 dark:text-slate-300 text-sm font-medium mb-1 before:w-full before:h-full before:absolute
-                                  before:top-0 before:left-0">
-                                Felicidades Axl 🎉</a>
-                              <div
-                                class="text-slate-600 dark:text-slate-300 text-xs leading-4">Has
-                                ganado un mes gratis de suscripción
-                                premium</div>
-                              hace 3 minutos
+                                class="text-slate-600 dark:text-slate-300 text-sm font-medium mb-1 before:w-full before:h-full before:absolute before:top-0 before:left-0">
+                                Felicidades Axl 🎉
+                              </a>
+                              <div class="text-slate-600 dark:text-slate-300 text-xs leading-4">
+                                Has ganado un mes gratis de suscripción premium
+                              </div>
+                              <div class="text-slate-400 dark:text-slate-400 text-xs mt-1">
+                                hace 5 minutos
+                              </div>
                             </div>
                           </div>
                           <div class="flex-0">

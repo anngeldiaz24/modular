@@ -8,6 +8,8 @@
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Hogares</h4>
+        <a href="#" type="button" class="btn btn-primary" data-bs-target="#modalProcesarRostros" data-bs-toggle="modal">
+            <iconify-icon icon="bx-face" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"  width="1.2em" height="1.2em"></iconify-icon>Procesar rostros</a>
     </div>
 </div>
 
@@ -88,7 +90,7 @@
 </div>
 
 <!-- Modal de edición -->
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editModal" tabindex="-1" aria-labelledby="default_modal" aria-hidden="true">
     <div class="modal-dialog relative w-auto pointer-events-none top-1/4">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current mx-4 sm:mx-auto">
             <div class="modal-header px-4 py-3 border-b border-slate-200 dark:border-slate-700">
@@ -153,6 +155,27 @@
     </div>
 </div>
 <!-- Fin modal eliminar -->
+
+<!-- Modal de creación -->
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="modalProcesarRostros" tabindex="-1" aria-labelledby="modalProcesarRostros" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none top-2/4">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-slate-900 bg-clip-padding rounded-md outline-none text-current mx-4 sm:mx-auto">
+            <div class="modal-header px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                <h5 class="modal-title mb-5" id="modalProcesarRostros"><iconify-icon class="mr-2 mt-5" icon="bx-face" width="1.3em" height="1.3em"></iconify-icon>Procesamiento de rostros</h5>
+                <span class="dark:text-slate-300">Se capturarán los rostros de los usuarios. Esto puede tomar unos segundos</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="crearPaqueteForm" method="post" action="{{ url_for('admin.crear_modelo') }}">
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-success text-right">Procesar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin modal de creación -->
 
 
 <script>

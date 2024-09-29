@@ -4,17 +4,22 @@ import smtplib
 from email.mime.text import MIMEText
 import datetime
 import re 
+import os
+from dotenv import load_dotenv
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask import (
-    Blueprint, flash, g, render_template, request, url_for, session, redirect, abort
+    Blueprint, flash, g, render_template, request, url_for, session, redirect, abort, jsonify, Response
 )
 
 from mysql.connector import Error as MySQLError
 from werkzeug.security import check_password_hash, generate_password_hash
+import cv2
 
-from .db import get_db
+from .db import get_db, close_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+# Cargar las variables desde el archivo .env
+load_dotenv()
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -270,3 +275,162 @@ def logout():
     session.clear()
     return redirect(url_for('auth.login'))
 
+@bp.route('/buscar-correo-electronico', methods=['POST'])
+def buscar_correo_electronico():
+    db, c = get_db()
+    try:
+        # Obtener el correo del formulario
+        correo_electronico = request.json.get('correoElectronico')
+
+        # Buscar el correo en la base de datos
+        query = "SELECT * FROM users WHERE email = %s"
+        c.execute(query, (correo_electronico,))
+        usuario = c.fetchone()
+        
+        if usuario:
+            # Si el usuario existe, puedes redirigir o abrir otro modal
+            return jsonify({'existe': True})
+        else:
+            # Si el usuario no existe, devolver un mensaje de error
+            return jsonify({'existe': False, 'error': 'No se encontró un usuario con este correo electrónico.'})
+    except Exception as e:
+        # Manejar errores y devolver un mensaje de error genérico
+        print(f"Error al buscar el correo: {e}")
+        return jsonify({'existe': False, 'error': 'Hubo un problema al procesar tu solicitud. Inténtalo de nuevo más tarde.'}), 500
+    
+    finally:
+        close_db()
+        
+def cargar_modelo_y_datos():
+    # Ruta de los modelos y datos
+    PATH = os.getenv('DATA_PATH')
+    dataPath = os.path.join(PATH, 'Data')
+    model_path = os.path.join(PATH, 'Data', 'Modelo', 'modeloLBPHFace.xml')
+
+    # Cargar el modelo de reconocimiento facial
+    face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+    face_recognizer.read(model_path)
+
+    # Cargar el clasificador de rostros
+    faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+    # Mapeo de etiquetas a nombres de usuario
+    user_dict = {}
+    label = 0
+    for hogar_id in os.listdir(dataPath):
+        hogar_path = os.path.join(dataPath, hogar_id)
+        if os.path.isdir(hogar_path):
+            for usuario in os.listdir(hogar_path):
+                user_dict[label] = usuario
+                label += 1
+    
+    return face_recognizer, faceClassif, user_dict
+
+
+def reconocer_rostro_en_video(video_path):
+    # Cargar el modelo y los datos
+    face_recognizer, faceClassif, user_dict = cargar_modelo_y_datos()
+
+    # Captura de video (puede ser desde cámara o un archivo de video)
+    cap = cv2.VideoCapture(video_path)
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        auxFrame = gray.copy()
+
+        # Detectar rostros en el frame
+        faces = faceClassif.detectMultiScale(gray, 1.3, 5)
+
+        for (x, y, w, h) in faces:
+            rostro = auxFrame[y:y + h, x:x + w]
+            rostro = cv2.resize(rostro, (150, 150), interpolation=cv2.INTER_CUBIC)
+            result = face_recognizer.predict(rostro)
+
+            # Verificar si el rostro pertenece a alguien conocido
+            if result[1] < 65:  # Ajusta el umbral según tu modelo
+                user_name = user_dict.get(result[0], "Desconocido")
+                cap.release()  # Liberar el video
+                return user_name  # Retornar el nombre del usuario reconocido
+            else:
+                continue
+
+    cap.release()
+    return None  # Si no se reconoce ningún rostro
+
+
+@bp.route('/login-faceid', methods=['POST'])
+def login_faceid():
+    import time
+    if 'video' not in request.files:
+        return jsonify({'message': 'No se recibió ningún video.'}), 400
+
+    video_file = request.files['video']
+    email = request.form['correoElectronico']  # El email se recibe desde el formulario
+    
+    # Define la ruta raíz del proyecto
+    root_path = os.path.dirname(os.path.abspath(__file__))
+    # Ruta de la carpeta donde se guardará el video en la raíz del proyecto
+    dir_path = os.path.join(root_path, 'static', 'videos')
+
+    # Crear la carpeta 'videos' si no existe
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
+    # Generar un nombre temporal basado en la marca de tiempo
+    temp_filename = f'temp_{int(time.time())}.webm'
+
+    # Ruta completa del archivo
+    webm_path = os.path.join(dir_path, temp_filename)
+
+    # Guardar el video con el nombre temporal
+    video_file.save(webm_path)
+    
+    # Reconocer el rostro en el video guardado
+    recognized_user = reconocer_rostro_en_video(webm_path)
+    print(recognized_user)
+    
+    # Si el usuario es reconocido
+    if recognized_user:
+        try:
+            # Eliminar el archivo temporal
+            os.remove(webm_path)
+            
+            # Conectar a la base de datos
+            db, c = get_db()
+            error = None
+            
+            # Consulta para obtener los detalles del usuario y su hogar
+            c.execute("""
+                SELECT u.*, h.estatus
+                FROM users u
+                LEFT JOIN hogares h ON u.hogar_id = h.id
+                WHERE u.email = %s
+            """, (email,))
+            user = c.fetchone()
+            
+            if user is None:
+                return jsonify({'message': 'Usuario no encontrado.'}), 404
+
+            # Limpiar sesión y establecer user_id
+            session.clear()
+            session['user_id'] = user['id']
+            
+            # Retornar la información del usuario y redirigir según su rol o estado del hogar
+            flash(f'¡Bienvenido, {user["nombre"]}!', 'success')
+            return jsonify({'redirect_url': url_for('user.home')}), 200
+
+        except OSError as e:
+            print(f"Error al eliminar el archivo: {e}")
+            return jsonify({'message': 'Error al procesar el video.'}), 500
+    
+    # Si el usuario no es reconocido, eliminar el archivo y devolver error
+    try:
+        os.remove(webm_path)
+        print("Video temporal eliminado debido a fallo en el reconocimiento.")
+    except OSError as e:
+        print(f"Error al eliminar el archivo: {e}")
+
+    return jsonify({'message': 'Rostro no reconocido, video eliminado.'}), 400

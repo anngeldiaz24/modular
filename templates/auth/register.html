@@ -101,7 +101,8 @@
                 <div class="flex items-center">
                     <input type="checkbox" name="acepto_terminos" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" {{ 'checked' if request.form.get('acepto_terminos') else '' }}>
                     <span class="ml-2 text-slate-500 dark:text-slate-400 text-sm md:text-base leading-6 mt-3 mb-3">
-                        Aceptas nuestros Términos y Condiciones y Política de Privacidad
+                        Aceptas nuestros <a href="#" data-bs-toggle="modal" data-bs-target="#terminosCondicionesModal" class="hover:underline text-primary-500">Términos y Condiciones</a> y 
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#politicaPrivacidadModal" class="hover:underline text-primary-500">Política de Privacidad</a>.
                     </span>
                 </div>
                 <button type="submit" class="btn btn-dark block w-full text-center">Crear cuenta</button>
@@ -123,6 +124,115 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal términos y condiciones -->
+  <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="terminosCondicionesModal" tabindex="-1" aria-labelledby="default_modal" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+            <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600" style="background-color:#0F172A">
+                <h3 class="text-xl font-medium text-white dark:text-white">
+                    Términos y Condiciones SSafeNet
+                </h3>
+                <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="#ffffff" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-6 space-y-4">
+                <h6 class="text-base text-slate-900 dark:text-white leading-6">
+                    Términos y Condiciones
+                </h6>
+                <p class="text-base text-slate-600 dark:text-slate-400 leading-6">
+                  Al utilizar SSafeNet, usted acepta los siguientes términos y condiciones:
+                </p>
+                <ul class="list-disc ml-4 text-slate-600 dark:text-slate-400 leading-6">
+                  <li>El acceso y uso de SSafeNet está destinado únicamente para la protección y administración de su hogar. Cualquier uso indebido o ilegal será su responsabilidad.</li>
+                  <li>SSafeNet utiliza tecnologías avanzadas, como el reconocimiento facial y dispositivos IoT, para proporcionar un sistema de seguridad integral. El usuario es responsable de mantener la confidencialidad de su cuenta y credenciales.</li>
+                  <li>Nos reservamos el derecho de suspender o cancelar su acceso a la plataforma si detectamos actividades sospechosas o incumplimiento de estos términos.</li>
+                  <li>SSafeNet no se hace responsable por fallos técnicos, mal uso del sistema o errores en el suministro de servicios de terceros, como proveedores de internet o electricidad.</li>
+                  <li>El sistema está diseñado para alertas en tiempo real y automatización de funciones relacionadas con la seguridad del hogar. No obstante, SSafeNet no garantiza la prevención absoluta de incidentes de seguridad.</li>
+                  <li>El usuario se compromete a utilizar SSafeNet respetando la legislación vigente y las normativas de protección de datos personales en México.</li>
+                  <li>Los datos personales, incluyendo su información de contacto y datos biométricos, se utilizarán exclusivamente para el correcto funcionamiento del sistema y la mejora de servicios.</li>
+                  <li>Podemos actualizar estos términos y condiciones de vez en cuando. Cualquier cambio se le notificará a través de la plataforma.</li>
+                </ul>
+                </div>
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end p-6 space-x-2 border-t border-slate-200 rounded-b dark:border-slate-600">
+                  <button type="button" class="btn btn-dark rounded inline-flex justify-center text-white" data-bs-dismiss="modal">Acepto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- Fin modal términos y condiciones -->
+
+  <!-- Modal aviso de privacidad -->
+  <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="politicaPrivacidadModal" tabindex="-1" aria-labelledby="default_modal" aria-hidden="true">
+    <div class="modal-dialog relative w-auto pointer-events-none">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+            <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600" style="background-color:#0F172A">
+                <h3 class="text-xl font-medium text-white dark:text-white">
+                    Política de Privacidad SSafeNet
+                </h3>
+                <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="#ffffff" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                </div>
+                <!-- Modal body -->
+                <div class="pt-6 px-6 space-y-4">
+                <h6 class="text-base text-slate-900 dark:text-white leading-6">
+                    Aviso de Privacidad
+                </h6>
+                <p class="text-base text-slate-600 dark:text-slate-400 leading-6">
+                  En SSafeNet, nos comprometemos a proteger su privacidad y garantizar la seguridad de sus datos personales. 
+                  Los datos que recabamos, como su rostro para reconocimiento facial, datos personales, y dirección del hogar, se utilizan exclusivamente para los siguientes fines:
+                  <ul class="list-disc ml-4 text-base text-slate-600 dark:text-slate-400 leading-6">
+                    <li>Creación y administración de su cuenta en la plataforma SSafeNet.</li>
+                    <li>Optimización de las funcionalidades del sistema de seguridad del hogar, como el control remoto y monitoreo en tiempo real.</li>
+                    <li>Uso de tecnologías IoT para la automatización y protección de su hogar.</li>
+                    <li>Alertas y notificaciones en tiempo real relacionadas con la seguridad de su hogar.</li>
+                    <li>Mejora continua de la plataforma a través del análisis de datos de uso y desempeño.</li>
+                    <li>Envío de información relevante sobre actualizaciones, promociones y boletines de SSafeNet.</li>
+                    <li>Reporte de datos estadísticos sobre la actividad de su hogar.</li>
+                    <li>Publicación de casos de éxito y testimonios en redes sociales, previo consentimiento.</li>
+                  </ul>
+                </p>
+                <p class="text-base text-slate-600 dark:text-slate-400 leading-6">
+                  Para más información sobre el manejo de sus datos personales y los derechos que puede ejercer, visite nuestro Aviso de Privacidad Integral en nuestro sitio web.
+                </p>
+                </div>
+                <div class="p-6 space-y-4">
+                <h6 class="text-base text-slate-900 dark:text-white leading-6">
+                    Aviso de Confidencialidad
+                </h6>
+                <p class="text-base text-slate-600 dark:text-slate-400 leading-6">
+                  Este modal y cualquier documento adjunto contienen información propietaria, confidencial o privilegiada que pertenece a SSafeNet, 
+                  se advierte que cualquier divulgación, distribución, copia o acción relacionada al contenido de esta comunicación, 
+                  sin la autorización del remitente está totalmente prohibida. Si usted no es el destinatario o recibe este mensaje por error, 
+                  por favor notifíquelo de inmediato al remitente y bórrelo de su computadora repórtelo y/o consulte nuestro aviso de privacidad en la página de internet. 
+                  Se han tomado las precauciones necesarias para asegurar el envío de cualquier correo electrónico libre de virus o contenido malicioso. 
+                  No obstante, no podemos asegurar que así sea, por lo cual no nos hacemos responsables de cualquier daño atribuible al caso.
+                </p>
+                </div>
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end p-6 space-x-2 border-t border-slate-200 rounded-b dark:border-slate-600">
+                  <button type="button" class="btn btn-dark rounded inline-flex justify-center text-white" data-bs-dismiss="modal">Acepto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- Fin modal aviso de privacidad -->
 
   <!-- scripts -->
   <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>

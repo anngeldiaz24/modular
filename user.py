@@ -1,17 +1,20 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, url_for, request, session,
-    send_from_directory, current_app
+    send_from_directory, current_app, Response, jsonify
 )
 from werkzeug.exceptions import abort
 from .auth import login_required, user_role_required
-from .db import get_db
+from .db import get_db, close_db
 from .raspberry import funciones
 import logging
 import datetime
 import cv2
 import threading
 import requests
+import imutils
+import time
 import re 
+import unicodedata
 from babel.dates import format_date
 from dotenv import load_dotenv
 # from datetime import datetime
@@ -29,10 +32,11 @@ bp = Blueprint('user', __name__)
 load_dotenv()
 
 # URL del endpoint de captura en el ESP32 (configurable con variables de entorno)
-camera_ip = os.getenv('CAMERA_IP', 'http://192.168.100.28')  # Cambia esto por la IP de tu ESP32 si no usas variables de entorno
+camera_ip = os.getenv('CAMERA_IP') 
 capture_url = f"{camera_ip}/capture"
 
 def capture_photo(hogar_id):
+    from datetime import datetime
     try:
         # Realiza la solicitud GET al endpoint de captura
         response = requests.get(capture_url, stream=True)
@@ -174,7 +178,11 @@ def home():
 @login_required
 @user_role_required
 def user_index():
-    return render_template('user/user-home.html', user=g.user, role=g.user['rol'])
+    # Obtener la IP y el puerto desde el archivo .env
+    stream_host = os.getenv('CAMERA_IP_VISTA')
+    # Concatenar con la ruta de transmisión
+    stream_url = f"http://{stream_host}/stream"
+    return render_template('user/user-home.html', user=g.user, role=g.user['rol'], stream_url=stream_url)
 
 @login_required
 @user_role_required
@@ -566,6 +574,38 @@ def bloquear_puertas():
     funciones.bloquearPuertas()
     logger.info('Saliendo de Bloquear puertas llamado')
     return redirect(url_for('user.user_index'))
+
+@bp.route('/bloquear-puerta-uno')
+@login_required
+def bloquear_puerta_uno():
+    logger.info('Entrando a Bloquear puerta uno llamado')
+    funciones.bloquearPuertaUno()
+    logger.info('Saliendo de Bloquear puerta uno llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/bloquear-puerta-dos')
+@login_required
+def bloquear_puerta_dos():
+    logger.info('Entrando a Bloquear puerta dos llamado')
+    funciones.bloquearPuertaDos()
+    logger.info('Saliendo de Bloquear puerta dos llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/bloquear-puerta-tres')
+@login_required
+def bloquear_puerta_tres():
+    logger.info('Entrando a Bloquear puerta tres llamado')
+    funciones.bloquearPuertaTres()
+    logger.info('Saliendo de Bloquear puerta tres llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/bloquear-puerta-cuatro')
+@login_required
+def bloquear_puerta_cuatro():
+    logger.info('Entrando a Bloquear puerta cuatro llamado')
+    funciones.bloquearPuertaCuatro()
+    logger.info('Saliendo de Bloquear puerta cuatro llamado')
+    return redirect(url_for('user.user_index'))
     
 @bp.route('/desbloquear-puertas')
 @login_required
@@ -573,6 +613,38 @@ def desbloquear_puertas():
     logger.info('Entrando a Desbloquear puertas llamado')
     funciones.desbloquearPuertas()
     logger.info('Saliendo de Desbloquear puertas llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desbloquear-puerta-uno')
+@login_required
+def desbloquear_puerta_uno():
+    logger.info('Entrando a Desbloquear puerta uno llamado')
+    funciones.desbloquearPuertaUno()
+    logger.info('Saliendo de Desbloquear puerta uno llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desbloquear-puerta-dos')
+@login_required
+def desbloquear_puerta_dos():
+    logger.info('Entrando a Desbloquear puerta dos llamado')
+    funciones.desbloquearPuertaDos()
+    logger.info('Saliendo de Desbloquear puerta dos llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desbloquear-puerta-tres')
+@login_required
+def desbloquear_puerta_tres():
+    logger.info('Entrando a Desbloquear puerta tres llamado')
+    funciones.desbloquearPuertaTres()
+    logger.info('Saliendo de Desbloquear puerta tres llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desbloquear-puerta-cuatro')
+@login_required
+def desbloquear_puerta_cuatro():
+    logger.info('Entrando a Desbloquear puerta cuatro llamado')
+    funciones.desbloquearPuertaCuatro()
+    logger.info('Saliendo de Desbloquear puerta cuatro llamado')
     return redirect(url_for('user.user_index'))
 
 @bp.route('/llamar-policia')
@@ -583,4 +655,185 @@ def llamar_policia():
     funciones.llamarPolicia()
     logger.info('Saliendo de Llamar policia llamado')
     return redirect(url_for('user.user_index'))
+
+@bp.route('/actualizar-rostro', methods=['POST'])
+@login_required
+@user_role_required
+def actualizar_rostro_registrado():    
+    return Response(status=204) 
+
+def quitar_acentos(texto):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+def procesar_video_para_rostros(video_path, usuario_nombre, hogar_id):
+    # Ruta donde se guardarán las imágenes de los rostros, organizadas por hogar_id y usuario
+    PATH = os.getenv('DATA_PATH')
+    data_path = data_path = os.path.join(PATH, 'Data')
+    hogar_path = os.path.join(data_path, f'hogar_{hogar_id}')
+    person_path = os.path.join(hogar_path, usuario_nombre)
+
+    # Crear las carpetas si no existen
+    if not os.path.exists(hogar_path):
+        print(f'Carpeta creada para hogar {hogar_id}: ', hogar_path)
+        os.makedirs(hogar_path)
+
+    if not os.path.exists(person_path):
+        print(f'Carpeta creada para usuario {usuario_nombre}: ', person_path)
+        os.makedirs(person_path)
+
+    # Procesar el video
+    cap = cv2.VideoCapture(video_path)
+    faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    count = 0
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        frame = cv2.resize(frame, (640, int(frame.shape[0] * 640 / frame.shape[1])))
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        auxFrame = frame.copy()
+
+        faces = faceClassif.detectMultiScale(gray, 1.3, 5)
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            rostro = auxFrame[y:y + h, x:x + w]
+            rostro = cv2.resize(rostro, (150, 150), interpolation=cv2.INTER_CUBIC)
+            cv2.imwrite(os.path.join(person_path, f'rostro_{count}.jpg'), rostro)
+            count += 1
+
+        if cv2.waitKey(1) == 27 or count >= 300:  # Si presionan ESC o se capturan 300 rostros
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+@bp.route('/grabar-video', methods=['POST'])
+@login_required
+@user_role_required
+def grabar_video():
+    hogar_id = g.user['hogar_id']
+
+    # Eliminar acentos del nombre y apellidos
+    nombre_sin_acentos = quitar_acentos(g.user['nombre'])
+    apellidos_sin_acentos = quitar_acentos(g.user['apellidos'])
+
+    usuario_nombre = f"{nombre_sin_acentos}_{apellidos_sin_acentos}".replace(" ", "_").lower()
+
+    # Directorio donde se guardarán los videos
+    videos_dir = os.path.join(current_app.root_path, 'static', 'videos', f'hogar_{hogar_id}')
+    if not os.path.exists(videos_dir):
+        os.makedirs(videos_dir)
+
+    video_path = os.path.join(videos_dir, f'{usuario_nombre}.mp4')
+
+    cap = cv2.VideoCapture(0)
+
+    if not cap.isOpened():
+        flash('Error al acceder a la cámara', 'error')
+        return redirect(url_for('user.mi_cuenta'))
+
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    if frame_width == 0 or frame_height == 0:
+        flash('No se pudo obtener el tamaño de los frames. Asegúrate de que la cámara esté conectada correctamente.', 'error')
+        return redirect(url_for('user.mi_cuenta'))
+
+    output = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (frame_width, frame_height))
+
+    start_time = time.time()
     
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        output.write(frame)
+
+        if time.time() - start_time > 20:  # Grabar 20 segundos
+            print("Grabación completada.")
+            break
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    output.release()
+    cv2.destroyAllWindows()
+
+    # Procesar el video para extraer rostros y guardarlos en la carpeta correspondiente
+    procesar_video_para_rostros(video_path, usuario_nombre, hogar_id)
+
+    flash('Rostro guardado con éxito', 'success')
+    return redirect(url_for('user.home'))
+
+
+def actualizar_rostro_guardado(usuario_id):
+    """Función que actualiza el campo rostro_guardado en la base de datos."""
+    db, c = get_db()
+    try:
+        c.execute(""" 
+            UPDATE users
+            SET rostro_guardado = 1
+            WHERE id = %s
+        """, (usuario_id,))
+        db.commit()
+        return True, None
+    except Exception as e:
+        db.rollback()
+        return False, str(e)
+    finally:
+        close_db()
+
+
+@bp.route('/guardar-video', methods=['POST'])
+@login_required
+@user_role_required
+def guardar_video():
+    if 'video' not in request.files:
+        return jsonify({'message': 'No se recibió ningún video.'}), 400
+
+    video_file = request.files['video']
+    
+    # Obtener el ID del hogar y el nombre del usuario
+    hogar_id = g.user['hogar_id']
+    
+    # Eliminar acentos del nombre y apellidos
+    nombre_sin_acentos = quitar_acentos(g.user['nombre'])
+    apellidos_sin_acentos = quitar_acentos(g.user['apellidos'])
+    usuario_nombre = f"{nombre_sin_acentos}_{apellidos_sin_acentos}".replace(" ", "_").lower()
+
+    # Define la ruta raíz del proyecto
+    root_path = os.path.dirname(os.path.abspath(__file__))
+
+    # Ruta de la carpeta donde se guardará el video en la raíz del proyecto
+    dir_path = os.path.join(root_path, 'static', 'videos', f'hogar_{hogar_id}')
+
+    # Crear la carpeta 'hogar_id' si no existe
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
+    # Guardar el video en formato WebM con el nombre del usuario
+    webm_path = os.path.join(dir_path, f'{usuario_nombre}.webm')
+    video_file.save(webm_path)
+    
+    # Procesar el video para extraer rostros y guardarlos en la carpeta correspondiente
+    procesar_video_para_rostros(webm_path, usuario_nombre, hogar_id)
+    
+    # Actualizar el estado del rostro guardado en la base de datos
+    actualizado, error = actualizar_rostro_guardado(g.user['id'])
+    
+    if not actualizado:
+        flash(f"Error al actualizar: {error}", 'error')
+        return redirect(url_for('user.mi_cuenta'))
+
+    flash('Rostro guardado con éxito', 'success')
+
+    return jsonify({'message': 'Video guardado y rostro guardado con éxito.', 'redirect_url': url_for('user.mi_cuenta')})
