@@ -67,6 +67,10 @@
                 <iconify-icon icon="icon-park-outline:alarm" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Desactivar alarma</span>
             </a>
+            <a href="{{ url_for('user.llamar_policia') }}" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
+                <iconify-icon icon="game-icons:police-car" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                <span class="flex-grow text-left">Llamar a la policía</span>
+            </a>
             <a href="{{ url_for('user.capture_photo_endpoint') }}" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="solar:videocamera-record-outline" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Tomar fotografía</span>
@@ -74,7 +78,20 @@
             <a href="#" class="btn flex items-center justify-center btn-outline-dark rounded-[25px] w-full mb-2">
                 <iconify-icon icon="mdi:shield-lock" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
                 <span class="flex-grow text-left">Modo seguro</span>
-            </a>      
+            </a>
+            <div class="mb-2">
+                <button onclick="toggleDropdown('safeModeDropdown')" class="btn flex items-center justify-between btn-outline-dark rounded-[25px] w-full">
+                    <div class="flex items-center">
+                        <iconify-icon icon="mdi:shield-lock" width="1.5em" height="1.5em" class="mr-2 flex-shrink-0"></iconify-icon>
+                        <span class="flex-grow text-left">Modo seguro</span>
+                    </div>
+                    <iconify-icon icon="mdi:chevron-down" width="1em" height="1em"></iconify-icon>
+                </button>
+                <div id="safeModeDropdown" class="hidden z-10 bg-white rounded-lg shadow w-full mt-2">
+                    <a href="{{ url_for('user.activar_modo_seguro') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Activar modo seguro</a>
+                    <a href="{{ url_for('user.desactivar_modo_seguro') }}" class="block px-4 py-2 text-sm text-gray-700 dropdown-option">Desactivar modo seguro</a>
+                </div>
+            </div>      
         </div>
     </div>
     <style>

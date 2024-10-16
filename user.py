@@ -656,6 +656,22 @@ def llamar_policia():
     logger.info('Saliendo de Llamar policia llamado')
     return redirect(url_for('user.user_index'))
 
+@bp.route('/activar-modo-seguro')
+@login_required
+def activar_modo_seguro():
+    logger.info('Entrando a Activar modo seguro llamado')
+    funciones.activarSensorMovimiento()
+    logger.info('Saliendo de Activar modo seguro llamado')
+    return redirect(url_for('user.user_index'))
+
+@bp.route('/desactivar-modo-seguro')
+@login_required
+def desactivar_modo_seguro():
+    logger.info('Entrando a Desactivar modo seguro llamado')
+    funciones.desactivarSensorMovimiento()
+    logger.info('Saliendo de Desactivar modo seguro llamado')
+    return redirect(url_for('user.user_index'))
+
 @bp.route('/actualizar-rostro', methods=['POST'])
 @login_required
 @user_role_required

@@ -82,6 +82,16 @@ def llamarPolicia():
     print("llamarPolicia funcionando")
     logger.debug("llamarPolicia funcionando")
     
+# Activar modo seguro
+def activarSensorMovimiento():
+    print("activarSensorMovimiento funcionando")
+    logger.debug("activarSensorMovimiento funcionando")
+    
+# Desactivar modo seguro
+def desactivarSensorMovimiento():
+    print("DesactivarSensorMovimiento funcionando")
+    logger.debug("DesactivarSensorMovimiento funcionando")
+    
 # Iniciar grabación del monitoreo de la cámara en vivo
 def grabarContenido():
     print("grabarContenido funcionando")
