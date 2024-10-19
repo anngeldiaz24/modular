@@ -468,8 +468,8 @@ def seed_database():
 
     usuarios = [
         {'nombre': 'Juan', 'apellidos': 'Pérez', 'email': 'juan.perez@example.com', 'password': generate_password_hash('password'), 'telefono': '1234567890', 'rol': 'Admin', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id': None, 'periodo_id': None},
-        {'nombre': 'Ana', 'apellidos': 'García', 'email': 'ana.garcia@example.com', 'password': generate_password_hash('password'), 'telefono': '0987654321', 'rol': 'Owner', 'codigo_acceso': 1, 'acepto_terminos': True, 'hogar_id':1, 'periodo_id': 19},
-        {'nombre': 'Luis', 'apellidos': 'Martínez', 'email': 'luis.martinez@example.com', 'password': generate_password_hash('password'), 'telefono': '1122334455', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':1, 'periodo_id': 19},
+        {'nombre': 'Axl', 'apellidos': 'Coronado', 'email': 'axl.coronado@example.com', 'password': generate_password_hash('password'), 'telefono': '3310906952', 'rol': 'Owner', 'codigo_acceso': 1, 'acepto_terminos': True, 'hogar_id':1, 'periodo_id': 19},
+        {'nombre': 'Angel', 'apellidos': 'Diaz', 'email': 'angel.diaz@example.com', 'password': generate_password_hash('password'), 'telefono': '3310836028', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':1, 'periodo_id': 19},
         {'nombre': 'Carlos', 'apellidos': 'Hernández', 'email': 'carlos.hernandez@example.com', 'password': generate_password_hash('password'), 'telefono': '5566778899', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True, 'hogar_id':1, 'periodo_id': 19},
         {'nombre': 'María', 'apellidos': 'López', 'email': 'maria.lopez@example.com', 'password': generate_password_hash('password'), 'telefono': '6677889900', 'rol': 'Owner', 'codigo_acceso': 2, 'acepto_terminos': True,'hogar_id':2, 'periodo_id': 19},
         {'nombre': 'Miguel', 'apellidos': 'Rodríguez', 'email': 'miguel.rodriguez@example.com', 'password': generate_password_hash('password'), 'telefono': '7788990011', 'rol': 'User', 'codigo_acceso': None, 'acepto_terminos': True,'hogar_id':2, 'periodo_id': 19},
