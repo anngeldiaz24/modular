@@ -24,7 +24,7 @@ def llamarPoliciaCel():
     # Establecemos la conexión SSH
     ssh = ConnectHandler(**celular)
     # Enviamos el comando que utiliza termux para interactuar con el celular y hacer la llamada
-    ssh.send_command("termux-telephony-call +523310906952")
+    ssh.send_command("termux-telephony-call +523310836028")
     # Esoeramos 30 segundos mientras se hace la llamada
     time.sleep(30)
 

@@ -1,11 +1,13 @@
 from flask import Flask, render_template, redirect, url_for, jsonify, g, session
 import os
+import logging
+import threading
 import json
 from . import db
 from .raspberry import funciones
 from .raspberry import llamada_policia
 from .db import get_db
-
+from .bot import iniciar_bot
 
 def create_app():
     app = Flask(__name__)
@@ -59,5 +61,9 @@ def create_app():
     def accion_no_autorizada(error):
         return render_template('errors/403.html', user=g.user), 403
 
+    
+    # Iniciar el bot en un hilo separado al iniciar Flask
+    bot_thread = threading.Thread(target=iniciar_bot, daemon=True)
+    bot_thread.start()
 
     return app
