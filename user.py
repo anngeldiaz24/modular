@@ -22,6 +22,7 @@ import os
 from werkzeug.security import generate_password_hash
 from mysql.connector import Error as MySQLError
 import random
+from . import llamada_policia
 
 # Configurar el logging para este módulo
 logging.basicConfig(level=logging.DEBUG)
@@ -34,6 +35,26 @@ load_dotenv()
 # URL del endpoint de captura en el ESP32 (configurable con variables de entorno)
 camera_ip = os.getenv('CAMERA_IP') 
 capture_url = f"{camera_ip}/capture"
+
+sensor_thread = None
+
+def modo_seguro_protocolo():
+    """Lógica que se ejecuta en el hilo al activar el modo seguro."""
+    logger.info("Hilo de modo seguro iniciado.")
+
+    while True:
+        if funciones.detectar_movimiento():  # Verifica si hay movimiento
+            logger.info("¡Movimiento detectado! Ejecutando protocolo.")
+            funciones.encenderLucesDomesticas()
+            time.sleep(3)
+            funciones.activarAlarma()
+            time.sleep(3)
+            funciones.bloquearPuertas()
+            time.sleep(3)
+            llamada_policia.llamarPoliciaCel()
+            # Puedes agregar m�s acciones aqu� si es necesario.
+
+    logger.info("Hilo de modo seguro finalizado.")
 
 def capture_photo(hogar_id):
     from datetime import datetime
@@ -659,16 +680,30 @@ def llamar_policia():
 @bp.route('/activar-modo-seguro')
 @login_required
 def activar_modo_seguro():
+    global sensor_thread
     logger.info('Entrando a Activar modo seguro llamado')
-    funciones.activarSensorMovimiento()
+    
+    if sensor_thread is None or not sensor_thread.is_alive():
+        logger.info('Activando modo seguro')
+        funciones.activarSensorMovimiento()
+
+        sensor_thread = threading.Thread(target=modo_seguro_protocolo, daemon=True)
+        sensor_thread.start()
+
+        flash("Modo seguro activado.")
+    else:
+        flash("El modo seguro ya está activo.")
     logger.info('Saliendo de Activar modo seguro llamado')
     return redirect(url_for('user.user_index'))
 
 @bp.route('/desactivar-modo-seguro')
 @login_required
 def desactivar_modo_seguro():
+    global sensor_thread
     logger.info('Entrando a Desactivar modo seguro llamado')
+    
     funciones.desactivarSensorMovimiento()
+
     logger.info('Saliendo de Desactivar modo seguro llamado')
     return redirect(url_for('user.user_index'))
 
