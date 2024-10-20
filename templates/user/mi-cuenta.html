@@ -2,9 +2,7 @@
 
 {% block header %}
     {% block title %}Mi cuenta{% endblock %}
-    {% block styles %}
-        <script src="https://cdn.tailwindcss.com"></script>
-    {% endblock %}
+   
 {% endblock %}
 
 {% block content %}
@@ -29,7 +27,7 @@
                             Miembro del hogar
                         {% endif %}
                     </div>
-                    <div class="mt-2 mr-2 text-white bg-yellow-400 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-small rounded-full text-sm px-3 py-1 text-center me-2 mb-2 dark:focus:ring-yellow-900">
+                    <div class="mt-2 mr-2 btn inline-flex justify-center btn-success">
                         <iconify-icon icon="cil:badge" class="mr-2 relative top-[2px] text-lg ltr:mr-1 rtl:ml-1" width="1em" height="1em"></iconify-icon>{{ paquete }}</div>
                 </div>
             </div>
@@ -37,17 +35,20 @@
         
         <div class="text-left mt-4 md:mt-0">
             <a href="#"
-                class="w-full lg:w-auto inline-flex items-center justify-center text-white {% if user.rostro_guardado == 1 %}bg-gray-400 cursor-not-allowed{% else %}bg-blue-700 hover:bg-blue-800 focus:ring-blue-500{% endif %} focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500" 
-                data-bs-toggle="modal" data-bs-target="#preSaveFaceModal"
-                {% if user.rostro_guardado == 1 %}disabled{% endif %}>
+                class="w-full lg:w-auto inline-flex items-center justify-center text-white 
+                btn {% if user.rostro_guardado == 1 %}btn-light cursor-not-allowed{% else %}btn-primary{% endif %}"
+                {% if user.rostro_guardado != 1 %}data-bs-toggle="modal" data-bs-target="#preSaveFaceModal"{% endif %}
+                {% if user.rostro_guardado == 1 %}aria-disabled="true" tabindex="-1"{% endif %}>
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bx-face"></iconify-icon>
                     <span>{% if user.rostro_guardado == 1 %}Rostro capturado{% else %}Añadir reconocimiento facial{% endif %}</span>
                 </span>
             </a>
         </div>
+        
+        
     </div>
-    <div class="grid grid-cols-12 gap-6 mt-6">
+    <div class="grid grid-cols-12 gap-6 mt-6 dark:bg-slate-80">
         <div class="lg:col-span-4 col-span-12">
             <div class="card h-full">
                 <header class="card-header">
