@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, jsonify, g, session
 import os
-import logging
 import threading
 import json
 from . import db
