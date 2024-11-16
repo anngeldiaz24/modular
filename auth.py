@@ -350,7 +350,7 @@ def reconocer_rostro_en_video(video_path):
             result = face_recognizer.predict(rostro)
 
             # Verificar si el rostro pertenece a alguien conocido
-            if result[1] < 65:  # Ajusta el umbral según tu modelo
+            if result[1] < 72:  # Ajusta el umbral según tu modelo
                 user_name = user_dict.get(result[0], "Desconocido")
                 cap.release()  # Liberar el video
                 return user_name  # Retornar el nombre del usuario reconocido

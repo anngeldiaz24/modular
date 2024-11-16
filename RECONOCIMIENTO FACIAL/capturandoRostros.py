@@ -8,8 +8,8 @@ load_dotenv()
 
 PATH = os.getenv('DATA_PATH')
 
-personName = 'elias_diaz'
-dataPath = PATH #Cambia a la ruta donde hayas almacenado Data
+personName = 'angel'
+dataPath = 'C://Users//Angel Diaz//Desktop//Modular//Data' 
 personPath = dataPath + '/' + personName
 
 if not os.path.exists(personPath):
@@ -17,7 +17,7 @@ if not os.path.exists(personPath):
 	os.makedirs(personPath)
 
 #cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
-cap = cv2.VideoCapture('videos/grabacion.webm')
+cap = cv2.VideoCapture('angel.mp4')
 
 faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades+'haarcascade_frontalface_default.xml')
 count = 0
